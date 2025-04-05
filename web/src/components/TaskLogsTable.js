@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Label } from 'semantic-ui-react';
 import { API, copy, isAdmin, showError, showSuccess, timestamp2string } from '../helpers';
-
+import NoData from './NoData';
 import {
-    Table,
     Tag,
     Form,
     Button,
@@ -12,6 +11,14 @@ import {
     Typography, Progress, Card
 } from '@douyinfe/semi-ui';
 import { ITEMS_PER_PAGE } from '../constants';
+import sortIcon from "../../dist/assets/sort.svg";
+import { Dropdown, Table } from 'react-bootstrap';
+import { IconChevronLeft, IconChevronRight, IconSearch } from '@douyinfe/semi-icons';
+import { useTranslation } from 'react-i18next';
+import filterIcon from "../../dist/assets/fi_filter.svg";
+import downloadIcon from "../../dist/assets/fi_download.svg";
+import { SortIconSvg } from './svgIcon';
+
 
 const colors = ['amber', 'blue', 'cyan', 'green', 'grey', 'indigo',
     'light-blue', 'lime', 'orange', 'pink',
@@ -21,7 +28,6 @@ const colors = ['amber', 'blue', 'cyan', 'green', 'grey', 'indigo',
 
 const renderTimestamp = (timestampInSeconds) => {
     const date = new Date(timestampInSeconds * 1000); // 从秒转换为毫秒
-
     const year = date.getFullYear(); // 获取年份
     const month = ('0' + (date.getMonth() + 1)).slice(-2); // 获取月份，从0开始需要+1，并保证两位数
     const day = ('0' + date.getDate()).slice(-2); // 获取日期，并保证两位数
@@ -58,6 +64,7 @@ function renderDuration(submit_time, finishTime) {
 }
 
 const LogsTable = () => {
+    const { t } = useTranslation();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState('');
     const isAdminUser = isAdmin();
@@ -222,7 +229,7 @@ const LogsTable = () => {
     const [inputs, setInputs] = useState({
         channel_id: '',
         task_id: '',
-        start_timestamp: timestamp2string(zeroNow.getTime() /1000),
+        start_timestamp: timestamp2string(zeroNow.getTime() / 1000),
         end_timestamp: '',
     });
     const { channel_id, task_id, start_timestamp, end_timestamp } = inputs;
@@ -248,7 +255,7 @@ const LogsTable = () => {
 
         let url = '';
         let localStartTimestamp = parseInt(Date.parse(start_timestamp) / 1000);
-        let localEndTimestamp = parseInt(Date.parse(end_timestamp) / 1000 );
+        let localEndTimestamp = parseInt(Date.parse(end_timestamp) / 1000);
         if (isAdminUser) {
             url = `/api/task/?p=${startIdx}&channel_id=${channel_id}&task_id=${task_id}&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}`;
         } else {
@@ -275,7 +282,6 @@ const LogsTable = () => {
     const handlePageChange = page => {
         setActivePage(page);
         if (page === Math.ceil(logs.length / ITEMS_PER_PAGE) + 1) {
-            // In this case we have to load more data and then append them.
             loadLogs(page - 1).then(r => {
             });
         }
@@ -344,15 +350,124 @@ const LogsTable = () => {
         }
     }
 
+    const description = "Add Tokens to start tracking Calls <br /> Distribution Metrics.";
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const handleKeywordChange = async (value) => {
+        setSearchKeyword(value.target.value);
+    };
+
+
     return (
         <>
 
-            <Layout>
-                <Form layout='horizontal' labelPosition='inset'>
+            {/* <NoData description={description} /> */}
+
+            {/* Table header */}
+            <div className='searchHeader'>
+                <div className='searchFilter'>
+                    <div className='searchOption'>
+                        <div className="search-container">
+                            <i className="search-icon"><IconSearch /></i>
+                            <input type="text" className="search-input" placeholder={t('令牌名称')} value={searchKeyword} onChange={handleKeywordChange} />
+                        </div>
+                        <button className='searchBtn' style={{ marginLeft: '10px' }}>
+                            {t('查询')}
+                        </button>
+                    </div>
+                    <div className='filterOption'>
+                        <button><img src={filterIcon} alt="filter" /> Filter</button>
+                        <button><img src={downloadIcon} alt="download" /></button>
+                        <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
+                            <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
+                                Bulk Action
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item>
+                                    Bulk One
+                                </Dropdown.Item>
+                                <Dropdown.Item>
+                                    Bulk Two
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+                </div>
+            </div>
+
+            {/* Table list */}
+            <div className="tableBox">
+                <Table borderless hover>
+                    <thead>
+                        <tr>
+                            <th>Submission Date/Time <SortIconSvg color="--semi-table-thead-0" /></th>
+                            <th>Spend time <SortIconSvg color="--semi-table-thead-0" /></th>
+                            <th>Type <SortIconSvg color="--semi-table-thead-0" /></th>
+                            <th>Task ID <SortIconSvg color="--semi-table-thead-0" /></th>
+                            <th>Schedule <SortIconSvg color="--semi-table-thead-0" /></th>
+                            <th>Result <SortIconSvg color="--semi-table-thead-0" /></th>
+                            <th>Prompt <SortIconSvg color="--semi-table-thead-0" /></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {[...Array(80)].map((_, index) => (
+                            <tr key={index}>
+                                <td>12 Aug 2022 - 12:25 am</td>
+                                <td>5</td>
+                                <td>My APIs</td>
+                                <td>AA87</td>
+                                <td>A25</td>
+                                <td>12 Aug 2022 - 12:25 am</td>
+                                <td>Action Prompt</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            </div>
+
+            {/* Table Pagination */}
+            <div className='tablePagination'>
+                <div className='leftItems'>
+                    <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
+                        <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
+                            1
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item>1</Dropdown.Item>
+                            <Dropdown.Item>2</Dropdown.Item>
+                            <Dropdown.Item>3</Dropdown.Item>
+                            <Dropdown.Item>4</Dropdown.Item>
+                            <Dropdown.Item>5</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <p className='item'>Items per page</p>
+                    <p className='itemNumber'>1-10 of 200 items</p>
+                </div>
+                <div className='leftItems'>
+                    <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
+                        <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
+                            1
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item>1</Dropdown.Item>
+                            <Dropdown.Item>2</Dropdown.Item>
+                            <Dropdown.Item>3</Dropdown.Item>
+                            <Dropdown.Item>4</Dropdown.Item>
+                            <Dropdown.Item>5</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <p className='itemNumber'>1-10 of 200 items</p>
+                    <button className='pagArrow'> <IconChevronLeft /> </button>
+                    <button className='pagArrow'> <IconChevronRight /> </button>
+                </div>
+            </div>
+
+
+
+            {/*  <Form layout='horizontal' labelPosition='inset'>
                     <>
                         {isAdminUser && <Form.Input field="channel_id" label='渠道 ID' style={{ width: '236px', marginBottom: '10px' }} value={channel_id}
-                                                    placeholder={'可选值'} name='channel_id'
-                                                    onChange={value => handleInputChange(value, 'channel_id')} />
+                            placeholder={'可选值'} name='channel_id'
+                            onChange={value => handleInputChange(value, 'channel_id')} />
                         }
                         <Form.Input field="task_id" label={"任务 ID"} style={{ width: '236px', marginBottom: '10px' }} value={task_id}
                             placeholder={"可选值"}
@@ -381,18 +496,18 @@ const LogsTable = () => {
                         pageSizeOpts: [10, 20, 50, 100],
                         onPageChange: handlePageChange,
                     }} loading={loading} />
-                </Card>
-                <Modal
-                    visible={isModalOpen}
-                    onOk={() => setIsModalOpen(false)}
-                    onCancel={() => setIsModalOpen(false)}
-                    closable={null}
-                    bodyStyle={{ height: '400px', overflow: 'auto' }} // 设置模态框内容区域样式
-                    width={800} // 设置模态框宽度
-                >
-                    <p style={{ whiteSpace: 'pre-line' }}>{modalContent}</p>
-                </Modal>
-            </Layout>
+                </Card> */}
+            <Modal
+                visible={isModalOpen}
+                onOk={() => setIsModalOpen(false)}
+                onCancel={() => setIsModalOpen(false)}
+                closable={null}
+                bodyStyle={{ height: '400px', overflow: 'auto' }} // 设置模态框内容区域样式
+                width={800} // 设置模态框宽度
+            >
+                <p style={{ whiteSpace: 'pre-line' }}>{modalContent}</p>
+            </Modal>
+
         </>
     );
 };

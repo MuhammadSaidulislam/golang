@@ -2,13 +2,13 @@ import React, { useContext, useEffect, useRef, useMemo, useState } from 'react';
 import { API, copy, showError, showInfo, showSuccess } from '../helpers';
 import { useTranslation } from 'react-i18next';
 
+import "./PriceTable.css"
 import {
   Banner,
   Input,
   Layout,
   Modal,
   Space,
-  Table,
   Tag,
   Tooltip,
   Popover,
@@ -20,9 +20,18 @@ import {
   IconVerify,
   IconUploadError,
   IconHelpCircle,
+  IconFilter,
+  IconSort,
 } from '@douyinfe/semi-icons';
 import { UserContext } from '../context/User/index.js';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
+import { Table } from "react-bootstrap";
+import checkMark from "../../dist/assets/checkTable.svg";
+import sortIcon from "../../dist/assets/sort.svg";
+import TablePagination from './TablePagination.js';
+import { SortIconSvg } from './svgIcon';
+import NoData from './NoData.js';
+
 
 const ModelPricing = () => {
   const { t } = useTranslation();
@@ -256,7 +265,7 @@ const ModelPricing = () => {
       },
     },
   ];
-
+  const [priceList, setPriceList] = useState([]);
   const [models, setModels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userState, userDispatch] = useContext(UserContext);
@@ -292,12 +301,12 @@ const ModelPricing = () => {
 
   const loadPricing = async () => {
     setLoading(true);
-
     let url = '';
-    url = `/api/pricing`;
+    url = `https://api.duckagi.com/api/pricing`;
     const res = await API.get(url);
     const { success, message, data, group_ratio, usable_group } = res.data;
     if (success) {
+      setPriceList(res.data.data)
       setGroupRatio(group_ratio);
       setUsableGroup(usable_group);
       setSelectedGroup(userState.user ? userState.user.group : 'default')
@@ -325,80 +334,78 @@ const ModelPricing = () => {
     refresh().then();
   }, []);
 
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
+
+  // Calculate paginated items
+  const totalItems = priceList.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedList = priceList.slice(startIndex, endIndex);
+
+
   return (
     <>
-      <Layout>Saidul
-        {userState.user ? (
-          <Banner
-            type="success"
-            fullMode={false}
-            closeIcon="null"
-            description={t('您的默认分组为：{{group}}，分组倍率为：{{ratio}}', {
-              group: userState.user.group,
-              ratio: groupRatio[userState.user.group]
-            })}
-          />
-        ) : (
-          <Banner
-            type='warning'
-            fullMode={false}
-            closeIcon="null"
-            description={t('您还未登陆，显示的价格为默认分组倍率: {{ratio}}', {
-              ratio: groupRatio['default']
-            })}
-          />
-        )}
-        <br />
-        <Banner
-          type="info"
-          fullMode={false}
-          description={<div>{t('按量计费费用 = 分组倍率 × 模型倍率 × （提示token数 + 补全token数 × 补全倍率）/ 500000 （单位：美元）')}</div>}
-          closeIcon="null"
-        />
-        <br />
-        <Space style={{ marginBottom: 16 }}>
-          <Input
-            placeholder={t('模糊搜索模型名称')}
-            style={{ width: 200 }}
-            onCompositionStart={handleCompositionStart}
-            onCompositionEnd={handleCompositionEnd}
-            onChange={handleChange}
-            showClear
-          />
-          <Button
-            theme='light'
-            type='tertiary'
-            style={{ width: 150 }}
-            onClick={() => {
-              copyText(selectedRowKeys);
-            }}
-            disabled={selectedRowKeys == ""}
-          >
-            {t('复制选中模型')}
-          </Button>
-        </Space>
-        <Table
-          style={{ marginTop: 5 }}
-          columns={columns}
-          dataSource={models}
-          loading={loading}
-          pagination={{
-            formatPageText: (page) =>
-              t('第 {{start}} - {{end}} 条，共 {{total}} 条', {
-                start: page.currentStart,
-                end: page.currentEnd,
-                total: models.length
-              }),
-            pageSize: models.length,
-            showSizeChanger: false,
-          }}
-          rowSelection={rowSelection}
-        />
-        <ImagePreview
-          src={modalImageUrl}
-          visible={isModalOpenurl}
-          onVisibleChange={(visible) => setIsModalOpenurl(visible)}
-        />
+      <Layout>
+        {priceList && priceList.length === 0 ? <section className='priceTable'>
+
+          <div className='container'>
+            <div className='row'>
+              <div className='col-md-12 priceHeading mb-5'>
+                <h1>Pricing</h1>
+                <p>One API to solve all your problems.  - DuckLLM</p>
+              </div>
+              <div className='col-md-12 priceTableList'>
+                <NoData />
+              </div>
+            </div>
+          </div>
+
+
+        </section> :
+          <section className='priceTable'>
+            <div className='container'>
+              <div className='row'>
+                <div className='col-md-12 priceHeading mb-5'>
+                  <h1>Pricing</h1>
+                  <p>One API to solve all your problems.  - DuckLLM</p>
+                </div>
+                <div className='col-md-12 priceTableList'>
+                  <div className='tablePrice priceListTable'>
+                    <Table responsive borderless hover>
+                      <thead>
+                        <tr>
+                          <th></th>
+                          <th>Model <SortIconSvg color="--semi-table-thead-0" /></th>
+                          <th>Billing Type <SortIconSvg color="--semi-table-thead-0" /></th>
+                          <th>Available groups <SortIconSvg color="--semi-table-thead-0" /></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {paginatedList && paginatedList.map((data) => <tr>
+                          <td><img src={checkMark} alt="check" /></td>
+                          <td><span className='greenMark'>{data.model_name}</span></td>
+                          <td><span className='redMark'>pay-as-you-go</span></td>
+                          <td>{data.enable_groups.map((group, index) => (
+                            <span key={index} className='blueMark'>{group}</span>
+                          ))}</td>
+                        </tr>)}
+                      </tbody>
+                    </Table>
+                  </div>
+                  <TablePagination
+                    totalItems={totalItems}
+                    itemsPerPage={itemsPerPage}
+                    setItemsPerPage={setItemsPerPage}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                  />
+                </div>
+              </div>
+            </div>
+          </section>}
       </Layout>
     </>
   );

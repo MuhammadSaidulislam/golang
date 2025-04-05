@@ -1,0 +1,311 @@
+.hero-section {
+  text-align: center;
+  padding: 80px 20px;
+  background-color: var(--semi-background-bg-1);
+}
+.hero-section h1 {
+  font-weight: 600;
+  font-size: 60px;
+  line-height: 72px;
+  letter-spacing: 0%;
+  text-align: center;
+  background: linear-gradient(88.49deg, #b26ce8 -2.57%, #6175de 103.46%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-section p {
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 40px;
+  letter-spacing: 2%;
+  text-align: center;
+  color: var(--semi-text-white-black-0);
+}
+.heroBanner {
+  background-color: var(--semi-background-bg-1);
+}
+.heroBanner img {
+  width: 100%;
+}
+.largeModel {
+  margin-top: 50px;
+  padding: 0px 130px;
+  background-color: var(--semi-background-bg-1);
+}
+.largeModel p {
+  background: linear-gradient(88.49deg, #b26ce8 -2.57%, #6175de 103.46%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.largeModel .big {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 100px;
+  line-height: 120px;
+  letter-spacing: 0%;
+  text-transform: uppercase;
+  margin-bottom: 0px;
+}
+.largeModel .model {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 250px;
+  line-height: 220px;
+  letter-spacing: 0%;
+  text-transform: uppercase;
+}
+.big-model {
+  display: flex;
+  justify-content: left;
+  padding: 80px 0px 20px 0px;
+}
+.apiContent {
+  padding: 0px 90px;
+}
+.apiContent h6 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 52px;
+  letter-spacing: 0%;
+  color: var(--semi-text-white-black-0);
+}
+.apiContent p {
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 34px;
+  letter-spacing: 2%;
+  color: var(--semi-text-white-black-0);
+}
+.api-section {
+  text-align: center;
+  position: relative;
+  padding: 100px 0px;
+}
+.api-section h2 {
+  font-weight: 600;
+  font-size: 50px;
+  line-height: 64px;
+  letter-spacing: 0%;
+  text-align: center;
+  background: linear-gradient(88.49deg, #b26ce8 -2.57%, #6175de 103.46%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.api-section p {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 34px;
+  letter-spacing: 2%;
+  text-align: center;
+  color: var(--semi-text-white-black-0);
+}
+.api-section img {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
+.tableHomeBox {
+  text-align: center;
+  position: relative;
+  margin-top: 30px;
+}
+.tableHomeBox .lightImg {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+}
+
+.tutorial-section {
+  max-width: 1130px;
+  margin: 0 auto;
+  margin-top: 50px;
+  margin-bottom: 140px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+  padding: 54px 80px;
+}
+
+.left-section {
+  flex: 1;
+  min-width: 300px;
+}
+.left-section h6 {
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 52px;
+  letter-spacing: 0%;
+  color: var(--semi-text-white-black-1);
+}
+.left-section p {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: 2%;
+  color: var(--semi-text-white-black-0);
+}
+.right-section {
+  flex: 1;
+  min-width: 300px;
+}
+
+.info-box {
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  background-color: var(--semi-background-bg-0);
+  border-radius: 12px;
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+  -ms-border-radius: 12px;
+  -o-border-radius: 12px;
+}
+
+.info-box h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 30px;
+  letter-spacing: 2%;
+  color: var(--semi-text-white-black-2);
+}
+
+.info-box a {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 30px;
+  letter-spacing: 2%;
+  text-decoration: underline;
+  color: #6175de;
+}
+
+.api-link {
+  color: #5b67e8;
+  text-decoration: none;
+  display: block;
+  margin: 10px 0;
+  font-weight: 500;
+}
+
+.api-link:hover {
+  text-decoration: underline;
+}
+
+.python-card {
+  background: linear-gradient(154.96deg, #6579d8 -0.86%, #853a69 142.81%);
+  color: white;
+  padding: 20px 32px;
+  border-radius: 10px;
+  position: relative;
+}
+
+.python-card h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 30px;
+  letter-spacing: 2%;
+  color: #ffffff;
+}
+
+.method {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.method-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 30px;
+  letter-spacing: 2%;
+  color: #ffffff;
+}
+
+.method-desc {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
+
+.code-snippet {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 30px;
+  letter-spacing: 2%;
+  color: #ffffff;
+}
+.code-snippet a {
+  color: #ffffff;
+  text-decoration: underline;
+  font-weight: 600;
+}
+.expand-icon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.click-link {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 30px;
+  letter-spacing: 2%;
+  color: #ffffff;
+  text-decoration: underline;
+  margin-top: 10px;
+}
+@media (max-width: 800px) {
+  .hero-section h1 {
+    font-size: 32px;
+    line-height: 34px;
+  }
+  .hero-section p {
+    font-size: 18px;
+    line-height: 22px;
+  }
+  .mr-2 {
+    margin-right: 10px;
+  }
+  .api-section img {
+    display: none;
+  }
+  .largeModel .model {
+    font-size: 100px;
+    line-height: 100px;
+  }
+  .largeModel {
+    padding: 0px 30px;
+  }
+  .apiContent {
+    padding: 0px 20px;
+  }
+  .api-section {
+    padding: 40px 20px;
+  }
+  .tableHomeBox .lightImg {
+    display: none;
+  }
+  .tableHomeBox .tableImg {
+    width: 100%;
+  }
+  .brandImg .apiImg {
+    width: 100%;
+  }
+  .tutorial-section {
+    padding: 54px 32px;
+    margin-bottom: 10px;
+  }
+  .big-model {
+    flex-wrap: wrap;
+  }
+  .right-section {
+    margin-top: 30px;
+  }
+}

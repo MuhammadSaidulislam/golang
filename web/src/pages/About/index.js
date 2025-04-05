@@ -35,7 +35,7 @@ const About = () => {
         <>
           <Layout>
             <Layout.Header>
-              <h3>关于 Saidul</h3>
+              <h3>关于</h3>
             </Layout.Header>
             <Layout.Content>
               <p>可在设置页面设置关于内容，支持 HTML & Markdown</p>

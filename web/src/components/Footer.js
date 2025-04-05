@@ -1,14 +1,12 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getFooterHTML, getSystemName } from '../helpers';
 import { Layout, Tooltip } from '@douyinfe/semi-ui';
-import { StyleContext } from '../context/Style/index.js';
 
 const FooterBar = () => {
   const { t } = useTranslation();
   const systemName = getSystemName();
   const [footer, setFooter] = useState(getFooterHTML());
-  const [styleState] = useContext(StyleContext);
   let remainCheckTimes = 5;
 
   const loadFooter = () => {
@@ -59,10 +57,7 @@ const FooterBar = () => {
   }, []);
 
   return (
-    <div style={{
-      textAlign: 'center',
-      paddingBottom: '5px',
-    }}>
+    <div style={{ textAlign: 'center' }}>
       {footer ? (
         <div
           className='custom-footer'

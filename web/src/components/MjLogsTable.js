@@ -7,7 +7,7 @@ import {
   showSuccess,
   timestamp2string,
 } from '../helpers';
-
+import sortIcon from "../../dist/assets/sort.svg";
 import {
   Banner,
   Button,
@@ -16,12 +16,17 @@ import {
   Layout,
   Modal,
   Progress,
-  Table,
   Tag,
   Typography,
 } from '@douyinfe/semi-ui';
 import { ITEMS_PER_PAGE } from '../constants';
 import { useTranslation } from 'react-i18next';
+import NoData from './NoData';
+import { Dropdown, Table } from 'react-bootstrap';
+import { IconChevronLeft, IconChevronRight, IconDownload, IconFilter, IconSearch } from '@douyinfe/semi-icons';
+import filterIcon from "../../dist/assets/fi_filter.svg";
+import downloadIcon from "../../dist/assets/fi_download.svg";
+import { SortIconSvg } from './svgIcon';
 
 const colors = [
   'amber',
@@ -46,7 +51,7 @@ const LogsTable = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
   function renderType(type) {
-    
+
     switch (type) {
       case 'IMAGINE':
         return (
@@ -98,9 +103,9 @@ const LogsTable = () => {
         );
       case 'UPLOAD':
         return (
-            <Tag color='blue' size='large'>
-              上传文件
-            </Tag>
+          <Tag color='blue' size='large'>
+            上传文件
+          </Tag>
         );
       case 'SHORTEN':
         return (
@@ -152,9 +157,9 @@ const LogsTable = () => {
         );
     }
   }
-  
+
   function renderCode(code) {
-    
+
     switch (code) {
       case 1:
         return (
@@ -188,9 +193,9 @@ const LogsTable = () => {
         );
     }
   }
-  
+
   function renderStatus(type) {
-    
+
     switch (type) {
       case 'SUCCESS':
         return (
@@ -236,22 +241,22 @@ const LogsTable = () => {
         );
     }
   }
-  
+
   const renderTimestamp = (timestampInSeconds) => {
     const date = new Date(timestampInSeconds * 1000); // 从秒转换为毫秒
-  
+
     const year = date.getFullYear(); // 获取年份
     const month = ('0' + (date.getMonth() + 1)).slice(-2); // 获取月份，从0开始需要+1，并保证两位数
     const day = ('0' + date.getDate()).slice(-2); // 获取日期，并保证两位数
     const hours = ('0' + date.getHours()).slice(-2); // 获取小时，并保证两位数
     const minutes = ('0' + date.getMinutes()).slice(-2); // 获取分钟，并保证两位数
     const seconds = ('0' + date.getSeconds()).slice(-2); // 获取秒钟，并保证两位数
-  
+
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`; // 格式化输出
   };
   // 修改renderDuration函数以包含颜色逻辑
   function renderDuration(submit_time, finishTime) {
-    
+
     if (!submit_time || !finishTime) return 'N/A';
 
     const start = new Date(submit_time);
@@ -524,7 +529,7 @@ const LogsTable = () => {
     setActivePage(page);
     if (page === Math.ceil(logs.length / ITEMS_PER_PAGE) + 1) {
       // In this case we have to load more data and then append them.
-      loadLogs(page - 1).then((r) => {});
+      loadLogs(page - 1).then((r) => { });
     }
   };
 
@@ -553,11 +558,112 @@ const LogsTable = () => {
       setShowBanner(true);
     }
   }, []);
+  const description = "Add Tokens to start tracking Calls <br /> Distribution Metrics.";
+
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const handleKeywordChange = async (value) => {
+    setSearchKeyword(value.target.value);
+  };
+
 
   return (
     <>
-      <Layout>
-        {isAdminUser && showBanner ? (
+      <>
+        {/* <NoData description={description} /> */}
+        <div className='searchHeader'>
+          <div className='searchFilter'>
+            <div className='searchOption'>
+              <div className="search-container">
+                <i className="search-icon"><IconSearch /></i>
+                <input type="text" className="search-input" placeholder={t('令牌名称')} value={searchKeyword} onChange={handleKeywordChange} />
+              </div>
+              <button className='searchBtn' style={{ marginLeft: '10px' }}>
+                {t('查询')}
+              </button>
+            </div>
+            <div className='filterOption'>
+              <button><img src={filterIcon} alt="filter" /> Filter</button>
+              <button><img src={downloadIcon} alt="download" /></button>
+              <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
+                <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
+                  Bulk Action
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item>
+                    Bulk One
+                  </Dropdown.Item>
+                  <Dropdown.Item>
+                    Bulk Two
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          </div>
+        </div>
+        <div className="tableBox">
+          <Table borderless hover>
+            <thead>
+              <tr>
+                <th>Submission Date/Time <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Spend time <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Type <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Task ID <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Schedule <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Result <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Prompt <SortIconSvg color="--semi-table-thead-0" /></th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...Array(50)].map((_, index) => (
+                <tr key={index}>
+                  <td>12 Aug 2022 - 12:25 am</td>
+                  <td>5</td>
+                  <td>My APIs</td>
+                  <td>AA87</td>
+                  <td>A25</td>
+                  <td>12 Aug 2022 - 12:25 am</td>
+                  <td>Action Prompt</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+        <div className='tablePagination'>
+          <div className='leftItems'>
+            <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
+              <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
+                1
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>1</Dropdown.Item>
+                <Dropdown.Item>2</Dropdown.Item>
+                <Dropdown.Item>3</Dropdown.Item>
+                <Dropdown.Item>4</Dropdown.Item>
+                <Dropdown.Item>5</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <p className='item'>Items per page</p>
+            <p className='itemNumber'>1-10 of 200 items</p>
+          </div>
+          <div className='leftItems'>
+            <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
+              <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
+                1
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>1</Dropdown.Item>
+                <Dropdown.Item>2</Dropdown.Item>
+                <Dropdown.Item>3</Dropdown.Item>
+                <Dropdown.Item>4</Dropdown.Item>
+                <Dropdown.Item>5</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <p className='itemNumber'>1-10 of 200 items</p>
+            <button className='pagArrow'> <IconChevronLeft /> </button>
+            <button className='pagArrow'> <IconChevronRight /> </button>
+          </div>
+        </div>
+        { /*   {isAdminUser && showBanner ? (
           <Banner
             type='info'
             description={t('当前未开启Midjourney回调，部分项目可能无法获得绘图结果，可在运营设置中开启。')}
@@ -638,7 +744,7 @@ const LogsTable = () => {
               }),
           }}
           loading={loading}
-        />
+        /> */}
         <Modal
           visible={isModalOpen}
           onOk={() => setIsModalOpen(false)}
@@ -654,7 +760,7 @@ const LogsTable = () => {
           visible={isModalOpenurl}
           onVisibleChange={(visible) => setIsModalOpenurl(visible)}
         />
-      </Layout>
+      </>
     </>
   );
 };

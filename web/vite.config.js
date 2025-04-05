@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig, transformWithEsbuild } from 'vite';
+import svgr from "vite-plugin-svgr";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -20,6 +21,7 @@ export default defineConfig({
       },
     },
     react(),
+    svgr()
   ],
   optimizeDeps: {
     force: true,
@@ -52,12 +54,10 @@ export default defineConfig({
     },
   },
   server: {
-    host: '0.0.0.0',
     proxy: {
       '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: false,
       },
       '/pg': {
         target: 'http://localhost:3000',

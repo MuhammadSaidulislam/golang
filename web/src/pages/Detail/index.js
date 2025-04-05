@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState, userRef } from 'react';
 import { initVChartSemiTheme } from '@visactor/vchart-semi-theme';
 
-import { Button, Card, Col, Descriptions, Form, Layout, Row, Spin, Tabs } from '@douyinfe/semi-ui';
+import { Button, Card, Col, Descriptions, Form, Layout, Row, Spin, Tabs, Switch } from '@douyinfe/semi-ui';
 import { VChart } from "@visactor/react-vchart";
 import {
   API,
@@ -22,6 +22,119 @@ import {
 import { UserContext } from '../../context/User/index.js';
 import { StyleContext } from '../../context/Style/index.js';
 import { useTranslation } from 'react-i18next';
+import dashboardIcon from "../../../dist/assets/fi_bar-chart-2.svg";
+import playIcon from "../../../dist/assets/fi_clock.svg";
+import chatIcon from "../../../dist/assets/Chat.svg";
+import tokenIcon from "../../../dist/assets/fi_code.svg";
+import walletIcon from "../../../dist/assets/Wallet.svg";
+import logsIcon from "../../../dist/assets/draw.svg";
+import tasksIcon from "../../../dist/assets/fi_globe.svg";
+import priceIcon from "../../../dist/assets/fi_list.svg";
+
+import chatgptIcon from "../../../dist/assets/chatgpt.svg";
+import contactIcon from "../../../dist/assets/contactUs.png";
+import aiIcon from "../../../dist/assets/platform.svg";
+import blogIcon from "../../../dist/assets/blog.svg";
+import settingIcon from "../../../dist/assets/Setting.svg";
+import DashboardNav from '../../components/DashboardNav.js';
+import DashboardLayout from './../../components/DashboardLayout';
+import { IconChevronDown } from '@douyinfe/semi-icons';
+import { LineChart, Line, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Sector } from 'recharts';
+
+
+const areaData = [
+  { name: '12 - 27 09:00', value: 0.8 },
+  { name: '4 - 20 10:00', value: 0.7 },
+  { name: '12 - 27 16:00', value: 0.9 },
+  { name: '11 - 27 11:00', value: 0.75 },
+  { name: '11 - 27 11:00', value: 0.65 },
+  { name: '12 - 27 01:00', value: 0.55 },
+  { name: '12 - 27 05:00', value: 0.45 },
+  { name: '11 - 27 11:00', value: 0.35 },
+  { name: '11 - 27 05:00', value: 0.15 },
+  { name: '12 - 27 10:00', value: 0.25 },
+  { name: '11 - 27 11:00', value: 0.35 },
+  { name: '11 - 27 02:00', value: 0.55 },
+  { name: '11 - 27 11:00', value: 0.75 },
+  { name: '11 - 27 02:00', value: 0.6 },
+];
+const tableData = [
+  { name: "Group A", value: 400 },
+  { name: "Group B", value: 300 },
+  { name: "Group C", value: 300 },
+  { name: "Group D", value: 200 }
+];
+const COLORS = ["#FF5733", "#33FF57", "#3357FF", "#FF33A8"];
+const renderActiveShape = (props) => {
+  const RADIAN = Math.PI / 180;
+  const {
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    startAngle,
+    endAngle,
+    fill,
+    payload,
+    percent,
+    value
+  } = props;
+  const sin = Math.sin(-RADIAN * midAngle);
+  const cos = Math.cos(-RADIAN * midAngle);
+  const sx = cx + (outerRadius + 10) * cos;
+  const sy = cy + (outerRadius + 10) * sin;
+  const mx = cx + (outerRadius + 30) * cos;
+  const my = cy + (outerRadius + 30) * sin;
+  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  const ey = my;
+  const textAnchor = cos >= 0 ? "start" : "end";
+
+  return (
+    <g>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+      />
+      <Sector
+        cx={cx}
+        cy={cy}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        innerRadius={outerRadius + 6}
+        outerRadius={outerRadius + 10}
+        fill={fill}
+      />
+      <path
+        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
+        stroke={fill}
+        fill="none"
+      />
+      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+      <text
+        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        y={ey}
+        textAnchor={textAnchor}
+        fill="#333"
+      >{`${payload.type}`}</text>
+      <text
+        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        y={ey}
+        dy={18}
+        textAnchor={textAnchor}
+        fill="#999"
+      >
+        {`${payload.value}`}
+      </text>
+    </g>
+  );
+};
 
 const Detail = (props) => {
   const { t } = useTranslation();
@@ -43,8 +156,8 @@ const Detail = (props) => {
     channel: '',
     data_export_default_time: '',
   });
-  const { username, model_name, start_timestamp, end_timestamp, channel } =
-    inputs;
+
+  const { username, model_name, start_timestamp, end_timestamp, channel } = inputs;
   const isAdminUser = isAdmin();
   const initialized = useRef(false);
   const [loading, setLoading] = useState(false);
@@ -207,7 +320,9 @@ const Detail = (props) => {
       }
       const res = await API.get(url);
       const { success, message, data } = res.data;
-      if (success) {
+      console.log(success, message);
+
+      if (!success) {
         setQuotaData(data);
         if (data.length === 0) {
           data.push({
@@ -255,8 +370,8 @@ const Detail = (props) => {
     // 处理颜色映射
     const newModelColors = {};
     Array.from(uniqueModels).forEach((modelName) => {
-      newModelColors[modelName] = modelColorMap[modelName] || 
-        modelColors[modelName] || 
+      newModelColors[modelName] = modelColorMap[modelName] ||
+        modelColors[modelName] ||
         modelToColor(modelName);
     });
     setModelColors(newModelColors);
@@ -267,7 +382,6 @@ const Detail = (props) => {
       const timeKey = timestamp2string1(item.created_at, dataExportDefaultTime);
       const modelKey = item.model_name;
       const key = `${timeKey}-${modelKey}`;
-
       if (!aggregatedData.has(key)) {
         aggregatedData.set(key, {
           time: timeKey,
@@ -276,7 +390,7 @@ const Detail = (props) => {
           count: 0
         });
       }
-      
+
       const existing = aggregatedData.get(key);
       existing.quota += item.quota;
       existing.count += item.count;
@@ -300,12 +414,12 @@ const Detail = (props) => {
     let timePoints = Array.from(new Set([...aggregatedData.values()].map(d => d.time)));
     if (timePoints.length < 7) {
       const lastTime = Math.max(...data.map(item => item.created_at));
-      const interval = dataExportDefaultTime === 'hour' ? 3600 
-                      : dataExportDefaultTime === 'day' ? 86400 
-                      : 604800;
-      
-      timePoints = Array.from({length: 7}, (_, i) => 
-        timestamp2string1(lastTime - (6-i) * interval, dataExportDefaultTime)
+      const interval = dataExportDefaultTime === 'hour' ? 3600
+        : dataExportDefaultTime === 'day' ? 86400
+          : 604800;
+
+      timePoints = Array.from({ length: 7 }, (_, i) =>
+        timestamp2string1(lastTime - (6 - i) * interval, dataExportDefaultTime)
       );
     }
 
@@ -322,19 +436,19 @@ const Detail = (props) => {
           Usage: aggregated?.quota ? getQuotaWithUnit(aggregated.quota, 4) : 0
         };
       });
-      
+
       // 计算该时间点的总计
       const timeSum = timeData.reduce((sum, item) => sum + item.rawQuota, 0);
-      
+
       // 按照 rawQuota 从大到小排序
       timeData.sort((a, b) => b.rawQuota - a.rawQuota);
-      
+
       // 为每个数据点添加该时间的总计
       timeData = timeData.map(item => ({
         ...item,
         TimeSum: timeSum
       }));
-      
+
       // 将排序后的数据添加到 newLineData
       newLineData.push(...timeData);
     });
@@ -367,7 +481,7 @@ const Detail = (props) => {
         specified: newModelColors
       }
     }));
-    
+
     setPieData(newPieData);
     setLineData(newLineData);
     setConsumeQuota(totalQuota);
@@ -377,9 +491,9 @@ const Detail = (props) => {
 
   const getUserData = async () => {
     let res = await API.get(`/api/user/self`);
-    const {success, message, data} = res.data;
+    const { success, message, data } = res.data;
     if (success) {
-      userDispatch({type: 'login', payload: data});
+      userDispatch({ type: 'login', payload: data });
     } else {
       showError(message);
     }
@@ -396,134 +510,360 @@ const Detail = (props) => {
     }
   }, []);
 
+  // sidebar
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
+
+  let previousWidth = -1;
+
+  const updateWidth = () => {
+    const width = window.innerWidth;
+    const widthLimit = 576;
+    const isCurrentlyMobile = width <= widthLimit;
+    const wasMobile = previousWidth <= widthLimit;
+
+    if (isCurrentlyMobile !== wasMobile) {
+      setIsOpen(!isCurrentlyMobile);
+    }
+    previousWidth = width;
+  };
+
+  useEffect(() => {
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
+  const toggle = () => {
+    setIsOpen(!isOpen);
+  };
+  const [userDropdown, setUserDropdown] = useState(false);
+  const toggleUserDropdown = (e) => {
+    e.stopPropagation();
+    setUserDropdown(!userDropdown);
+  };
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const onPieEnter = useCallback(
+    (_, index) => {
+      setActiveIndex(index);
+    },
+    [setActiveIndex]
+  );
+
   return (
     <>
-      <Layout>
-        <Layout.Header>
-          <h3>{t('数据看板')}</h3>
-        </Layout.Header>
-        <Layout.Content>
-          <Form ref={formRef} layout='horizontal' style={{ marginTop: 10 }}>
-            <>
-              <Form.DatePicker
-                field='start_timestamp'
-                label={t('起始时间')}
-                style={{ width: 272 }}
-                initValue={start_timestamp}
-                value={start_timestamp}
-                type='dateTime'
-                name='start_timestamp'
-                onChange={(value) =>
-                  handleInputChange(value, 'start_timestamp')
-                }
-              />
-              <Form.DatePicker
-                field='end_timestamp'
-                fluid
-                label={t('结束时间')}
-                style={{ width: 272 }}
-                initValue={end_timestamp}
-                value={end_timestamp}
-                type='dateTime'
-                name='end_timestamp'
-                onChange={(value) => handleInputChange(value, 'end_timestamp')}
-              />
-              <Form.Select
-                field='data_export_default_time'
-                label={t('时间粒度')}
-                style={{ width: 176 }}
-                initValue={dataExportDefaultTime}
-                placeholder={t('时间粒度')}
-                name='data_export_default_time'
-                optionList={[
-                  { label: t('小时'), value: 'hour' },
-                  { label: t('天'), value: 'day' },
-                  { label: t('周'), value: 'week' },
-                ]}
-                onChange={(value) =>
-                  handleInputChange(value, 'data_export_default_time')
-                }
-              ></Form.Select>
-              {isAdminUser && (
+      <DashboardLayout>
+
+        <div className='gap-2 dashboardHead'>
+          <div className='wallet-card' style={{ minHeight: '145px', width: '100%' }}>
+            <div className="curve-container">
+              <div className="curve-1"></div>
+              <div className="curve-2"></div>
+              <div className="curve-3"></div>
+              <div className="curve-4"></div>
+            </div>
+            <div className='cardHeader'>
+              <div className='cardHeading'>
+                Balance Summary
+              </div>
+            </div>
+            <div className='cardContent'>
+              <div style={{ width: '100%' }}>
+                <h6>{t('当前余额')}</h6>
+                <p>{renderQuota(userState?.user?.quota)}</p>
+              </div>
+              <div style={{ width: '100%' }}>
+                <h6>{t('历史消耗')}</h6>
+                <p>{renderQuota(userState?.user?.used_quota)}</p>
+              </div>
+              <div style={{ width: '100%' }}>
+                <h6>{t('请求次数')}</h6>
+                <p>{userState.user?.request_count} <span>+0.00%</span></p>
+              </div>
+            </div>
+          </div>
+          <div className='firstBox' style={{ minHeight: '145px', width: '100%' }}>
+            <div className='cardHeader'>
+              <div className='cardText'>
+                Statistical Summary
+              </div>
+              <div className='cardTime'>
+                <div
+                  className="icon-container"
+                  ref={userRef}
+                  onClick={toggleUserDropdown}
+                >
+                  <div className="user-icon">
+                    This Week <IconChevronDown />
+                  </div>
+                  {userDropdown && (
+                    <div className="dropdown active">
+                      <div className="dropdown-item">This Week</div>
+                      <div className="dropdown-item">This Month</div>
+                      <div className="dropdown-item">This Year</div>
+                    </div>)}
+                </div>
+              </div>
+            </div>
+            <div className='cardContent'>
+              <div style={{ width: '100%' }}>
+                <h6>{t('统计额度')}</h6>
+                <p>{renderQuota(consumeQuota)}</p>
+              </div>
+              <div style={{ width: '100%' }}>
+                <h6>{t('统计Tokens')}</h6>
+                <p>{consumeTokens}</p>
+              </div>
+              <div style={{ width: '100%' }}>
+                <h6>{t('统计次数')}</h6>
+                <p>{times}</p>
+              </div>
+            </div>
+          </div>
+          <div className='firstBox' style={{ minHeight: '145px', minWidth: '260px' }}>
+            <div className='cardHeader'>
+              <div className='cardContent'>
+                <div>
+                  <h6>{t('平均RPM')}</h6>
+                  <p> {(times /
+                    ((Date.parse(end_timestamp) -
+                      Date.parse(start_timestamp)) /
+                      60000)).toFixed(3)}</p>
+                </div>
+              </div>
+              <div className='cardTime'>
+                <div
+                  className="icon-container"
+                  ref={userRef}
+                  onClick={toggleUserDropdown}
+                >
+                  <div className="user-icon">
+                    This Week <IconChevronDown />
+                  </div>
+                  {userDropdown && (
+                    <div className="dropdown active">
+                      <div className="dropdown-item">This Week</div>
+                      <div className="dropdown-item">This Month</div>
+                      <div className="dropdown-item">This Year</div>
+                    </div>)}
+                </div>
+              </div>
+            </div>
+            <div className='cardContent'>
+              <div style={{ width: '100%' }}>
+                <h6>{t('平均TPM')}</h6>
+                <p>{(consumeTokens /
+                  ((Date.parse(end_timestamp) -
+                    Date.parse(start_timestamp)) /
+                    60000)).toFixed(3)}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        { /* graph */}
+        <div className='modelGraph'>
+          <div className="graphHeading mb-2">
+            <h2>Model Consumption distribution</h2>
+            <div className="d-flex gap-2">
+              <Form ref={formRef} layout='horizontal' style={{ marginTop: 10 }}>
                 <>
-                  <Form.Input
-                    field='username'
-                    label={t('用户名称')}
-                    style={{ width: 176 }}
-                    value={username}
-                    placeholder={t('可选值')}
-                    name='username'
-                    onChange={(value) => handleInputChange(value, 'username')}
+                  <Form.DatePicker
+                    field='start_timestamp'
+                    label={t('起始时间')}
+                    style={{ width: 272 }}
+                    initValue={start_timestamp}
+                    value={start_timestamp}
+                    type='dateTime'
+                    name='start_timestamp'
+                    onChange={(value) =>
+                      handleInputChange(value, 'start_timestamp')
+                    }
                   />
+                  <Form.DatePicker
+                    field='end_timestamp'
+                    fluid
+                    label={t('结束时间')}
+                    style={{ width: 272 }}
+                    initValue={end_timestamp}
+                    value={end_timestamp}
+                    type='dateTime'
+                    name='end_timestamp'
+                    onChange={(value) => handleInputChange(value, 'end_timestamp')}
+                  />
+                  <Form.Select
+                    field='data_export_default_time'
+                    label={t('时间粒度')}
+                    style={{ width: 176 }}
+                    initValue={dataExportDefaultTime}
+                    placeholder={t('时间粒度')}
+                    name='data_export_default_time'
+                    optionList={[
+                      { label: t('小时'), value: 'hour' },
+                      { label: t('天'), value: 'day' },
+                      { label: t('周'), value: 'week' },
+                    ]}
+                    onChange={(value) =>
+                      handleInputChange(value, 'data_export_default_time')
+                    }
+                  ></Form.Select>
+                  {isAdminUser && (
+                    <>
+                      <Form.Input
+                        field='username'
+                        label={t('用户名称')}
+                        style={{ width: 176 }}
+                        value={username}
+                        placeholder={t('可选值')}
+                        name='username'
+                        onChange={(value) => handleInputChange(value, 'username')}
+                      />
+                    </>
+                  )}
+                  <Button
+                    label={t('查询')}
+                    type='primary'
+                    htmlType='submit'
+                    className='btn-margin-right'
+                    onClick={refresh}
+                    loading={loading}
+                    style={{ marginTop: 24 }}
+                  >
+                    {t('查询')}
+                  </Button>
+                  <Form.Section>
+                  </Form.Section>
                 </>
-              )}
-              <Button
-                label={t('查询')}
-                type='primary'
-                htmlType='submit'
-                className='btn-margin-right'
-                onClick={refresh}
-                loading={loading}
-                style={{ marginTop: 24 }}
-              >
-                {t('查询')}
-              </Button>
-              <Form.Section>
-              </Form.Section>
-            </>
-          </Form>
-          <Spin spinning={loading}>
-            <Row gutter={{ xs: 16, sm: 16, md: 16, lg: 24, xl: 24, xxl: 24 }} style={{marginTop: 20}} type="flex" justify="space-between">
-              <Col span={styleState.isMobile?24:8}>
-                <Card className='panel-desc-card'>
-                  <Descriptions row size="small">
-                    <Descriptions.Item itemKey={t('当前余额')}>
-                      {renderQuota(userState?.user?.quota)}
-                    </Descriptions.Item>
-                    <Descriptions.Item itemKey={t('历史消耗')}>
-                      {renderQuota(userState?.user?.used_quota)}
-                    </Descriptions.Item>
-                    <Descriptions.Item itemKey={t('请求次数')}>
-                      {userState.user?.request_count}
-                    </Descriptions.Item>
-                  </Descriptions>
-                </Card>
-              </Col>
-              <Col span={styleState.isMobile?24:8}>
-                <Card>
-                  <Descriptions row size="small">
-                    <Descriptions.Item itemKey={t('统计额度')}>
-                      {renderQuota(consumeQuota)}
-                    </Descriptions.Item>
-                    <Descriptions.Item itemKey={t('统计Tokens')}>
-                      {consumeTokens}
-                    </Descriptions.Item>
-                    <Descriptions.Item itemKey={t('统计次数')}>
-                      {times}
-                    </Descriptions.Item>
-                  </Descriptions>
-                </Card>
-              </Col>
-              <Col span={styleState.isMobile ? 24 : 8}>
-                <Card>
-                  <Descriptions row size='small'>
-                    <Descriptions.Item itemKey={t('平均RPM')}>
-                      {(times /
-                        ((Date.parse(end_timestamp) -
-                          Date.parse(start_timestamp)) /
-                          60000)).toFixed(3)}
-                    </Descriptions.Item>
-                    <Descriptions.Item itemKey={t('平均TPM')}>
-                      {(consumeTokens /
-                        ((Date.parse(end_timestamp) -
-                          Date.parse(start_timestamp)) /
-                          60000)).toFixed(3)}
-                    </Descriptions.Item>
-                  </Descriptions>
-                </Card>
-              </Col>
-            </Row>
-            <Card style={{marginTop: 20}}>
+              </Form>
+            </div>
+          </div>
+          <div className="h-48" style={{ height: '280px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={areaData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#4889F4" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#4889F4" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="name" tick={{ fontSize: 8 }} />
+                <YAxis domain={[0, 1]} tickCount={5} tick={{ fontSize: 10 }} />
+                <Tooltip />
+                <Area
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#4889F4"
+                  fillOpacity={1}
+                  fill="url(#colorValue)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        { /* chart */}
+
+        <div className="modelGraph">
+          <div className="graphHeading mb-2">
+            <h2>Model Consumption distribution</h2>
+            <div className="d-flex gap-2">
+              <Form ref={formRef} layout='horizontal' style={{ marginTop: 10 }}>
+                <>
+                  <Form.DatePicker
+                    field='start_timestamp'
+                    label={t('起始时间')}
+                    style={{ width: 272 }}
+                    initValue={start_timestamp}
+                    value={start_timestamp}
+                    type='dateTime'
+                    name='start_timestamp'
+                    onChange={(value) =>
+                      handleInputChange(value, 'start_timestamp')
+                    }
+                  />
+                  <Form.DatePicker
+                    field='end_timestamp'
+                    fluid
+                    label={t('结束时间')}
+                    style={{ width: 272 }}
+                    initValue={end_timestamp}
+                    value={end_timestamp}
+                    type='dateTime'
+                    name='end_timestamp'
+                    onChange={(value) => handleInputChange(value, 'end_timestamp')}
+                  />
+                  <Form.Select
+                    field='data_export_default_time'
+                    label={t('时间粒度')}
+                    style={{ width: 176 }}
+                    initValue={dataExportDefaultTime}
+                    placeholder={t('时间粒度')}
+                    name='data_export_default_time'
+                    optionList={[
+                      { label: t('小时'), value: 'hour' },
+                      { label: t('天'), value: 'day' },
+                      { label: t('周'), value: 'week' },
+                    ]}
+                    onChange={(value) =>
+                      handleInputChange(value, 'data_export_default_time')
+                    }
+                  ></Form.Select>
+                  {isAdminUser && (
+                    <>
+                      <Form.Input
+                        field='username'
+                        label={t('用户名称')}
+                        style={{ width: 176 }}
+                        value={username}
+                        placeholder={t('可选值')}
+                        name='username'
+                        onChange={(value) => handleInputChange(value, 'username')}
+                      />
+                    </>
+                  )}
+                  <Button
+                    label={t('查询')}
+                    type='primary'
+                    htmlType='submit'
+                    className='btn-margin-right'
+                    onClick={refresh}
+                    loading={loading}
+                    style={{ marginTop: 24 }}
+                  >
+                    {t('查询')}
+                  </Button>
+                  <Form.Section>
+                  </Form.Section>
+                </>
+              </Form>
+            </div>
+          </div>
+          <div className="h-48" style={{ height: '280px' }}>
+            <ResponsiveContainer>
+              <PieChart width={400} height={400}>
+                <Pie
+                  activeIndex={activeIndex}
+                  activeShape={renderActiveShape}
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={70}
+                  outerRadius={80}
+                  dataKey="value"
+                  onMouseEnter={onPieEnter}
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <Layout.Content>
+
+
+          {/*  <Spin spinning={loading}>
+            <Card style={{ marginTop: 20 }}>
               <Tabs type="line" defaultActiveKey="1">
                 <Tabs.TabPane tab={t('消耗分布')} itemKey="1">
                   <div style={{ height: 500 }}>
@@ -544,9 +884,9 @@ const Detail = (props) => {
 
               </Tabs>
             </Card>
-          </Spin>
+          </Spin> */}
         </Layout.Content>
-      </Layout>
+      </DashboardLayout>
     </>
   );
 };

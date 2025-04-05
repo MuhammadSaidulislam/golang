@@ -11,6 +11,8 @@ import { API, getLogo, getSystemName, showError } from '../helpers/index.js';
 import { setStatusData } from '../helpers/data.js';
 import { UserContext } from '../context/User/index.js';
 import { StatusContext } from '../context/Status/index.js';
+import CommonHeader from './CommonHeader.js';
+import DashboardNav from './DashboardNav.js';
 const { Sider, Content, Header, Footer } = Layout;
 
 
@@ -62,84 +64,41 @@ const PageLayout = () => {
     if (savedLang) {
       i18n.changeLanguage(savedLang);
     }
-    
-    // 默认显示侧边栏
-    styleDispatch({ type: 'SET_SIDER', payload: true });
   }, [i18n]);
 
-  // 获取侧边栏折叠状态
-  const isSidebarCollapsed = localStorage.getItem('default_collapse_sidebar') === 'true';
-
   return (
-    <Layout style={{ 
-      height: '100vh', 
-      display: 'flex', 
-      flexDirection: 'column',
-      overflow: styleState.isMobile ? 'visible' : 'hidden'
-    }}>
-      <Header style={{ 
-        padding: 0, 
-        height: 'auto', 
-        lineHeight: 'normal', 
-        position: styleState.isMobile ? 'sticky' : 'fixed',
-        width: '100%', 
-        top: 0, 
-        zIndex: 100,
-        boxShadow: '0 1px 6px rgba(0, 0, 0, 0.08)'
-      }}>
-        <HeaderBar />
-      </Header>
-      <Layout style={{ 
-        marginTop: styleState.isMobile ? '0' : '56px',
-        height: styleState.isMobile ? 'auto' : 'calc(100vh - 56px)',
-        overflow: styleState.isMobile ? 'visible' : 'auto',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-        {styleState.showSider && (
-          <Sider style={{
-            position: 'fixed',
-            left: 0,
-            top: '56px',
-            zIndex: 99,
-            background: 'var(--semi-color-bg-1)',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-            border: 'none',
-            paddingRight: '0',
-            height: 'calc(100vh - 56px)',
-          }}>
-            <SiderBar />
+    <div>
+      {/*   {["/login", "/pricing", "/about", "/register", "/reset"].includes(window.location.pathname) ? (
+        <Header>
+          <CommonHeader />
+          <App />
+        </Header>
+      ) : (
+        <Header>
+          <HeaderBar />
+        </Header>
+      )}
+
+
+      <Layout style={{ flex: 1, overflow: 'hidden' }}>
+        {["/login", "/pricing", "/about", "/register", "/reset"].includes(window.location.pathname) ? "" : (
+          <Sider>
+            {styleState.showSider ? <SiderBar /> : null}
           </Sider>
         )}
-        <Layout style={{ 
-          marginLeft: styleState.isMobile ? '0' : (styleState.showSider ? (styleState.siderCollapsed ? '60px' : '200px') : '0'),
-          transition: 'margin-left 0.3s ease',
-          flex: '1 1 auto',
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
-          <Content
-            style={{ 
-              flex: '1 0 auto',
-              overflowY: styleState.isMobile ? 'visible' : 'auto',
-              WebkitOverflowScrolling: 'touch',
-              padding: styleState.shouldInnerPadding? '24px': '0',
-              position: 'relative',
-              marginTop: styleState.isMobile ? '2px' : '0',
-            }}
-          >
-            <App />
+
+        <Layout>
+          <Content>
+           <App /> 
           </Content>
-          <Layout.Footer style={{ 
-            flex: '0 0 auto',
-            width: '100%'
-          }}>
+          <Layout.Footer>
             <FooterBar />
           </Layout.Footer>
         </Layout>
-      </Layout>
+      </Layout> */}
+      <App />
       <ToastContainer />
-    </Layout>
+    </div>
   )
 }
 

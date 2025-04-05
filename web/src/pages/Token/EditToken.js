@@ -83,7 +83,7 @@ const EditToken = (props) => {
     let res = await API.get(`/api/user/models`);
     const { success, message, data } = res.data;
     if (success) {
-      let localModelOptions = data.map((model) => ({
+      let localModelOptions = data?.map((model) => ({
         label: model,
         value: model,
       }));
@@ -455,7 +455,7 @@ const EditToken = (props) => {
               value={inputs.group}
               autoComplete='new-password'
               optionList={groups}
-            />:
+            /> :
             <Select
               style={{ marginTop: 8 }}
               placeholder={t('管理员未设置用户可选分组')}

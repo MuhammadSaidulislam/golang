@@ -1,0 +1,147 @@
+.priceTable {
+  margin-top: 50px;
+  height: calc(100vh - 190px);
+}
+.priceListTable {
+  max-height: calc(100vh - 390px);
+  overflow-y: auto;
+}
+.priceTable .priceHeading h1 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 52px;
+  letter-spacing: 0%;
+  color: #6200ee;
+  text-align: center;
+}
+.priceTable .priceHeading p {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 40px;
+  letter-spacing: 2%;
+  text-align: center;
+  color: var(--semi-color-text-0);
+}
+.table {
+  margin-bottom: 0px !important;
+}
+table tbody tr td,
+table thead tr th {
+  color: var(--semi-table-thead-0) !important;
+  background-color: var(--semi-dashboard-bg-0) !important;
+}
+.priceTableList .tablePrice {
+  /* background-color: #fff; */
+  background-color: var(--semi-dashboard-bg-0);
+  padding-top: 5px;
+  padding-left: 26px;
+  padding-right: 26px;
+  padding-bottom: 30px;
+  border-radius: 12px;
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+  -ms-border-radius: 12px;
+  -o-border-radius: 12px;
+}
+.priceTableList thead tr {
+  border-bottom: 1px solid #e1e2e9;
+}
+.priceTableList thead tr th {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  height: 42px;
+}
+.priceTableList .tablePrice thead tr th:first-child {
+  width: 140px;
+}
+.priceTableList tbody tr td {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-align: left;
+  height: 51px;
+  vertical-align: middle;
+}
+
+.greenMark,
+.redMark,
+.blueMark,
+.yellowMark {
+  position: relative;
+  padding-left: 10px;
+  display: inline-block;
+}
+.blueMark {
+  margin-right: 20px;
+}
+
+.greenMark::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 12px;
+  background-color: #519c66;
+  border-radius: 2px;
+}
+.redMark::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 12px;
+  background-color: #b066f8;
+  border-radius: 2px;
+}
+.blueMark::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 12px;
+  background-color: #6175de;
+  border-radius: 2px;
+}
+.yellowMark::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 12px;
+  background-color: #ffcc00;
+  border-radius: 2px;
+}
+.tableActions button {
+  border: none;
+  cursor: pointer;
+  margin-right: 4px;
+  padding: 5px;
+  background-color: var(--semi-background-bg-0) !important;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+table tbody tr {
+  vertical-align: middle;
+}
+table thead tr th,
+table tbody tr td {
+  white-space: nowrap;
+}

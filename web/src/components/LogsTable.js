@@ -15,25 +15,17 @@ import {
   Button, Descriptions,
   Form,
   Layout,
-  Modal, Popover,
+  Modal,
   Select,
   Space,
   Spin,
-  Table,
   Tag,
-  Tooltip,
-  Checkbox
+  Tooltip
 } from '@douyinfe/semi-ui';
 import { ITEMS_PER_PAGE } from '../constants';
 import {
-  renderAudioModelPrice,
-  renderClaudeLogContent,
-  renderClaudeModelPrice,
-  renderClaudeModelPriceSimple,
-  renderGroup,
-  renderLogContent,
-  renderModelPrice,
-  renderModelPriceSimple,
+  renderAudioModelPrice, renderGroup,
+  renderModelPrice, renderModelPriceSimple,
   renderNumber,
   renderQuota,
   stringToColor
@@ -41,7 +33,15 @@ import {
 import Paragraph from '@douyinfe/semi-ui/lib/es/typography/paragraph';
 import { getLogOther } from '../helpers/other.js';
 import { StyleContext } from '../context/Style/index.js';
-import { IconInherit, IconRefresh, IconSetting } from '@douyinfe/semi-icons';
+import sortIcon from "../../dist/assets/sort.svg";
+import { Dropdown, Table } from 'react-bootstrap';
+import { IconChevronLeft, IconChevronRight, IconSearch } from '@douyinfe/semi-icons';
+import filterIcon from "../../dist/assets/fi_filter.svg";
+import downloadIcon from "../../dist/assets/fi_download.svg";
+import { SortIconSvg } from './svgIcon.js';
+import { formatDate } from './../helpers/render';
+import NoData from './NoData';
+import TablePagination from './TablePagination.js';
 
 const { Header } = Layout;
 
@@ -151,175 +151,12 @@ const LogsTable = () => {
     }
   }
 
-  function renderModelName(record) {
-
-    let other = getLogOther(record.other);
-    let modelMapped = other?.is_model_mapped && other?.upstream_model_name && other?.upstream_model_name !== '';
-    if (!modelMapped) {
-      return <Tag
-        color={stringToColor(record.model_name)}
-        size='large'
-        onClick={(event) => {
-          copyText(event, record.model_name).then(r => {});
-        }}
-      >
-        {' '}{record.model_name}{' '}
-      </Tag>;
-    } else {
-      return (
-        <>
-          <Space vertical align={'start'}>
-            <Popover content={
-              <div style={{padding: 10}}> 
-                <Space vertical align={'start'}>
-                  <Tag
-                    color={stringToColor(record.model_name)}
-                    size='large'
-                    onClick={(event) => {
-                      copyText(event, record.model_name).then(r => {});
-                    }}
-                  >
-                    {t('请求并计费模型')}{' '}{record.model_name}{' '}
-                  </Tag>
-                  <Tag
-                    color={stringToColor(other.upstream_model_name)}
-                    size='large'
-                    onClick={(event) => {
-                      copyText(event, other.upstream_model_name).then(r => {});
-                    }}
-                  >
-                    {t('实际模型')}{' '}{other.upstream_model_name}{' '}
-                  </Tag>
-                </Space>
-              </div>
-            }>
-              <Tag
-                color={stringToColor(record.model_name)}
-                size='large'
-                onClick={(event) => {
-                  copyText(event, record.model_name).then(r => {});
-                }}
-                suffixIcon={<IconRefresh style={{width: '0.8em', height: '0.8em', opacity: 0.6}} />}
-              >
-                {' '}{record.model_name}{' '}
-              </Tag>
-            </Popover>
-            {/*<Tooltip content={t('实际模型')}>*/}
-            {/*  <Tag*/}
-            {/*    color={stringToColor(other.upstream_model_name)}*/}
-            {/*    size='large'*/}
-            {/*    onClick={(event) => {*/}
-            {/*      copyText(event, other.upstream_model_name).then(r => {});*/}
-            {/*    }}*/}
-            {/*  >*/}
-            {/*    {' '}{other.upstream_model_name}{' '}*/}
-            {/*  </Tag>*/}
-            {/*</Tooltip>*/}
-          </Space>
-        </>
-      );
-    }
-
-  }
-
-  // Define column keys for selection
-  const COLUMN_KEYS = {
-    TIME: 'time',
-    CHANNEL: 'channel',
-    USERNAME: 'username',
-    TOKEN: 'token',
-    GROUP: 'group',
-    TYPE: 'type',
-    MODEL: 'model',
-    USE_TIME: 'use_time',
-    PROMPT: 'prompt',
-    COMPLETION: 'completion',
-    COST: 'cost',
-    RETRY: 'retry',
-    DETAILS: 'details'
-  };
-
-  // State for column visibility
-  const [visibleColumns, setVisibleColumns] = useState({});
-  const [showColumnSelector, setShowColumnSelector] = useState(false);
-
-  // Load saved column preferences from localStorage
-  useEffect(() => {
-    const savedColumns = localStorage.getItem('logs-table-columns');
-    if (savedColumns) {
-      try {
-        const parsed = JSON.parse(savedColumns);
-        // Make sure all columns are accounted for
-        const defaults = getDefaultColumnVisibility();
-        const merged = { ...defaults, ...parsed };
-        setVisibleColumns(merged);
-      } catch (e) {
-        console.error('Failed to parse saved column preferences', e);
-        initDefaultColumns();
-      }
-    } else {
-      initDefaultColumns();
-    }
-  }, []);
-
-  // Get default column visibility based on user role
-  const getDefaultColumnVisibility = () => {
-    return {
-      [COLUMN_KEYS.TIME]: true,
-      [COLUMN_KEYS.CHANNEL]: isAdminUser,
-      [COLUMN_KEYS.USERNAME]: isAdminUser,
-      [COLUMN_KEYS.TOKEN]: true,
-      [COLUMN_KEYS.GROUP]: true,
-      [COLUMN_KEYS.TYPE]: true,
-      [COLUMN_KEYS.MODEL]: true,
-      [COLUMN_KEYS.USE_TIME]: true,
-      [COLUMN_KEYS.PROMPT]: true,
-      [COLUMN_KEYS.COMPLETION]: true,
-      [COLUMN_KEYS.COST]: true,
-      [COLUMN_KEYS.RETRY]: isAdminUser,
-      [COLUMN_KEYS.DETAILS]: true
-    };
-  };
-
-  // Initialize default column visibility
-  const initDefaultColumns = () => {
-    const defaults = getDefaultColumnVisibility();
-    setVisibleColumns(defaults);
-    localStorage.setItem('logs-table-columns', JSON.stringify(defaults));
-  };
-
-  // Handle column visibility change
-  const handleColumnVisibilityChange = (columnKey, checked) => {
-    const updatedColumns = { ...visibleColumns, [columnKey]: checked };
-    setVisibleColumns(updatedColumns);
-  };
-
-  // Handle "Select All" checkbox
-  const handleSelectAll = (checked) => {
-    const allKeys = Object.keys(COLUMN_KEYS).map(key => COLUMN_KEYS[key]);
-    const updatedColumns = {};
-    
-    allKeys.forEach(key => {
-      // For admin-only columns, only enable them if user is admin
-      if ((key === COLUMN_KEYS.CHANNEL || key === COLUMN_KEYS.USERNAME || key === COLUMN_KEYS.RETRY) && !isAdminUser) {
-        updatedColumns[key] = false;
-      } else {
-        updatedColumns[key] = checked;
-      }
-    });
-    
-    setVisibleColumns(updatedColumns);
-  };
-
-  // Define all columns
-  const allColumns = [
+  const columns = [
     {
-      key: COLUMN_KEYS.TIME,
       title: t('时间'),
       dataIndex: 'timestamp2string',
     },
     {
-      key: COLUMN_KEYS.CHANNEL,
       title: t('渠道'),
       dataIndex: 'channel',
       className: isAdmin() ? 'tableShow' : 'tableHiddle',
@@ -328,15 +165,13 @@ const LogsTable = () => {
           record.type === 0 || record.type === 2 ? (
             <div>
               {
-                <Tooltip content={record.channel_name || '[未知]'}>
-                  <Tag
-                    color={colors[parseInt(text) % colors.length]}
-                    size='large'
-                  >
-                    {' '}
-                    {text}{' '}
-                  </Tag>
-                </Tooltip>
+                <Tag
+                  color={colors[parseInt(text) % colors.length]}
+                  size='large'
+                >
+                  {' '}
+                  {text}{' '}
+                </Tag>
               }
             </div>
           ) : (
@@ -348,7 +183,6 @@ const LogsTable = () => {
       },
     },
     {
-      key: COLUMN_KEYS.USERNAME,
       title: t('用户'),
       dataIndex: 'username',
       className: isAdmin() ? 'tableShow' : 'tableHiddle',
@@ -374,7 +208,6 @@ const LogsTable = () => {
       },
     },
     {
-      key: COLUMN_KEYS.TOKEN,
       title: t('令牌'),
       dataIndex: 'token_name',
       render: (text, record, index) => {
@@ -398,44 +231,37 @@ const LogsTable = () => {
       },
     },
     {
-      key: COLUMN_KEYS.GROUP,
       title: t('分组'),
       dataIndex: 'group',
       render: (text, record, index) => {
         if (record.type === 0 || record.type === 2) {
-         if (record.group) {
+          if (record.group) {
             return (
               <>
                 {renderGroup(record.group)}
               </>
             );
-         } else {
-           let other = null;
-           try {
-             other = JSON.parse(record.other);
-           } catch (e) {
-             console.error(`Failed to parse record.other: "${record.other}".`, e);
-           }
-           if (other === null) {
-             return <></>;
-           }
-           if (other.group !== undefined) {
-             return (
-               <>
-                 {renderGroup(other.group)}
-               </>
-             );
-           } else {
-             return <></>;
-           }
-         }
+          } else {
+            let other = JSON.parse(record.other);
+            if (other === null) {
+              return <></>;
+            }
+            if (other.group !== undefined) {
+              return (
+                <>
+                  {renderGroup(other.group)}
+                </>
+              );
+            } else {
+              return <></>;
+            }
+          }
         } else {
           return <></>;
         }
       },
     },
     {
-      key: COLUMN_KEYS.TYPE,
       title: t('类型'),
       dataIndex: 'type',
       render: (text, record, index) => {
@@ -443,19 +269,28 @@ const LogsTable = () => {
       },
     },
     {
-      key: COLUMN_KEYS.MODEL,
       title: t('模型'),
       dataIndex: 'model_name',
       render: (text, record, index) => {
         return record.type === 0 || record.type === 2 ? (
-          <>{renderModelName(record)}</>
+          <>
+            <Tag
+              color={stringToColor(text)}
+              size='large'
+              onClick={(event) => {
+                copyText(event, text);
+              }}
+            >
+              {' '}
+              {text}{' '}
+            </Tag>
+          </>
         ) : (
           <></>
         );
       },
     },
     {
-      key: COLUMN_KEYS.USE_TIME,
       title: t('用时/首字'),
       dataIndex: 'use_time',
       render: (text, record, index) => {
@@ -465,7 +300,7 @@ const LogsTable = () => {
             <>
               <Space>
                 {renderUseTime(text)}
-                {renderFirstUseTime(other?.frt)}
+                {renderFirstUseTime(other.frt)}
                 {renderIsStream(record.is_stream)}
               </Space>
             </>
@@ -483,7 +318,6 @@ const LogsTable = () => {
       },
     },
     {
-      key: COLUMN_KEYS.PROMPT,
       title: t('提示'),
       dataIndex: 'prompt_tokens',
       render: (text, record, index) => {
@@ -495,7 +329,6 @@ const LogsTable = () => {
       },
     },
     {
-      key: COLUMN_KEYS.COMPLETION,
       title: t('补全'),
       dataIndex: 'completion_tokens',
       render: (text, record, index) => {
@@ -508,7 +341,6 @@ const LogsTable = () => {
       },
     },
     {
-      key: COLUMN_KEYS.COST,
       title: t('花费'),
       dataIndex: 'quota',
       render: (text, record, index) => {
@@ -520,7 +352,6 @@ const LogsTable = () => {
       },
     },
     {
-      key: COLUMN_KEYS.RETRY,
       title: t('重试'),
       dataIndex: 'retry',
       className: isAdmin() ? 'tableShow' : 'tableHiddle',
@@ -548,7 +379,6 @@ const LogsTable = () => {
       },
     },
     {
-      key: COLUMN_KEYS.DETAILS,
       title: t('详情'),
       dataIndex: 'content',
       render: (text, record, index) => {
@@ -570,106 +400,24 @@ const LogsTable = () => {
           );
         }
 
-        let content = other?.claude
-          ? renderClaudeModelPriceSimple(
-            other.model_ratio,
-            other.model_price,
-            other.group_ratio,
-            other.cache_tokens || 0,
-            other.cache_ratio || 1.0,
-            other.cache_creation_tokens || 0,
-            other.cache_creation_ratio || 1.0,
-          )
-          : renderModelPriceSimple(
-            other.model_ratio,
-            other.model_price,
-            other.group_ratio,
-            other.cache_tokens || 0,
-            other.cache_ratio || 1.0,
-          );
+        let content = renderModelPriceSimple(
+          other.model_ratio,
+          other.model_price,
+          other.group_ratio,
+        );
         return (
-            <Paragraph
-                ellipsis={{
-                  rows: 2,
-                }}
-                style={{ maxWidth: 240 }}
-            >
-              {content}
-            </Paragraph>
+          <Paragraph
+            ellipsis={{
+              rows: 2,
+            }}
+            style={{ maxWidth: 240 }}
+          >
+            {content}
+          </Paragraph>
         );
       },
     },
   ];
-
-  // Update table when column visibility changes
-  useEffect(() => {
-    if (Object.keys(visibleColumns).length > 0) {
-      // Save to localStorage
-      localStorage.setItem('logs-table-columns', JSON.stringify(visibleColumns));
-    }
-  }, [visibleColumns]);
-
-  // Filter columns based on visibility settings
-  const getVisibleColumns = () => {
-    return allColumns.filter(column => visibleColumns[column.key]);
-  };
-
-  // Column selector modal
-  const renderColumnSelector = () => {
-    return (
-      <Modal
-        title={t('列设置')}
-        visible={showColumnSelector}
-        onCancel={() => setShowColumnSelector(false)}
-        footer={
-          <>
-            <Button onClick={() => initDefaultColumns()}>{t('重置')}</Button>
-            <Button onClick={() => setShowColumnSelector(false)}>{t('取消')}</Button>
-            <Button type="primary" onClick={() => setShowColumnSelector(false)}>{t('确定')}</Button>
-          </>
-        }
-      >
-        <div style={{ marginBottom: 20 }}>
-          <Checkbox
-            checked={Object.values(visibleColumns).every(v => v === true)}
-            indeterminate={Object.values(visibleColumns).some(v => v === true) && !Object.values(visibleColumns).every(v => v === true)}
-            onChange={e => handleSelectAll(e.target.checked)}
-          >
-            {t('全选')}
-          </Checkbox>
-        </div>
-        <div style={{ 
-          display: 'flex', 
-          flexWrap: 'wrap',
-          maxHeight: '400px',
-          overflowY: 'auto',
-          border: '1px solid var(--semi-color-border)',
-          borderRadius: '6px',
-          padding: '16px'
-        }}>
-          {allColumns.map(column => {
-            // Skip admin-only columns for non-admin users
-            if (!isAdminUser && (column.key === COLUMN_KEYS.CHANNEL || 
-                                column.key === COLUMN_KEYS.USERNAME || 
-                                column.key === COLUMN_KEYS.RETRY)) {
-              return null;
-            }
-            
-            return (
-              <div key={column.key} style={{ width: '50%', marginBottom: 16, paddingRight: 8 }}>
-                <Checkbox
-                  checked={!!visibleColumns[column.key]}
-                  onChange={e => handleColumnVisibilityChange(column.key, e.target.checked)}
-                >
-                  {column.title}
-                </Checkbox>
-              </div>
-            );
-          })}
-        </div>
-      </Modal>
-    );
-  };
 
   const [styleState, styleDispatch] = useContext(StyleContext);
   const [logs, setLogs] = useState([]);
@@ -803,12 +551,6 @@ const LogsTable = () => {
         //   key: '渠道重试',
         //   value: content,
         // })
-      }      
-      if (isAdminUser && (logs[i].type === 0 || logs[i].type === 2)) {
-        expandDataLocal.push({
-          key: t('渠道信息'),
-          value: `${logs[i].channel} - ${logs[i].channel_name || '[未知]'}`
-        });
       }
       if (other?.ws || other?.audio) {
         expandDataLocal.push({
@@ -828,121 +570,64 @@ const LogsTable = () => {
           value: other.text_output,
         });
       }
-      if (other?.cache_tokens > 0) {
-        expandDataLocal.push({
-          key: t('缓存 Tokens'),
-          value: other.cache_tokens,
-        });
-      }
-      if (other?.cache_creation_tokens > 0) {
-        expandDataLocal.push({
-          key: t('缓存创建 Tokens'),
-          value: other.cache_creation_tokens,
-        });
-      }
+      expandDataLocal.push({
+        key: t('日志详情'),
+        value: logs[i].content,
+      });
       if (logs[i].type === 2) {
-        expandDataLocal.push({
-          key: t('日志详情'),
-          value: other?.claude
-            ? renderClaudeLogContent(
-              other?.model_ratio,
-              other.completion_ratio,
-              other.model_price,
-              other.group_ratio,
-              other.user_group_ratio,
-              other.cache_ratio || 1.0,
-              other.cache_creation_ratio || 1.0
-            )
-            : renderLogContent(
-              other?.model_ratio,
-              other.completion_ratio,
-              other.model_price,
-              other.group_ratio,
-              other.user_group_ratio
-            ),
-        });
-      }
-      if (logs[i].type === 2) {
-        let modelMapped = other?.is_model_mapped && other?.upstream_model_name && other?.upstream_model_name !== '';
-        if (modelMapped) {
-          expandDataLocal.push({
-            key: t('请求并计费模型'),
-            value: logs[i].model_name,
-          });
-          expandDataLocal.push({
-            key: t('实际模型'),
-            value: other.upstream_model_name,
-          });
-        }
         let content = '';
         if (other?.ws || other?.audio) {
           content = renderAudioModelPrice(
-            other?.text_input,
-            other?.text_output,
-            other?.model_ratio,
-            other?.model_price,
-            other?.completion_ratio,
-            other?.audio_input,
-            other?.audio_output,
+            other.text_input,
+            other.text_output,
+            other.model_ratio,
+            other.model_price,
+            other.completion_ratio,
+            other.audio_input,
+            other.audio_output,
             other?.audio_ratio,
             other?.audio_completion_ratio,
-            other?.group_ratio,
-            other?.cache_tokens || 0,
-            other?.cache_ratio || 1.0,
+            other.group_ratio,
           );
-        } else if (other?.claude) {
-          content = renderClaudeModelPrice(
+        } else {
+          content = renderModelPrice(
             logs[i].prompt_tokens,
             logs[i].completion_tokens,
             other.model_ratio,
             other.model_price,
             other.completion_ratio,
             other.group_ratio,
-            other.cache_tokens || 0,
-            other.cache_ratio || 1.0,
-            other.cache_creation_tokens || 0,
-            other.cache_creation_ratio || 1.0,
-          );
-        } else {
-          content = renderModelPrice(
-            logs[i].prompt_tokens,
-            logs[i].completion_tokens,
-            other?.model_ratio,
-            other?.model_price,
-            other?.completion_ratio,
-            other?.group_ratio,
-            other?.cache_tokens || 0,
-            other?.cache_ratio || 1.0,
           );
         }
         expandDataLocal.push({
           key: t('计费过程'),
           value: content,
         });
-        if (other?.reasoning_effort) {
-          expandDataLocal.push({
-            key: t('Reasoning Effort'),
-            value: other.reasoning_effort,
-          });
-        }
       }
+
       expandDatesLocal[logs[i].key] = expandDataLocal;
     }
 
     setExpandData(expandDatesLocal);
+
     setLogs(logs);
   };
 
-  const loadLogs = async (startIdx, pageSize, logType = 0) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageToSize, setPageToSize] = useState(10);
+  const [isLastPage, setIsLastPage] = useState(false);
+  const [totalItems, setTotalItems] = useState(0);
+
+  const loadLogs = async (currentPage, pageToSize, logType = 0) => {
     setLoading(true);
 
     let url = '';
     let localStartTimestamp = Date.parse(start_timestamp) / 1000;
     let localEndTimestamp = Date.parse(end_timestamp) / 1000;
     if (isAdminUser) {
-      url = `/api/log/?p=${startIdx}&page_size=${pageSize}&type=${logType}&username=${username}&token_name=${token_name}&model_name=${model_name}&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&channel=${channel}&group=${group}`;
+      url = `/api/log/?p=${currentPage}&page_size=${pageToSize}&type=${logType}&username=${username}&token_name=${token_name}&model_name=${model_name}&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&channel=${channel}&group=${group}`;
     } else {
-      url = `/api/log/self/?p=${startIdx}&page_size=${pageSize}&type=${logType}&token_name=${token_name}&model_name=${model_name}&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&group=${group}`;
+      url = `/api/log/self/?p=${currentPage}&page_size=${pageToSize}&type=${logType}&token_name=${token_name}&model_name=${model_name}&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&group=${group}`;
     }
     url = encodeURI(url);
     const res = await API.get(url);
@@ -952,8 +637,9 @@ const LogsTable = () => {
       setActivePage(data.page);
       setPageSize(data.page_size);
       setLogCount(data.total);
-
       setLogsFormat(newPageData);
+      setIsLastPage(newPageData.length < pageToSize);
+      setTotalItems((currentPage - 1) * pageToSize + newPageData.length);
     } else {
       showError(message);
     }
@@ -962,14 +648,14 @@ const LogsTable = () => {
 
   const handlePageChange = (page) => {
     setActivePage(page);
-    loadLogs(page, pageSize, logType).then((r) => {});
+    loadLogs(currentPage, pageToSize, logType).then((r) => { });
   };
 
   const handlePageSizeChange = async (size) => {
     localStorage.setItem('page-size', size + '');
     setPageSize(size);
     setActivePage(1);
-    loadLogs(activePage, size)
+    loadLogs(currentPage, pageToSize)
       .then()
       .catch((reason) => {
         showError(reason);
@@ -979,7 +665,7 @@ const LogsTable = () => {
   const refresh = async () => {
     setActivePage(1);
     handleEyeClick();
-    await loadLogs(activePage, pageSize, logType);
+    await loadLogs(currentPage, pageToSize, logType);
   };
 
   const copyText = async (e, text) => {
@@ -992,61 +678,282 @@ const LogsTable = () => {
   };
 
   useEffect(() => {
-    const localPageSize =
-      parseInt(localStorage.getItem('page-size')) || ITEMS_PER_PAGE;
-    setPageSize(localPageSize);
-    loadLogs(activePage, localPageSize)
+
+    loadLogs(currentPage, pageToSize)
       .then()
       .catch((reason) => {
         showError(reason);
       });
     handleEyeClick();
-  }, []);
+  }, [currentPage, pageToSize]);
 
   const expandRowRender = (record, index) => {
     return <Descriptions data={expandData[record.key]} />;
   };
 
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const handleKeywordChange = async (value) => {
+    setSearchKeyword(value.target.value);
+  };
+
+
+  const startItem = (currentPage - 1) * pageToSize + 1;
+  const endItem = startItem + logs.length - 1;
+
+  const totalPages = Math.ceil(totalItems / pageToSize);
+
+  const maxPageButtons = 50; // Max visible page buttons
+  let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+  let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+
+  // Ensure 5 pages are shown when possible
+  if (endPage - startPage + 1 < maxPageButtons) {
+    startPage = Math.max(1, endPage - maxPageButtons + 1);
+  }
+
+  // Create an array of visible page numbers
+  const pageNumbers = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
+
+  console.log('pageNumbers', pageNumbers, startItem, endItem);
+
+
   return (
     <>
-      {renderColumnSelector()}
-      <Layout>
-        <Header>
-          <Spin spinning={loadingStat}>
-            <Space>
-              <Tag color='blue' size='large' style={{ 
-                padding: 15, 
-                borderRadius: '8px', 
-                fontWeight: 500,
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-              }}>
-                {t('消耗额度')}: {renderQuota(stat.quota)}
-              </Tag>
-              <Tag color='pink' size='large' style={{ 
-                padding: 15, 
-                borderRadius: '8px', 
-                fontWeight: 500,
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-              }}>
-                RPM: {stat.rpm}
-              </Tag>
-              <Tag color='white' size='large' style={{ 
-                padding: 15, 
-                border: 'none', 
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', 
-                borderRadius: '8px',
-                fontWeight: 500,
-              }}>
-                TPM: {stat.tpm}
-              </Tag>
-            </Space>
-          </Spin>
-        </Header>
-        <Form layout='horizontal' style={{ marginTop: 10 }}>
+
+      <div className='cardList'>
+        <div className="log-card">
+          <div className="curve-container">
+            <div className="curve-1"></div>
+            <div className="curve-2"></div>
+            <div className="curve-3"></div>
+            <div className="curve-4"></div>
+          </div>
+          <h2>{t('总消耗额度')}</h2>
+          <p>{renderQuota(stat.quota)}</p>
+        </div>
+        <div className="rpm-card">
+          <div className="curve-container">
+            <div className="curve-1"></div>
+            <div className="curve-2"></div>
+            <div className="curve-3"></div>
+            <div className="curve-4"></div>
+          </div>
+          <h2>RPM</h2>
+          <p>{stat.rpm}</p>
+        </div>
+        <div className="rpm-card">
+          <div className="curve-container">
+            <div className="curve-1"></div>
+            <div className="curve-2"></div>
+            <div className="curve-3"></div>
+            <div className="curve-4"></div>
+          </div>
+          <h2>TPM</h2>
+          <p>{stat.tpm}</p>
+        </div>
+      </div>
+
+      {/* Table header */}
+      <div className='searchHeader'>
+        <div className='searchFilter'>
+          <div className='searchOption'>
+            <Form>
+              <Form.DatePicker
+                initValue={[start_timestamp, end_timestamp]}
+                type="dateTimeRange"
+                name="range_timestamp"
+                onChange={(value) => {
+                  if (Array.isArray(value) && value.length === 2) {
+                    handleInputChange(value[0], 'start_timestamp');
+                    handleInputChange(value[1], 'end_timestamp');
+                  }
+                }}
+              />
+              <div className="search-container">
+                <i className="search-icon"><IconSearch /></i>
+                <Form.Input
+                  value={token_name}
+                  placeholder={t('令牌名称')}
+                  name='token_name'
+                  className="search-input-form"
+                  onChange={(value) => handleInputChange(value, 'token_name')}
+                />
+              </div>
+              <div className="search-container">
+                <i className="search-icon"><IconSearch /></i>
+                <Form.Input
+                  value={model_name}
+                  placeholder={t('模型名称')}
+                  name='model_name'
+                  className="search-input-form"
+                  onChange={(value) => handleInputChange(value, 'model_name')}
+                />
+              </div>
+              <div className="search-container">
+                <i className="search-icon"><IconSearch /></i>
+                <Form.Input
+                  value={group}
+                  placeholder={t('分组')}
+                  name='group'
+                  className="search-input-form"
+                  onChange={(value) => handleInputChange(value, 'group')}
+                />
+              </div>
+              {isAdminUser && (
+                <>
+                  <div className="search-container">
+                    <i className="search-icon"><IconSearch /></i>
+                    <Form.Input
+                      value={channel}
+                      placeholder={t('渠道 ID')}
+                      name='channel'
+                      className="search-input-form"
+                      onChange={(value) => handleInputChange(value, 'channel')}
+                    />
+                  </div>
+                  <div className="search-container">
+                    <i className="search-icon"><IconSearch /></i>
+                    <Form.Input
+                      value={username}
+                      placeholder={t('用户名称')}
+                      name='username'
+                      className="search-input-form"
+                      onChange={(value) => handleInputChange(value, 'username')}
+                    />
+                  </div>
+                </>
+              )}
+              <button type="submit" onClick={refresh} loading={loading} className='searchBtn'>
+                {t('查询')}
+              </button>
+
+            </Form>
+          </div>
+          {/* <div className='filterOption'>
+              <button><img src={filterIcon} alt="filter" /> Filter</button>
+              <button><img src={downloadIcon} alt="download" /></button>
+              <Dropdown className='bulkDropdown filterDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
+                <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
+                  Filter
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <p>askjaksj kads klasd jklasjd klasjdklasdj alsdj kjsad</p>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div> */}
+        </div>
+      </div>
+      {logs && logs.length === 0 ? <NoData /> : <>
+        <div className="tableBox">
+          <Table borderless hover>
+            <thead>
+              <tr>
+                <th>{t('时间')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('令牌')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('分组')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('类型')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('模型')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('花费')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('详情')} <SortIconSvg color="--semi-table-thead-0" /></th>
+              </tr>
+            </thead>
+            <tbody>
+              {logs && logs.map((logs, index) => (
+                <tr key={index}>
+                  <td>{formatDate(logs.created_at)}</td>
+                  <td>{logs.type === 0 || logs.type === 2 ? <Tag
+                    color='grey'
+                    size='large'
+                    onClick={(event) => {
+                      //cancel the row click event
+                      copyText(event, logs.token_name);
+                    }}
+                  >
+                    {logs.token_name}
+                  </Tag> : ""}</td>
+                  <td>
+                    {([0, 2].includes(logs.type)) ? (
+                      logs.group ? (
+                        renderGroup(logs.group)
+                      ) : (() => {
+                        try {
+                          const other = JSON.parse(logs.other || "{}");
+                          return other?.group ? renderGroup(other.group) : null;
+                        } catch (e) {
+                          return null;
+                        }
+                      })()
+                    ) : null}
+                  </td>
+                  <td>{renderType(logs.type)}</td>
+                  <td>{logs.type === 0 || logs.type === 2 ? <Tag
+                    color={stringToColor(logs.model_name)}
+                    size='large'
+                    onClick={(event) => {
+                      copyText(event, logs.model_name);
+                    }}
+                  >
+                    {logs.model_name}
+                  </Tag> : ""}</td>
+                  <td>{logs.type === 0 || logs.type === 2 ?
+                    <>{renderQuota(logs.quota, 6)}</> : ""}</td>
+                  <td>
+                    {(() => {
+                      const other = getLogOther(logs.other);
+
+                      if (other == null || logs.type !== 2) {
+                        return (
+                          <Paragraph
+                            ellipsis={{
+                              rows: 2,
+                              showTooltip: {
+                                type: 'popover',
+                                opts: { style: { width: 240 } },
+                              },
+                            }}
+                            style={{ maxWidth: 240 }}
+                          >
+                            {logs.content}
+                          </Paragraph>
+                        );
+                      }
+
+                      const content = renderModelPriceSimple(
+                        other.model_ratio,
+                        other.model_price,
+                        other.group_ratio,
+                      );
+
+                      return (
+                        <Paragraph
+                          ellipsis={{ rows: 2 }}
+                          style={{ maxWidth: 240 }}
+                        >
+                          {content}
+                        </Paragraph>
+                      );
+                    })()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+
+        {/* Table Pagination */}
+        <TablePagination pageToSize={pageToSize} setPageToSize={setPageToSize} setCurrentPage={setCurrentPage} startItem={startItem} endItem={endItem} currentPage={currentPage} pageNumbers={pageNumbers} isLastPage={isLastPage} />
+      </>
+      }
+
+
+      {/*  <Form layout='horizontal' style={{ marginTop: 10 }}>
           <>
             <Form.Section>
               <div style={{ marginBottom: 10 }}>
-              {
+                {
                   styleState.isMobile ? (
                     <div>
                       <Form.DatePicker
@@ -1146,14 +1053,14 @@ const LogsTable = () => {
             <Form.Section></Form.Section>
           </>
         </Form>
-        <div style={{marginTop:10}}>
+        <div style={{ marginTop: 10 }}>
           <Select
-              defaultValue='0'
-              style={{ width: 120 }}
-              onChange={(value) => {
-                setLogType(parseInt(value));
-                loadLogs(0, pageSize, parseInt(value));
-              }}
+            defaultValue='0'
+            style={{ width: 120 }}
+            onChange={(value) => {
+              setLogType(parseInt(value));
+              loadLogs(0, pageSize, parseInt(value));
+            }}
           >
             <Select.Option value='0'>{t('全部')}</Select.Option>
             <Select.Option value='1'>{t('充值')}</Select.Option>
@@ -1161,19 +1068,10 @@ const LogsTable = () => {
             <Select.Option value='3'>{t('管理')}</Select.Option>
             <Select.Option value='4'>{t('系统')}</Select.Option>
           </Select>
-          <Button
-            theme='light'
-            type='tertiary'
-            icon={<IconSetting />}
-            onClick={() => setShowColumnSelector(true)}
-            style={{ marginLeft: 8 }}
-          >
-            {t('列设置')}
-          </Button>
         </div>
         <Table
           style={{ marginTop: 5 }}
-          columns={getVisibleColumns()}
+          columns={columns}
           expandedRowRender={expandRowRender}
           expandRowByClick={true}
           dataSource={logs}
@@ -1183,7 +1081,7 @@ const LogsTable = () => {
               t('第 {{start}} - {{end}} 条，共 {{total}} 条', {
                 start: page.currentStart,
                 end: page.currentEnd,
-                total: logCount
+                total: logs.length
               }),
             currentPage: activePage,
             pageSize: pageSize,
@@ -1195,8 +1093,7 @@ const LogsTable = () => {
             },
             onPageChange: handlePageChange,
           }}
-        />
-      </Layout>
+        /> */}
     </>
   );
 };

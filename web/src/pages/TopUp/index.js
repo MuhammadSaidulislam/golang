@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, userRef } from 'react';
 import { API, isMobile, showError, showInfo, showSuccess } from '../../helpers';
 import {
   renderNumber,
@@ -15,19 +15,38 @@ import {
   Form,
   Divider,
   Space,
-  Modal,
   Toast,
 } from '@douyinfe/semi-ui';
 import Title from '@douyinfe/semi-ui/lib/es/typography/title';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
+import CryptoModel from './cryptomodel';
+import AirwallexModel from './airwallexmodel';
+import sortIcon from "../../../dist/assets/sort.svg";
+
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import DashboardLayout from './../../components/DashboardLayout';
+import { IconChevronDown, IconChevronLeft, IconChevronRight, IconClose, IconPlus, IconSearch } from '@douyinfe/semi-icons';
+import walletIcon from "../../../dist/assets/wallet-add-white.svg";
+import { Modal, Table, Dropdown } from 'react-bootstrap';
+import weChatLogo from "../../../dist/assets/wechat.svg";
+import aliPayLogo from "../../../dist/assets/alipay.svg";
+import walletOneLogo from "../../../dist/assets/wallet (1).svg";
+import walletTwoLogo from "../../../dist/assets/wallet (2).svg";
+import walletThreeLogo from "../../../dist/assets/wallet (3).svg";
+import giftLogo from "../../../dist/assets/fi_gift.svg";
+import walletLight from "../../../dist/assets/wallet-add-white.svg";
+import filterIcon from "../../../dist/assets/fi_filter.svg";
+import downloadIcon from "../../../dist/assets/fi_download.svg";
+import { SortIconSvg } from '../../components/svgIcon';
 
 const TopUp = () => {
   const { t } = useTranslation();
   const [redemptionCode, setRedemptionCode] = useState('');
   const [topUpCode, setTopUpCode] = useState('');
   const [topUpCount, setTopUpCount] = useState(0);
+  console.log('topUpCount', topUpCount);
+
   const [minTopupCount, setMinTopUpCount] = useState(1);
   const [amount, setAmount] = useState(0.0);
   const [minTopUp, setMinTopUp] = useState(1);
@@ -36,7 +55,18 @@ const TopUp = () => {
   const [userQuota, setUserQuota] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openCrypto, setOpenCrypto] = useState(false);
+  const [openAirwallex, setOpenAirwallex] = useState(false);
   const [payWay, setPayWay] = useState('');
+  const [enabledCryptomus, setEnabledCryptomus] = useState(false);
+  const [enabledAirwallex, setEnabledAirwallex] = useState(false);
+
+
+  const [paymentShow, setPaymentShow] = useState(false);
+  const handleUpdateClose = () => {
+    setPaymentShow(false);
+  }
+
 
   const topUp = async () => {
     if (redemptionCode === '') {
@@ -91,7 +121,35 @@ const TopUp = () => {
     setPayWay(payment);
     setOpen(true);
   };
+  const topUpCrypto = async () => {
+    setOpenCrypto(true);
+  };
 
+  const topUpAirwallex = async () => {
+    setOpenAirwallex(true);
+  };
+  const getOptions = async () => {
+    try {
+      const res = await API.get('/api/option/');
+      const { success, message, data } = res.data;
+      if (success) {
+        // Set the values based on the response
+        let newInputs = {};
+        data.forEach((item) => {
+          if (item.key === 'EnabledCryptomus' || item.key === 'EnabledAirwallex') {
+            newInputs[item.key] = item.value === 'true'; // true if 'true', false if 'false'
+          }
+        });
+
+        setEnabledCryptomus(newInputs.EnabledCryptomus || false); // Default to false if not found
+        setEnabledAirwallex(newInputs.EnabledAirwallex || false); // Default to false if not found
+      } else {
+        showError(message);
+      }
+    } catch (err) {
+      showError('Error fetching options');
+    }
+  };
   const onlineTopUp = async () => {
     if (amount === 0) {
       await getAmount();
@@ -158,6 +216,7 @@ const TopUp = () => {
   };
 
   useEffect(() => {
+    getOptions();
     let status = localStorage.getItem('status');
     if (status) {
       status = JSON.parse(status);
@@ -212,14 +271,187 @@ const TopUp = () => {
     setOpen(false);
   };
 
+  const handleCrytoCancel = () => {
+    setOpenCrypto(false);
+  };
+  const handleAirwallexCancel = () => {
+    setOpenAirwallex(false);
+  };
+
+  const [userDropdown, setUserDropdown] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const toggleUserDropdown = (e) => {
+    e.stopPropagation();
+    setUserDropdown(!userDropdown);
+  };
+
+  const handleKeywordChange = async (value) => {
+    setSearchKeyword(value.target.value);
+  };
+
   return (
     <div>
-      <Layout>
-        <Layout.Header>
-          <h3>{t('我的钱包')}</h3>
-        </Layout.Header>
+      <DashboardLayout>
+        <div className='cardList'>
+          <div className='container'>
+            <div className='row'>
+              <div className='col-md-6'>
+                <div className='wallet-card'>
+                  <div className="curve-container">
+                    <div className="curve-1"></div>
+                    <div className="curve-2"></div>
+                    <div className="curve-3"></div>
+                    <div className="curve-4"></div>
+                  </div>
+                  <div className='cardHeader'>
+                    <div className='cardHeading'>
+                      Recharge Summary
+                    </div>
+                    <div className='cardTime'>
+                      <button className='rechargeBtn' onClick={() => setPaymentShow(true)}> <img src={walletLight} alt="walletLight" /> Recharge</button>
+                    </div>
+                  </div>
+                  <div className='cardContent'>
+                    <div style={{ width: '50%' }}>
+                      <h6>Current Bal</h6>
+                      <p>$12,030.00</p>
+                    </div>
+                    <div style={{ width: '50%' }}>
+                      <h6>Spent</h6>
+                      <p>$20,390.00</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='col-md-6'>
+                <div className='firstBox' style={{ minHeight: '145px' }}>
+                  <div className='cardHeader'>
+                    <div className='cardText'>
+                      Recharge Summary
+                    </div>
+                    <div className='cardTime'>
+                      <div
+                        className="icon-container"
+                        ref={userRef}
+                        onClick={toggleUserDropdown}
+                      >
+                        <div className="user-icon">
+                          This Week <IconChevronDown />
+                        </div>
+                        {userDropdown && (
+                          <div className="dropdown active">
+                            <div className="dropdown-item">This Week</div>
+                            <div className="dropdown-item">This Month</div>
+                            <div className="dropdown-item">This Year</div>
+                          </div>)}
+                      </div>
+                    </div>
+                  </div>
+                  <div className='cardContent'>
+                    <div style={{ width: '50%' }}>
+                      <h6>Exchange Bal</h6>
+                      <p>$42,090.50</p>
+                    </div>
+                    <div style={{ width: '50%' }}>
+                      <h6>Total Recharge</h6>
+                      <p>$42,090.50</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='searchAdd'>
+          <div className='searchBox'>
+            <div className="search-container">
+              <i className="search-icon"><IconSearch /></i>
+              <input type="text" className="search-input" placeholder={t('令牌名称')} value={searchKeyword} onChange={handleKeywordChange} />
+            </div>
+            <button className='searchBtn' style={{ marginLeft: '10px' }}>
+              {t('查询')}
+            </button>
+            <div className='filterOption'>
+              <button><img src={filterIcon} alt="filter" /> Filter</button>
+              <button><img src={downloadIcon} alt="download" /></button>
+
+            </div>
+          </div>
+          <div className='cardTime'>
+            <button className='rechargeBtn' onClick={() => setPaymentShow(true)}> <img src={walletLight} alt="walletLight" /> Recharge</button>
+          </div>
+        </div>
+
+        {/* Table list */}
+        <div className="tableBox">
+          <Table borderless hover>
+            <thead>
+              <tr>
+                <th>Submission Date/Time <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Spend time <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Type <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Task ID <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Schedule <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Result <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Prompt <SortIconSvg color="--semi-table-thead-0" /></th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...Array(50)].map((_, index) => (
+                <tr key={index}>
+                  <td>12 Aug 2022 - 12:25 am</td>
+                  <td>5</td>
+                  <td>My APIs</td>
+                  <td>AA87</td>
+                  <td>A25</td>
+                  <td>12 Aug 2022 - 12:25 am</td>
+                  <td>Action Prompt</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+
+        {/* Table Pagination */}
+        <div className='tablePagination'>
+          <div className='leftItems'>
+            <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
+              <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
+                1
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>1</Dropdown.Item>
+                <Dropdown.Item>2</Dropdown.Item>
+                <Dropdown.Item>3</Dropdown.Item>
+                <Dropdown.Item>4</Dropdown.Item>
+                <Dropdown.Item>5</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <p className='item'>Items per page</p>
+            <p className='itemNumber'>1-10 of 200 items</p>
+          </div>
+          <div className='leftItems'>
+            <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
+              <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
+                1
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>1</Dropdown.Item>
+                <Dropdown.Item>2</Dropdown.Item>
+                <Dropdown.Item>3</Dropdown.Item>
+                <Dropdown.Item>4</Dropdown.Item>
+                <Dropdown.Item>5</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <p className='itemNumber'>1-10 of 200 items</p>
+            <button className='pagArrow'> <IconChevronLeft /> </button>
+            <button className='pagArrow'> <IconChevronRight /> </button>
+          </div>
+        </div>
+
+
         <Layout.Content>
-          <Modal
+          {/* <Modal
             title={t('确定要充值吗')}
             visible={open}
             onOk={onlineTopUp}
@@ -232,104 +464,161 @@ const TopUp = () => {
             <p>{t('实付金额')}：{renderAmount()}</p>
             <p>{t('是否确认充值？')}</p>
           </Modal>
-          <div
-            style={{ marginTop: 20, display: 'flex', justifyContent: 'center' }}
+          <Modal
+            title={"Cryptomus Payment"}
+            visible={openCrypto}
+            onOk={handleCrytoCancel}
+            onCancel={handleCrytoCancel}
+            maskClosable={false}
+            size={'large'}
+            centered={true}
           >
-            <Card style={{ width: '500px', padding: '20px' }}>
-              <Title level={3} style={{ textAlign: 'center' }}>
-                {t('余额')} {renderQuota(userQuota)}
-              </Title>
-              <div style={{ marginTop: 20 }}>
-                <Divider>{t('兑换余额')}</Divider>
-                <Form>
-                  <Form.Input
-                    field={'redemptionCode'}
-                    label={t('兑换码')}
-                    placeholder={t('兑换码')}
-                    name='redemptionCode'
-                    value={redemptionCode}
-                    onChange={(value) => {
-                      setRedemptionCode(value);
-                    }}
-                  />
-                  <Space>
-                    {topUpLink ? (
-                      <Button
-                        type={'primary'}
-                        theme={'solid'}
-                        onClick={openTopUpLink}
-                      >
-                        {t('获取兑换码')}
-                      </Button>
-                    ) : null}
-                    <Button
-                      type={'warning'}
-                      theme={'solid'}
-                      onClick={topUp}
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? t('兑换中...') : t('兑换')}
-                    </Button>
-                  </Space>
-                </Form>
-              </div>
-              <div style={{ marginTop: 20 }}>
-                <Divider>{t('在线充值')}</Divider>
-                <Form>
-                  <Form.Input
-                    disabled={!enableOnlineTopUp}
-                    field={'redemptionCount'}
-                    label={t('实付金额：') + ' ' + renderAmount()}
-                    placeholder={t('充值数量，最低 ') + renderQuotaWithAmount(minTopUp)}
-                    name='redemptionCount'
-                    type={'number'}
-                    value={topUpCount}
-                    onChange={async (value) => {
-                      if (value < 1) {
-                        value = 1;
-                      }
-                      setTopUpCount(value);
-                      await getAmount(value);
-                    }}
-                  />
-                  <Space>
-                    <Button
-                      type={'primary'}
-                      theme={'solid'}
-                      onClick={async () => {
-                        preTopUp('zfb');
-                      }}
-                    >
-                      {t('支付宝')}
-                    </Button>
-                    <Button
-                      style={{
-                        backgroundColor: 'rgba(var(--semi-green-5), 1)',
-                      }}
-                      type={'primary'}
-                      theme={'solid'}
-                      onClick={async () => {
-                        preTopUp('wx');
-                      }}
-                    >
-                      {t('微信')}
-                    </Button>
-                  </Space>
-                </Form>
-              </div>
-              {/*<div style={{ display: 'flex', justifyContent: 'right' }}>*/}
-              {/*    <Text>*/}
-              {/*        <Link onClick={*/}
-              {/*            async () => {*/}
-              {/*                window.location.href = '/topup/history'*/}
-              {/*            }*/}
-              {/*        }>充值记录</Link>*/}
-              {/*    </Text>*/}
-              {/*</div>*/}
-            </Card>
-          </div>
+            <CryptoModel />
+          </Modal>
+
+          <Modal
+            title={"Airwallex Payment"}
+            visible={openAirwallex}
+            onOk={handleAirwallexCancel}
+            onCancel={handleAirwallexCancel}
+            maskClosable={false}
+            size={'large'}
+            centered={true}
+          >
+            <AirwallexModel />
+          </Modal> */}
+
+
+          {/* <Space>
+
+
+            {enabledCryptomus && (
+              <Button
+                style={{
+                  backgroundColor: 'rgba(var(--semi-yellow-5), 1)',
+                }}
+                type={'primary'}
+                theme={'solid'}
+                onClick={async () => {
+                  topUpCrypto();
+                }}
+              >
+                Cryptomus
+              </Button>
+            )}
+            {enabledAirwallex && (
+              <Button
+                style={{
+                  backgroundColor: 'rgba(var(--semi-red-5), 1)',
+                }}
+                type={'primary'}
+                theme={'solid'}
+                onClick={async () => {
+                  topUpAirwallex();
+                }}
+              >
+                AirWallex
+              </Button>
+            )}
+          </Space> */}
+
         </Layout.Content>
-      </Layout>
+
+
+
+        {/* payment modal  */}
+        <Modal show={paymentShow} onHide={handleUpdateClose} centered size="md">
+          <div className='modalHeading'>
+            <h1>Create New Token</h1>
+            <button onClick={handleUpdateClose}><IconClose /></button>
+          </div>
+          <div className='modalContent walletModal'>
+            <div className="recharge-details">Recharge details</div>
+            <div className="recharge-form">
+              <div className="recharge-amount">
+                <p>{t('实付金额：') + ' ' + renderAmount()}</p>
+                <div className="memberInput rate">
+                  <span>$</span>
+                  <input disabled={!enableOnlineTopUp} type="number" placeholder={t('充值数量，最低 ') + renderQuotaWithAmount(minTopUp)} name='redemptionCount' value={topUpCount} onChange={async (value) => {
+                    if (value.target.value < 1) {
+                      value = 1;
+                    }
+                    setTopUpCount(value.target.value);
+                    await getAmount(value.target.value);
+                  }} />
+                </div>
+              </div>
+
+              <div className="payment-methods">
+                <div className="payment-option" onClick={async () => { preTopUp('zfb'); }}>
+                  <div className="payment-left">
+                    <span>Pay</span>
+                    <strong>¥100.00</strong>
+                    <span>with</span>
+                    <img src={aliPayLogo} alt="aliPayLogo" />
+                  </div>
+                  <div className="right-arrow"><IconChevronRight /></div>
+                </div>
+
+                <div className="payment-option" onClick={async () => { preTopUp('wx'); }}>
+                  <div className="payment-left">
+                    <span>Pay</span>
+                    <strong>¥100.00</strong>
+                    <span>with</span>
+                    <img src={weChatLogo} alt="weChatLogo" />
+                  </div>
+                  <div className="right-arrow"><IconChevronRight /></div>
+                </div>
+
+                <div className="payment-option">
+                  <div className="payment-left">
+                    <span>Pay</span>
+                    <strong>¥100.00</strong>
+                    <span>with</span>
+                    <b>Debit/Credit Card</b>
+                  </div>
+                  <div className="right-arrow"><IconChevronRight /></div>
+                </div>
+
+                <div className="payment-option">
+                  <div className="payment-left">
+                    <span>Pay</span>
+                    <strong>¥100.00</strong>
+                    <span>with</span>
+                    <b>Wallet</b>
+                    <div className="wallet-container">
+                      <img src={walletOneLogo} alt="weChatLogo" />
+                      <img src={walletTwoLogo} alt="weChatLogo" />
+                      <img src={walletThreeLogo} alt="weChatLogo" />
+                    </div>
+                  </div>
+                  <div className="right-arrow"><IconChevronRight /></div>
+                </div>
+              </div>
+
+              <div className="redeem-section">
+                <div className="redeem-title">{t('兑换码')}</div>
+                {topUpLink ? (
+                  <div className="get-code-btn" onClick={openTopUpLink}>
+                    <img src={giftLogo} alt="giftLogo" />
+                    {t('获取兑换码')}
+                  </div>
+                ) : null}
+
+              </div>
+
+              <input type="text" className="redeem-input" placeholder={t('兑换码')} value={redemptionCode} onChange={(value) => {
+                setRedemptionCode(value.target.value);
+              }} />
+
+              <div className="button-group">
+                <div className="btn btn-cancel" onClick={handleUpdateClose}>Cancel</div>
+                <div onClick={topUp} className="btn btn-redeem" disabled={isSubmitting}>{isSubmitting ? t('兑换中...') : t('兑换')}</div>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      </DashboardLayout>
     </div>
   );
 };
