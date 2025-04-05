@@ -35,19 +35,19 @@ import {
 import TelegramLoginButton from 'react-telegram-login';
 import { useTranslation } from 'react-i18next';
 import "./setting.css";
-import githubIcon from "../../dist/assets/fi_github.svg";
-import weChatIcon from "../../dist/assets/fi_weChat.svg";
-import telegramIcon from "../../dist/assets/fi_telegram.png";
-import mailIcon from "../../dist/assets/fi_mail.svg";
-import telegramTwoIcon from "../../dist/assets/fi_telegram_2.svg";
-import downloadIcon from "../../dist/assets/fi_upload-cloud.svg";
-import deleteIcon from "../../dist/assets/fi_delete.svg";
+import githubIcon from "../assets/fi_github.svg";
+import weChatIcon from "../assets/fi_weChat.svg";
+import telegramIcon from "../assets/fi_telegram.png";
+import mailIcon from "../assets/fi_mail.svg";
+import telegramTwoIcon from "../assets/fi_telegram_2.svg";
+import downloadIcon from "../assets/fi_upload-cloud.svg";
+import deleteIcon from "../assets/fi_delete.svg";
 import { IconArrowLeft, IconChevronDown, IconChevronRight, IconClose } from '@douyinfe/semi-icons';
 import { Modal } from 'react-bootstrap';
 
-import phoneIcon from "../../dist/assets/fi_check-circle.svg";
-import profileIcon from "../../dist/assets/fi_smartphone.svg";
-import checkIcon from "../../dist/assets/fi_profile.svg";
+import phoneIcon from "../assets/fi_check-circle.svg";
+import profileIcon from "../assets/fi_smartphone.svg";
+import checkIcon from "../assets/fi_profile.svg";
 
 
 const PersonalSetting = () => {

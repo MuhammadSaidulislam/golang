@@ -9,8 +9,8 @@ import { StyleContext } from '../../context/Style/index.js';
 import { useTranslation } from 'react-i18next';
 import { renderGroupOption } from '../../helpers/render.js';
 import DashboardLayout from './../../components/DashboardLayout';
-import chatIcon from "../../../dist/assets/message.svg";
-import filterIcon from "../../../dist/assets/fi_filter.svg";
+import chatIcon from "../../assets/message.svg";
+import filterIcon from "../../assets/fi_filter.svg";
 
 const roleInfo = {
   user: {

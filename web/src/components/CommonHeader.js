@@ -7,8 +7,8 @@ import "./component.css"
 import { API, getLogo, getSystemName, isMobile, showSuccess } from '../helpers';
 import '../index.css';
 import fireworks from 'react-fireworks';
-import ukLogo from "../../dist/assets/uk.svg";
-import chinaLogo from "../../dist/assets/china.png";
+import ukLogo from "../assets/uk.svg";
+import chinaLogo from "../assets/china.png";
 
 import {
     IconClose,

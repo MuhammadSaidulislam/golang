@@ -33,11 +33,11 @@ import {
 import Paragraph from '@douyinfe/semi-ui/lib/es/typography/paragraph';
 import { getLogOther } from '../helpers/other.js';
 import { StyleContext } from '../context/Style/index.js';
-import sortIcon from "../../dist/assets/sort.svg";
+import sortIcon from "../assets/sort.svg";
 import { Dropdown, Table } from 'react-bootstrap';
 import { IconChevronLeft, IconChevronRight, IconSearch } from '@douyinfe/semi-icons';
-import filterIcon from "../../dist/assets/fi_filter.svg";
-import downloadIcon from "../../dist/assets/fi_download.svg";
+import filterIcon from "../assets/fi_filter.svg";
+import downloadIcon from "../assets/fi_download.svg";
 import { SortIconSvg } from './svgIcon.js';
 import { formatDate } from './../helpers/render';
 import NoData from './NoData';

@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import CommonHeader from '../../components/CommonHeader';
 import SimpleFooter from '../../components/SimpleFooter.js';
 import "./Home.css";
-import heroBanner from "../../../dist/assets/home_hero.png";
-import apiImg from "../../../dist/assets/home(1).png";
-import tokenImg from "../../../dist/assets/home(6).png";
-import tableImg from "../../../dist/assets/home_table.png";
-import lightImg from "../../../dist/assets/home(5).png";
+import heroBanner from "../../assets/home_hero.png";
+import apiImg from "../../assets/home(1).png";
+import tokenImg from "../../assets/home(6).png";
+import tableImg from "../../assets/home_table.png";
+import lightImg from "../../assets/home(5).png";
 import { Link } from 'react-router-dom';
 import Typewriter from 'react-typewriter-effect';
 

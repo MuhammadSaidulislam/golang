@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import ukLogo from "../../dist/assets/uk.svg";
-import chinaLogo from "../../dist/assets/china.png";
+import ukLogo from "../assets/uk.svg";
+import chinaLogo from "../assets/china.png";
 import { Switch } from '@douyinfe/semi-ui';
 import i18n from '../i18n/i18n.js';
 import { useTheme, useSetTheme } from '../context/Theme/index.js';
 import { StyleContext } from './../context/Style/index';
 import { getLogo } from '../helpers/utils.js';
-import toggleNav from "../../dist/assets/fi_columns.svg";
-import notificationIcon from "../../dist/assets/Notification.svg";
-import walletIcon from "../../dist/assets/wallet-add.svg";
+import toggleNav from "../assets/fi_columns.svg";
+import notificationIcon from "../assets/Notification.svg";
+import walletIcon from "../assets/wallet-add.svg";
 
 const DashboardNav = ({ toggle }) => {
     const [currentLang, setCurrentLang] = useState(i18n.language);

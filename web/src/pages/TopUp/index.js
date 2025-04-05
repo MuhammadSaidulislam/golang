@@ -21,23 +21,23 @@ import Title from '@douyinfe/semi-ui/lib/es/typography/title';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import CryptoModel from './cryptomodel';
 import AirwallexModel from './airwallexmodel';
-import sortIcon from "../../../dist/assets/sort.svg";
+import sortIcon from "../../assets/sort.svg";
 
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import DashboardLayout from './../../components/DashboardLayout';
 import { IconChevronDown, IconChevronLeft, IconChevronRight, IconClose, IconPlus, IconSearch } from '@douyinfe/semi-icons';
-import walletIcon from "../../../dist/assets/wallet-add-white.svg";
+import walletIcon from "../../assets/wallet-add-white.svg";
 import { Modal, Table, Dropdown } from 'react-bootstrap';
-import weChatLogo from "../../../dist/assets/wechat.svg";
-import aliPayLogo from "../../../dist/assets/alipay.svg";
-import walletOneLogo from "../../../dist/assets/wallet (1).svg";
-import walletTwoLogo from "../../../dist/assets/wallet (2).svg";
-import walletThreeLogo from "../../../dist/assets/wallet (3).svg";
-import giftLogo from "../../../dist/assets/fi_gift.svg";
-import walletLight from "../../../dist/assets/wallet-add-white.svg";
-import filterIcon from "../../../dist/assets/fi_filter.svg";
-import downloadIcon from "../../../dist/assets/fi_download.svg";
+import weChatLogo from "../../assets/wechat.svg";
+import aliPayLogo from "../../assets/alipay.svg";
+import walletOneLogo from "../../assets/wallet (1).svg";
+import walletTwoLogo from "../../assets/wallet (2).svg";
+import walletThreeLogo from "../../assets/wallet (3).svg";
+import giftLogo from "../../assets/fi_gift.svg";
+import walletLight from "../../assets/wallet-add-white.svg";
+import filterIcon from "../../assets/fi_filter.svg";
+import downloadIcon from "../../assets/fi_download.svg";
 import { SortIconSvg } from '../../components/svgIcon';
 
 const TopUp = () => {

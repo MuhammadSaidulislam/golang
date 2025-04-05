@@ -7,7 +7,7 @@ import {
   showSuccess,
   timestamp2string,
 } from '../helpers';
-import sortIcon from "../../dist/assets/sort.svg";
+import sortIcon from "../assets/sort.svg";
 import {
   Banner,
   Button,
@@ -24,8 +24,8 @@ import { useTranslation } from 'react-i18next';
 import NoData from './NoData';
 import { Dropdown, Table } from 'react-bootstrap';
 import { IconChevronLeft, IconChevronRight, IconDownload, IconFilter, IconSearch } from '@douyinfe/semi-icons';
-import filterIcon from "../../dist/assets/fi_filter.svg";
-import downloadIcon from "../../dist/assets/fi_download.svg";
+import filterIcon from "../assets/fi_filter.svg";
+import downloadIcon from "../assets/fi_download.svg";
 import { SortIconSvg } from './svgIcon';
 
 const colors = [

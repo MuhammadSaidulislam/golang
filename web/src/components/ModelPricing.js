@@ -26,8 +26,8 @@ import {
 import { UserContext } from '../context/User/index.js';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { Table } from "react-bootstrap";
-import checkMark from "../../dist/assets/checkTable.svg";
-import sortIcon from "../../dist/assets/sort.svg";
+import checkMark from "../assets/checkTable.svg";
+import sortIcon from "../assets/sort.svg";
 import TablePagination from './TablePagination.js';
 import { SortIconSvg } from './svgIcon';
 import NoData from './NoData.js';

@@ -22,19 +22,19 @@ import Icon, { IconArrowDown, IconChevronDown, IconChevronLeft, IconChevronRight
 import EditToken from '../pages/Token/EditToken';
 import { useTranslation } from 'react-i18next';
 import NoData from './NoData';
-import codeIcon from "../../dist/assets/fi_code.svg";
-import trendingIcon from "../../dist/assets/fi_trending-up.svg";
-import summaryIcon from "../../dist/assets/fi_ticket.svg";
-import sortIcon from "../../dist/assets/sort.svg";
+import codeIcon from "../assets/fi_code.svg";
+import trendingIcon from "../assets/fi_trending-up.svg";
+import summaryIcon from "../assets/fi_ticket.svg";
+import sortIcon from "../assets/sort.svg";
 import ModalToken from '../pages/Token/ModalToken';
-import deleteIcon from "../../dist/assets/Delete.svg";
-import disableIcon from "../../dist/assets/fi_disable.svg";
-import editIcon from "../../dist/assets/fi_edit-2.svg";
-import chatIcon from "../../dist/assets/fi_chat_2.svg";
-import copyIcon from "../../dist/assets/u_copy-alt.svg";
+import deleteIcon from "../assets/Delete.svg";
+import disableIcon from "../assets/fi_disable.svg";
+import editIcon from "../assets/fi_edit-2.svg";
+import chatIcon from "../assets/fi_chat_2.svg";
+import copyIcon from "../assets/u_copy-alt.svg";
 import TablePagination from './TablePagination';
 import { SortIconSvg } from './svgIcon';
-import enableIcon from "../../dist/assets/fi_check.svg";
+import enableIcon from "../assets/fi_check.svg";
 
 function renderTimestamp(timestamp) {
   return <>{timestamp2string(timestamp)}</>;
