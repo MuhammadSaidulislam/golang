@@ -252,4 +252,8 @@ code {
   .hide-on-mobile {
     display: none !important;
   }
+  .rgbBtn,
+  .transparentBtn {
+    padding: 14px 22px;
+  }
 }

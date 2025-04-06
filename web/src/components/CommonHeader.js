@@ -34,7 +34,6 @@ const CommonHeader = () => {
     const [styleState, styleDispatch] = useContext(StyleContext);
     let navigate = useNavigate();
     const [currentLang, setCurrentLang] = useState(i18n.language);
-
     const systemName = getSystemName();
     const logo = getLogo();
     const currentDate = new Date();
@@ -42,28 +41,6 @@ const CommonHeader = () => {
     const isNewYear =
         (currentDate.getMonth() === 0 && currentDate.getDate() === 1);
 
-    let buttons = [
-        {
-            text: t('首页'),
-            itemKey: 'home',
-            to: '/',
-        },
-        {
-            text: t('控制台'),
-            itemKey: 'detail',
-            to: '/',
-        },
-        {
-            text: t('定价'),
-            itemKey: 'pricing',
-            to: '/pricing',
-        },
-        {
-            text: t('关于'),
-            itemKey: 'about',
-            to: '/about',
-        },
-    ];
 
     async function logout() {
         await API.get('/api/user/logout');
@@ -124,6 +101,7 @@ const CommonHeader = () => {
         i18n.changeLanguage(lang);
     };
     const [isOpen, setIsOpen] = useState(false);
+    const [isLangOpen, setIsLangOpen] = useState(false);
     const [darkMode, setDarkMode] = useState(false); // Example state for dark mode
     const darkTextClass = darkMode ? "text-light" : "text-dark";
     const darkBorderClass = darkMode ? "border-secondary" : "border-light";
@@ -142,61 +120,19 @@ const CommonHeader = () => {
             <div className='commonHeader'>
                 <nav className="navbar navbar-expand-lg navbar-light sticky-top border-bottom">
                     <div className="container">
-                        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded={isOpen ? "true" : "false"} aria-label="Toggle navigation" onClick={() => setIsOpen(!isOpen)}>
-                            <span className="navbar-toggler-icon"></span>
-                        </button>
+                        <div className='mobileNavCollapse'>
+                            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded={isOpen ? "true" : "false"} aria-label="Toggle navigation" onClick={() => setIsOpen(!isOpen)}>
+                                <span className="navbar-toggler-icon"></span>
+                            </button>
 
-                        {/* Logo */}
-                        <Link to="/" className="navbar-brand d-flex align-items-center">
-                            <img src={logo} alt='logo' className="logoNavbar" />
-                            <span className="logoText">DuckLLM</span>
-                        </Link>
-
-                        {/* Navigation Links */}
-                        <div className={`collapse navbar-collapse middleNavbar ${isOpen ? "show" : ""}`} id="navbarNav">
-                            <ul className="navbar-nav ms-auto">
-                                <li className="nav-item">
-                                    <Link to="/" className="nav-link active">{t('首页')}</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link to="/detail" className="nav-link">{t('控制台')}</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link to="/pricing" className="nav-link">{t('定价')}</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link to="/about" className="nav-link">{t('关于')}</Link>
-                                </li>
-                            </ul>
-                            <div className='mobileView'>
-                                <div className="mobileDropdown">
-                                    <button
-                                        onClick={() => handleLanguageChange("en")}
-                                        className=""
-                                    >
-                                        <img src={ukLogo} alt="uk" className='langLogo' />   English
-                                    </button>
-                                    <button
-                                        onClick={() => handleLanguageChange("zh")}
-                                        className="block w-full text-left px-4 py-2 hover:bg-blue-100"
-                                    >
-                                        <img src={chinaLogo} alt="chinaLogo" className='langLogo' />   简体中文
-                                    </button>
-                                </div>
-                                <div className='mobileRegister'>
-                                    <Switch
-                                        checkedText='🌞'
-                                        size={styleState.isMobile ? 'default' : 'large'}
-                                        checked={theme === 'dark'}
-                                        uncheckedText='🌙'
-                                        onChange={(checked) => {
-                                            setTheme(checked);
-                                        }}
-                                    />
-                                    <Link to="/register" className="registerBtn">{t('注册')}</Link>
-                                </div>
-                            </div>
+                            {/* Logo */}
+                            <Link to="/" className="navbar-brand d-flex align-items-center">
+                                <img src={logo} alt='logo' className="logoNavbar" />
+                                <span className="logoText">DuckLLM</span>
+                            </Link>
                         </div>
+
+
 
                         {/* Login and Create Account Buttons */}
                         <div className="navbarLink">
@@ -256,6 +192,110 @@ const CommonHeader = () => {
                                 </button>
                             </div>
                             <Link to="/register" className="registerBtn">{t('注册')}</Link>
+                        </div>
+                    </div>
+                    {/* Navigation Links */}
+                    <div className={`collapse navbar-collapse middleNavbar ${isOpen ? "show" : ""}`} id="navbarNav">
+                        <ul className="navbar-nav ms-auto">
+                            <li className="nav-item">
+                                <Link to="/" className="nav-link active">{t('首页')}</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/detail" className="nav-link">{t('控制台')}</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/pricing" className="nav-link">{t('定价')}</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/about" className="nav-link">{t('关于')}</Link>
+                            </li>
+                        </ul>
+                        <div className='mobileView'>
+                            <div className="mobileDropdown w-full justify-content-start">
+                                <div className="dropdown relative w-full">
+                                    {/* Toggle Button */}
+                                    <button
+                                        className="dropdown-btn flex items-center justify-between w-full px-4 py-2 bg-gray-100 rounded-md"
+                                        onClick={() => setIsLangOpen(!isLangOpen)}
+                                    >
+                                        {currentLang === "en" ? (
+                                            <>
+                                                <img src={ukLogo} className="langLogo mr-2" alt="uk" /> English
+                                            </>
+                                        ) : (
+                                            <>
+                                                <img src={chinaLogo} className="langLogo mr-2" alt="china" /> 简体中文
+                                            </>
+                                        )}
+                                    </button>
+
+
+                                    <div
+                                        className={`transition-all duration-200 ease-in-out overflow-hidden ${isLangOpen ? 'd-flex' : 'd-none'
+                                            }`}
+                                    >
+                                        <div className="flex flex-col bg-white mt-2 rounded-md shadow-md">
+                                            <button
+                                                onClick={() => {
+                                                    handleLanguageChange("en");
+                                                    setIsLangOpen(false);
+                                                }}
+                                                className="flex items-center px-4 py-2 hover:bg-blue-100"
+                                            >
+                                                <img src={ukLogo} alt="uk" className="langLogo mr-2" /> English
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    handleLanguageChange("zh");
+                                                    setIsLangOpen(false);
+                                                }}
+                                                className="flex items-center px-4 py-2 hover:bg-blue-100"
+                                            >
+                                                <img src={chinaLogo} alt="china" className="langLogo mr-2" /> 简体中文
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='mobileRegister'>
+                                <div className="d-flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-800">
+                                    <button
+                                        onClick={toggleTheme}
+                                        className="theme-toggle"
+                                        aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+                                    >
+                                        {/* Track and icons */}
+                                        <div className={`toggle-track ${isDark ? 'dark' : 'light'}`}>
+                                            {/* Sun icon */}
+                                            <svg
+                                                viewBox="0 0 24 24"
+                                                className={`icon sun-icon ${isDark ? 'inactive' : 'active'}`}
+                                                fill="none"
+                                                stroke="currentColor"
+                                            >
+                                                <circle cx="12" cy="12" r="5" strokeWidth="2" />
+                                                <path strokeWidth="2" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                                            </svg>
+
+                                            {/* Moon icon */}
+                                            <svg
+                                                viewBox="0 0 24 24"
+                                                className={`icon moon-icon ${isDark ? 'active' : 'inactive'}`}
+                                                fill="none"
+                                                stroke="currentColor"
+                                            >
+                                                <path strokeWidth="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                                            </svg>
+                                        </div>
+
+                                        {/* Thumb/slider */}
+                                        <div className={`toggle-thumb ${isDark ? 'dark' : 'light'}`} />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className='mobileRegister'>
+                                <Link to="/register" className="registerBtn w-auto">{t('注册')}</Link>
+                            </div>
                         </div>
                     </div>
                 </nav>

@@ -12,6 +12,7 @@ import contactIcon from "../assets/contactUs.png";
 import aiIcon from "../assets/platform.svg";
 import blogIcon from "../assets/blog.svg";
 import settingIcon from "../assets/Setting.svg";
+import logoutIcon from "../assets/fi_log-out.svg";
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/User';
@@ -24,7 +25,7 @@ import ukLogo from "../assets/uk.svg";
 import chinaLogo from "../assets/china.png";
 import notificationIcon from "../assets/Notification.svg";
 import { Avatar } from '@douyinfe/semi-ui';
-import { stringToColor } from '../helpers/render';
+import { renderQuota, stringToColor } from '../helpers/render';
 import { API } from './../helpers';
 
 
@@ -34,6 +35,7 @@ const DashboardLayout = ({ children, ...props }) => {
     const pathArray = location.pathname.split("/");
     const urlParams = pathArray[pathArray.length - 1];
     const [userState, userDispatch] = useContext(UserContext);
+    const [userQuota, setUserQuota] = useState(0);
     let navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(window.innerWidth > 768);
 
@@ -55,6 +57,15 @@ const DashboardLayout = ({ children, ...props }) => {
     const setTheme = useSetTheme();
     const [styleState, styleDispatch] = useContext(StyleContext);
     const logo = getLogo();
+    const getUserQuota = async () => {
+        let res = await API.get(`/api/user/self`);
+        const { success, message, data } = res.data;
+        if (success) {
+            setUserQuota(renderQuota(data.quota));
+        } else {
+            showError(message);
+        }
+    };
     useEffect(() => {
         const handleLanguageChanged = (lng) => {
             setCurrentLang(lng);
@@ -100,6 +111,7 @@ const DashboardLayout = ({ children, ...props }) => {
 
     // Close dropdowns when clicking outside
     useEffect(() => {
+        getUserQuota()
         const handleClickOutside = (event) => {
             if (
                 notificationRef.current &&
@@ -171,7 +183,7 @@ const DashboardLayout = ({ children, ...props }) => {
                     <img onClick={toggle} src={toggleNav} alt="toggleNav" style={{ cursor: 'pointer' }} />
                 </div>
                 <div className='dashboardOption navbarLink d-flex'>
-                    <span className='walletAmount'>45454 <img src={walletIcon} alt="walletIcon" /> </span>
+                    <span className='walletAmount'>{userQuota && userQuota} <img src={walletIcon} alt="walletIcon" /> </span>
                     <div className="dropdown-lang relative">
                         <button className="dropdown-btn">
                             {currentLang === "en" ? <><img src={ukLogo} className='langLogo' alt="uk" /> English</> : <><img src={chinaLogo} className='langLogo' alt="chinaLogo" /> 简体中文</>}
@@ -253,7 +265,9 @@ const DashboardLayout = ({ children, ...props }) => {
                         </div>
                         {userDropdown && (
                             <div className="dropdown active">
-                                <div className="dropdown-item" onClick={logout}>{t('退出')}</div>
+                                <div className="dropdown-item">{t('你好')} <b>{userState?.user?.username}</b></div>
+                                <Link to="/setting" className="dropdown-item"><img src={settingIcon} alt="dashboardIcon" /> {t('账户设置')}</Link>
+                                <div className="dropdown-item" onClick={logout}><img src={logoutIcon} alt="dashboardIcon" /> {t('注销')}</div>
                             </div>
                         )}
                     </div> : "close"}
@@ -271,14 +285,18 @@ const DashboardLayout = ({ children, ...props }) => {
                         onClick={toggleUserDropdown}
                     >
                         <div className="user-icon">
-                            <img src="https://via.placeholder.com/100" alt="User" />
+                            {userState.user ? <div className='userAvatar'
+                                style={{ background: `${stringToColor(userState?.user?.username)}` }}
+                            >
+                                {userState?.user?.username[0]}
+                            </div> : ""}
                         </div>
                         {userDropdown && (
                             <div className="dropdown active">
-                                <div className="dropdown-item">Profile</div>
-                                <div className="dropdown-item">Settings</div>
-                                <div className="dropdown-item">Help Center</div>
-                                <div className="dropdown-item">Log Out</div>
+                                <div className="dropdown-item"><b>{userQuota && userQuota}</b></div>
+                                <div className="dropdown-item">{t('你好')} <b>{userState?.user?.username}</b></div>
+                                <Link to="/setting" className="dropdown-item"><img src={settingIcon} alt="dashboardIcon" /> {t('账户设置')}</Link>
+                                <div className="dropdown-item" onClick={logout}><img src={logoutIcon} alt="dashboardIcon" /> {t('注销')}</div>
                             </div>
                         )}
                     </div>

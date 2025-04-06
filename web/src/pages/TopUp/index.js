@@ -208,6 +208,7 @@ const TopUp = () => {
   const getUserQuota = async () => {
     let res = await API.get(`/api/user/self`);
     const { success, message, data } = res.data;
+    console.log('amount pay', renderQuota(res.data.data.quota));
     if (success) {
       setUserQuota(data.quota);
     } else {

@@ -9,13 +9,25 @@ import { getLogo } from '../helpers/utils.js';
 import toggleNav from "../assets/fi_columns.svg";
 import notificationIcon from "../assets/Notification.svg";
 import walletIcon from "../assets/wallet-add.svg";
+import { renderQuota } from '../helpers/render.js';
 
 const DashboardNav = ({ toggle }) => {
     const [currentLang, setCurrentLang] = useState(i18n.language);
     const theme = useTheme();
     const setTheme = useSetTheme();
     const [styleState, styleDispatch] = useContext(StyleContext);
+    const [userQuota, setUserQuota] = useState(0);
+
     const logo = getLogo();
+    const getUserQuota = async () => {
+        let res = await API.get(`/api/user/self`);
+        const { success, message, data } = res.data;
+        if (success) {
+            setUserQuota(renderQuota(data.quota));
+        } else {
+            showError(message);
+        }
+    };
     useEffect(() => {
         const handleLanguageChanged = (lng) => {
             setCurrentLang(lng);
@@ -24,12 +36,11 @@ const DashboardNav = ({ toggle }) => {
                 iframe.contentWindow.postMessage({ lang: lng }, '*');
             }
         };
-
         i18n.on('languageChanged', handleLanguageChanged);
-
         return () => {
             i18n.off('languageChanged', handleLanguageChanged);
         };
+        getUserQuota()
     }, [i18n]);
 
     const handleLanguageChange = (lang) => {
@@ -39,16 +50,13 @@ const DashboardNav = ({ toggle }) => {
     const [notificationDropdown, setNotificationDropdown] = useState(false);
     const [userDropdown, setUserDropdown] = useState(false);
     const [isDarkTheme, setIsDarkTheme] = useState(false);
-
     const notificationRef = useRef(null);
     const userRef = useRef(null);
-
     const toggleNotificationDropdown = (e) => {
         e.stopPropagation();
         setNotificationDropdown(!notificationDropdown);
         setUserDropdown(false);
     };
-
     const toggleUserDropdown = (e) => {
         e.stopPropagation();
         setUserDropdown(!userDropdown);
@@ -123,7 +131,7 @@ const DashboardNav = ({ toggle }) => {
                     <img onClick={toggle} src={toggleNav} alt="toggleNav" style={{ cursor: 'pointer' }} />
                 </div>
                 <div className='dashboardOption navbarLink d-flex'>
-                    <span className='walletAmount'>45454 <img src={walletIcon} alt="walletIcon" /> </span>
+                    <span className='walletAmount'>{userQuota && userQuota} <img src={walletIcon} alt="walletIcon" /> </span>
                     <div className="dropdown-lang relative">
                         <button className="dropdown-btn">
                             {currentLang === "en" ? <><img src={ukLogo} className='langLogo' alt="uk" /> English</> : <><img src={chinaLogo} className='langLogo' alt="chinaLogo" /> 简体中文</>}

@@ -33,6 +33,8 @@ const PageLayout = () => {
   const loadStatus = async () => {
     try {
       const res = await API.get('/api/status');
+      console.log('status', res.data);
+
       const { success, data } = res.data;
       if (success) {
         statusDispatch({ type: 'set', payload: data });

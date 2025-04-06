@@ -211,7 +211,9 @@ function App() {
           path='/detail'
           element={
             <PrivateRoute>
-              <Detail />
+              <Suspense fallback={<Loading></Loading>}>
+                <Detail />
+              </Suspense>
             </PrivateRoute>
           }
         />
