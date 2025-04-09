@@ -41,8 +41,8 @@ const Home = () => {
         <div className="hero-section">
           <h1 dangerouslySetInnerHTML={{ __html: displayedText.replace(/\n/g, "<br/>") }} />
           <p>One API to solve all your problems. - DuckLLM</p>
-          <button className="rgbBtn mr-2">Create an account</button>
-          <button className="transparentBtn">See Pricing</button>
+          <Link to="/register" className="rgbBtn mr-2">Create an account</Link>
+          <Link to="/pricing" className="transparentBtn">See Pricing</Link>
         </div>
         <div className='heroBanner'>
           <img src={heroBanner} alt="heroBanner" />
@@ -61,8 +61,8 @@ const Home = () => {
         <div className='apiContent'>
           <h6>API Aggregation Brand</h6>
           <p>We are committed to the achievement of providing a highly stable enterprise-level 2000Mbps bandwidth service. It exclusively utilizes official high-speed enterprise channels, avoiding low-cost alternatives. </p>
-          <button className="rgbBtn mr-2">Create an account</button>
-          <button className="transparentBtn">See Pricing</button>
+          <Link to="/register" className="rgbBtn mr-2">Create an account</Link>
+          <Link to="/pricing" className="transparentBtn">See Pricing</Link>
         </div>
       </section>
 
@@ -70,7 +70,7 @@ const Home = () => {
         <img className='tokenImg' src={tokenImg} alt="tokenImg" />
         <h2>Get API and start your journey</h2>
         <p>After logging in, visit and click <u>Token</u> - Add a new token. The token limit is set to $1 <br /> for every 500,000. After adding successfully, you can click Copy APIKEY</p>
-        <button className="rgbBtn mt-5">Create an account</button>
+        <Link to="/register" className="rgbBtn mt-5">Create an account</Link>
       </section>
       <section className='tableHomeBox'>
         <img className='tableImg' src={tableImg} alt="tableImg" />

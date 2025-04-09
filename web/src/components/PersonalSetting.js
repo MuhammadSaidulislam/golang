@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
     API,
     copy,
+    isAdmin,
     isRoot,
     showError,
     showInfo,
@@ -48,6 +49,9 @@ import { Modal } from 'react-bootstrap';
 import phoneIcon from "../assets/fi_check-circle.svg";
 import profileIcon from "../assets/fi_smartphone.svg";
 import checkIcon from "../assets/fi_profile.svg";
+import OperationSetting from './OperationSetting';
+import SystemSetting from './SystemSetting';
+import OtherSetting from './OtherSetting';
 
 
 const PersonalSetting = () => {
@@ -55,7 +59,7 @@ const PersonalSetting = () => {
 
     let navigate = useNavigate();
     const { t } = useTranslation();
-    const [mobileTab, setMobileTab] = useState(false);
+    const [mobileTab, setMobileTab] = useState('');
     const [inputs, setInputs] = useState({
         wechat_verification_code: '',
         email_verification_code: '',
@@ -351,25 +355,35 @@ const PersonalSetting = () => {
                         className={`nav-link ${activeTab === 'account' ? 'active' : ''}`}
                         onClick={() => setActiveTab('account')}
                     >
-                        Account
+                        {t('个人设置')}
                     </button>
                 </li>
-                <li className="nav-item">
-                    <button
-                        className={`nav-link px-4 pb-2 ${activeTab === 'kyc' ? 'active text-primary border-bottom border-primary' : 'text-secondary'}`}
-                        onClick={() => setActiveTab('kyc')}
-                    >
-                        KYC Verification
-                    </button>
-                </li>
-                <li className="nav-item">
-                    <button
-                        className={`nav-link px-4 pb-2 ${activeTab === 'devices' ? 'active text-primary border-bottom border-primary' : 'text-secondary'}`}
-                        onClick={() => setActiveTab('devices')}
-                    >
-                        Devices
-                    </button>
-                </li>
+                {isAdmin() && <>
+                    <li className="nav-item">
+                        <button
+                            className={`nav-link px-4 pb-2 ${activeTab === 'operation' ? 'active text-primary border-bottom border-primary' : 'text-secondary'}`}
+                            onClick={() => setActiveTab('operation')}
+                        >
+                            {t('运营设置')}
+                        </button>
+                    </li>
+                    <li className="nav-item">
+                        <button
+                            className={`nav-link px-4 pb-2 ${activeTab === 'system' ? 'active text-primary border-bottom border-primary' : 'text-secondary'}`}
+                            onClick={() => setActiveTab('system')}
+                        >
+                            {t('系统设置')}
+                        </button>
+                    </li>
+                    <li className="nav-item">
+                        <button
+                            className={`nav-link px-4 pb-2 ${activeTab === 'other' ? 'active text-primary border-bottom border-primary' : 'text-secondary'}`}
+                            onClick={() => setActiveTab('other')}
+                        >
+                            {t('其他设置')}
+                        </button>
+                    </li>
+                </>}
             </ul>
 
             {/* Tab Content */}
@@ -679,25 +693,27 @@ const PersonalSetting = () => {
                     </div>
                 </div>
 
-                {/* KYC Tab Content */}
-                <div className={`tab-pane ${activeTab === 'kyc' ? 'active' : ''}`}>
-                    <h5>KYC Verification Content</h5>
-                    <p>KYC verification content will go here.</p>
+                {/* Operation Tab Content */}
+                <div className={`tab-pane ${activeTab === 'operation' ? 'active' : ''}`}>
+                    {isAdmin() && <OperationSetting setMobileTab={setMobileTab} />}
                 </div>
 
-                {/* Devices Tab Content */}
-                <div className={`tab-pane ${activeTab === 'devices' ? 'active' : ''}`}>
-                    <h5>Devices Content</h5>
-                    <p>Devices content will go here.</p>
+                {/* System Tab Content */}
+                <div className={`tab-pane ${activeTab === 'system' ? 'active' : ''}`}>
+                    {isAdmin() && <SystemSetting setMobileTab={setMobileTab} />}
+                </div>
 
+                {/* Other Tab Content */}
+                <div className={`tab-pane ${activeTab === 'other' ? 'active' : ''}`}>
+                    {isAdmin() && <OtherSetting setMobileTab={setMobileTab} />}
                 </div>
             </div>
 
 
             {/* mobile profile tab */}
-            {mobileTab ? <div className="row profileInfoTab">
+            {mobileTab === 'setting' ? <div className="row profileInfoTab">
                 <div className="col-md-6">
-                    <p className="accountText" onClick={() => setMobileTab(false)}> <IconArrowLeft /> Account Settings</p>
+                    <p className="accountText" onClick={() => setMobileTab('')}> <IconArrowLeft /> Account Settings</p>
                     {/* User Form Section */}
                     <div className="d-flex flex-column">
                         <div className="personalDetails">
@@ -849,39 +865,50 @@ const PersonalSetting = () => {
                         </div>
                     </div>
                 </div>
-            </div> : <>
-                {/* mobile tab */}
+            </div> : mobileTab === 'operation' ? <OperationSetting setMobileTab={setMobileTab} />
+                : mobileTab === 'system' ? <SystemSetting setMobileTab={setMobileTab} />
+                    : mobileTab === 'other' ? <OtherSetting setMobileTab={setMobileTab} /> : <>
+                        {/* mobile tab */}
 
-                <div className='mobileSettingTab'>
-                    <div className='tabSetting' onClick={() => setMobileTab(true)}>
-                        <div className='tabProfile'>
-                            <img src={checkIcon} alt="setting" />
-                            <p>Account Settings</p>
+                        <div className='mobileSettingTab'>
+                            <div className='tabSetting' onClick={() => setMobileTab('setting')}>
+                                <div className='tabProfile'>
+                                    <img src={checkIcon} alt="setting" />
+                                    <p>Account Settings</p>
+                                </div>
+                                <div className='tabArrow'>
+                                    <IconChevronRight />
+                                </div>
+                            </div>
+                            <div className='tabSetting' onClick={() => setMobileTab('operation')}>
+                                <div className='tabProfile'>
+                                    <img src={phoneIcon} alt="setting" />
+                                    <p>Operation Settings</p>
+                                </div>
+                                <div className='tabArrow'>
+                                    <IconChevronRight />
+                                </div>
+                            </div>
+                            <div className='tabSetting' onClick={() => setMobileTab('system')}>
+                                <div className='tabProfile'>
+                                    <img src={profileIcon} alt="setting" />
+                                    <p>System Settings</p>
+                                </div>
+                                <div className='tabArrow'>
+                                    <IconChevronRight />
+                                </div>
+                            </div>
+                            <div className='tabSetting' onClick={() => setMobileTab('other')}>
+                                <div className='tabProfile'>
+                                    <img src={profileIcon} alt="setting" />
+                                    <p>Other Settings</p>
+                                </div>
+                                <div className='tabArrow'>
+                                    <IconChevronRight />
+                                </div>
+                            </div>
                         </div>
-                        <div className='tabArrow'>
-                            <IconChevronRight />
-                        </div>
-                    </div>
-                    <div className='tabSetting'>
-                        <div className='tabProfile'>
-                            <img src={phoneIcon} alt="setting" />
-                            <p>KYC Verification</p>
-                        </div>
-                        <div className='tabArrow'>
-                            <IconChevronRight />
-                        </div>
-                    </div>
-                    <div className='tabSetting'>
-                        <div className='tabProfile'>
-                            <img src={profileIcon} alt="setting" />
-                            <p>Devices</p>
-                        </div>
-                        <div className='tabArrow'>
-                            <IconChevronRight />
-                        </div>
-                    </div>
-                </div>
-            </>}
+                    </>}
 
 
 

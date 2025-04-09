@@ -3,8 +3,9 @@ import { Banner, Button, Col, Form, Row } from '@douyinfe/semi-ui';
 import { API, showError, showSuccess, showInfo } from '../helpers';
 import { marked } from 'marked';
 import { useTranslation } from 'react-i18next';
+import { IconArrowLeft } from '@douyinfe/semi-icons';
 
-const OtherSetting = () => {
+const OtherSetting = ({ setMobileTab }) => {
 
   const { t } = useTranslation();
   const [inputs, setInputs] = useState({
@@ -62,11 +63,11 @@ const OtherSetting = () => {
   });
   const handleInputChange = async (value, e) => {
     const name = e.target.id;
-  
+
     // Check if the field is 'LifeTime' and convert to an integer
     if (name === 'LifeTime') {
       const intValue = parseInt(value, 10);
-  
+
       // Ensure the value is within the valid range (5 to 720 minutes)
       if (intValue >= 5 && intValue <= 720) {
         setInputs((inputs) => ({ ...inputs, [name]: intValue }));
@@ -121,13 +122,11 @@ const OtherSetting = () => {
   const submitSettings = async () => {
     try {
       setLoadingInput(true);
-      
-      console.log(inputs);
       // Submit the Cryptomus settings if enabled
       if (inputs.EnabledCryptomus) {
-          if (!inputs.CryptoMerchant_ID || !inputs.CryptoAPI_Key || !inputs.CryptoWebhook_Url || !inputs.LifeTime) {
-            showError(t('Cryptomus settings are incomplete.'));
-            return;
+        if (!inputs.CryptoMerchant_ID || !inputs.CryptoAPI_Key || !inputs.CryptoWebhook_Url || !inputs.LifeTime) {
+          showError(t('Cryptomus settings are incomplete.'));
+          return;
         }
         await updateOption('CryptoMerchant_ID', inputs.CryptoMerchant_ID);
         await updateOption('CryptoAPI_Key', inputs.CryptoAPI_Key);
@@ -138,8 +137,8 @@ const OtherSetting = () => {
       // Submit the Airwallex settings if enabled
       if (inputs.EnabledAirwallex) {
         if (!inputs.AirwallexClient_ID || !inputs.AirwallexAPI_Key) {
-            showError(t('Airwallex settings are incomplete.'));
-            return;
+          showError(t('Airwallex settings are incomplete.'));
+          return;
         }
         await updateOption('AirwallexClient_ID', inputs.AirwallexClient_ID);
         await updateOption('AirwallexAPI_Key', inputs.AirwallexAPI_Key);
@@ -163,7 +162,6 @@ const OtherSetting = () => {
         [key]: true,
       }));
 
-      console.log(inputs);
       await updateOption(key, value); // Send the updated value to the backend
       showSuccess(t(`${key} 已更新`)); // Success message
 
@@ -272,13 +270,13 @@ const OtherSetting = () => {
       let newInputs = {};
       data.forEach((item) => {
         if (item.key === 'EnabledCryptomus' || item.key === 'EnabledAirwallex' || item.key === 'LiveAirwallex') {
-            newInputs[item.key] = item.value === 'true';
+          newInputs[item.key] = item.value === 'true';
         } else if (item.key in inputs) {
           newInputs[item.key] = item.value;
         }
       });
       setInputs(newInputs);
-      console.log(newInputs);
+
       formAPISettingGeneral.current.setValues(newInputs);
       formAPISettingPayment.current.setValues(newInputs);
       formAPIPersonalization.current.setValues(newInputs);
@@ -294,6 +292,7 @@ const OtherSetting = () => {
 
   return (
     <Row>
+      <p className="accountText" onClick={() => setMobileTab('')}> <IconArrowLeft /> Account Settings</p>
       <Col span={24}>
         {/* 通用设置 */}
         <Form
@@ -315,64 +314,64 @@ const OtherSetting = () => {
             </Button>
           </Form.Section>
         </Form>
-        
+
         <Form
           values={inputs}
           getFormApi={(formAPI) => (formAPISettingPayment.current = formAPI)}
           style={{ marginBottom: 15 }}
         >
-         <Form.Section text={t('Payment Settings')}>
-            
-              <Row gutter={16}>
-                <Col span={8}>
-                  <Form.Switch
-                    field={'EnabledCryptomus'}
-                    label={t('Cryptomus Enable')}
-                    size='default'
-                    checkedText='｜'
-                    uncheckedText='〇'
-                    onChange={(value) => {
-                      setInputs({
-                        ...inputs,
-                        EnabledCryptomus: value,
-                      });
+          <Form.Section text={t('Payment Settings')}>
+
+            <Row gutter={16}>
+              <Col span={8}>
+                <Form.Switch
+                  field={'EnabledCryptomus'}
+                  label={t('Cryptomus Enable')}
+                  size='default'
+                  checkedText='｜'
+                  uncheckedText='〇'
+                  onChange={(value) => {
+                    setInputs({
+                      ...inputs,
+                      EnabledCryptomus: value,
+                    });
                     submitEnabledStatus('EnabledCryptomus', value);
-                    }}
-                  />
-                </Col>
-                <Col span={8}>
-                  <Form.Switch
-                    field={'EnabledAirwallex'}
-                    label={t('Airwallex Enable')}
-                    size='default'
-                    checkedText='｜'
-                    uncheckedText='〇'
-                    onChange={(value) => {
-                      setInputs({
-                        ...inputs,
-                        EnabledAirwallex: value,
-                      });
+                  }}
+                />
+              </Col>
+              <Col span={8}>
+                <Form.Switch
+                  field={'EnabledAirwallex'}
+                  label={t('Airwallex Enable')}
+                  size='default'
+                  checkedText='｜'
+                  uncheckedText='〇'
+                  onChange={(value) => {
+                    setInputs({
+                      ...inputs,
+                      EnabledAirwallex: value,
+                    });
                     submitEnabledStatus('EnabledAirwallex', value);
-                    }}
-                  />
-                </Col>
-                <Col span={8}>
-                  <Form.Switch
-                    field={'LiveAirwallex'}
-                    label={t('Test | Live Airwallex')}
-                    size='default'
-                    checkedText='｜'
-                    uncheckedText='〇'
-                    onChange={(value) => {
-                      setInputs({
-                        ...inputs,
-                        LiveAirwallex: value,
-                      });
+                  }}
+                />
+              </Col>
+              <Col span={8}>
+                <Form.Switch
+                  field={'LiveAirwallex'}
+                  label={t('Test | Live Airwallex')}
+                  size='default'
+                  checkedText='｜'
+                  uncheckedText='〇'
+                  onChange={(value) => {
+                    setInputs({
+                      ...inputs,
+                      LiveAirwallex: value,
+                    });
                     submitEnabledStatus('LiveAirwallex', value);
-                    }}
-                  />
-                </Col>
-              </Row>
+                  }}
+                />
+              </Col>
+            </Row>
             {inputs.EnabledCryptomus && (
               <Row gutter={16}>
                 <Col span={8}>
@@ -461,7 +460,7 @@ const OtherSetting = () => {
                 </Col>
               </Row>
             )}
-          
+
             {/* Submit Button */}
             <Button onClick={submitSettings} loading={loadingInput['settings']}>
               {t('Save Settings')}
@@ -474,7 +473,7 @@ const OtherSetting = () => {
           getFormApi={(formAPI) => (formAPIPersonalization.current = formAPI)}
           style={{ marginBottom: 15 }}
         >
-        <Form.Section text={t('个性化设置')}>
+          <Form.Section text={t('个性化设置')}>
             <Form.Input
               label={t('系统名称')}
               placeholder={t('在此输入系统名称')}

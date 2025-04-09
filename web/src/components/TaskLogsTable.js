@@ -395,33 +395,35 @@ const LogsTable = () => {
             </div>
 
             {/* Table list */}
-            <div className="tableBox">
-                <Table borderless hover>
-                    <thead>
-                        <tr>
-                            <th>Submission Date/Time <SortIconSvg color="--semi-table-thead-0" /></th>
-                            <th>Spend time <SortIconSvg color="--semi-table-thead-0" /></th>
-                            <th>Type <SortIconSvg color="--semi-table-thead-0" /></th>
-                            <th>Task ID <SortIconSvg color="--semi-table-thead-0" /></th>
-                            <th>Schedule <SortIconSvg color="--semi-table-thead-0" /></th>
-                            <th>Result <SortIconSvg color="--semi-table-thead-0" /></th>
-                            <th>Prompt <SortIconSvg color="--semi-table-thead-0" /></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {[...Array(80)].map((_, index) => (
-                            <tr key={index}>
-                                <td>12 Aug 2022 - 12:25 am</td>
-                                <td>5</td>
-                                <td>My APIs</td>
-                                <td>AA87</td>
-                                <td>A25</td>
-                                <td>12 Aug 2022 - 12:25 am</td>
-                                <td>Action Prompt</td>
+            <div className="tableData">
+                <div className="tableBox">
+                    <Table borderless hover>
+                        <thead>
+                            <tr>
+                                <th>Submission Date/Time <SortIconSvg color="--semi-table-thead-0" /></th>
+                                <th>Spend time <SortIconSvg color="--semi-table-thead-0" /></th>
+                                <th>Type <SortIconSvg color="--semi-table-thead-0" /></th>
+                                <th>Task ID <SortIconSvg color="--semi-table-thead-0" /></th>
+                                <th>Schedule <SortIconSvg color="--semi-table-thead-0" /></th>
+                                <th>Result <SortIconSvg color="--semi-table-thead-0" /></th>
+                                <th>Prompt <SortIconSvg color="--semi-table-thead-0" /></th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {[...Array(80)].map((_, index) => (
+                                <tr key={index}>
+                                    <td>12 Aug 2022 - 12:25 am</td>
+                                    <td>5</td>
+                                    <td>My APIs</td>
+                                    <td>AA87</td>
+                                    <td>A25</td>
+                                    <td>12 Aug 2022 - 12:25 am</td>
+                                    <td>Action Prompt</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                </div>
             </div>
 
             {/* Table Pagination */}

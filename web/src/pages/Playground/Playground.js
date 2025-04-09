@@ -523,7 +523,6 @@ const Playground = () => {
           </Layout.Sider>
         )}
       </div>
-
     </DashboardLayout>
   );
 };

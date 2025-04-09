@@ -94,7 +94,7 @@ const SafetySetting = () => {
   useEffect(() => {
     getOptions().then();
   }, []);
-  useEffect(() => {}, [inputs.EmailDomainWhitelist]);
+  useEffect(() => { }, [inputs.EmailDomainWhitelist]);
 
   const updateOption = async (key, value) => {
     setLoading(true);
@@ -234,7 +234,7 @@ const SafetySetting = () => {
   const submitEmailDomainWhitelist = async () => {
     if (
       originInputs['EmailDomainWhitelist'] !==
-        inputs.EmailDomainWhitelist.join(',') &&
+      inputs.EmailDomainWhitelist.join(',') &&
       inputs.SMTPToken !== ''
     ) {
       await updateOption(

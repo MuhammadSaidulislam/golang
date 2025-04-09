@@ -453,6 +453,7 @@
   "请输入新的用户名": "Please enter a new username",
   "请输入新的密码": "Please enter a new password",
   "显示名称": "Display Name",
+  "密 码": "Password",
   "请输入新的显示名称": "Please enter a new display name",
   "已绑定的 GitHub 账户": "GitHub Account Bound",
   "此项只读，要用户通过个人设置页面的相关绑��按钮进��绑���，不可直接修改": "This item is read-only. Users need to bind through the relevant binding button on the personal settings page, and cannot be modified directly",

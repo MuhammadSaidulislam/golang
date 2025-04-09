@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { API, isMobile, showError, showSuccess } from '../../helpers';
-import Title from '@douyinfe/semi-ui/lib/es/typography/title';
-import { Button, Input, SideSheet, Space, Spin } from '@douyinfe/semi-ui';
+import { API, showError, showSuccess } from '../../helpers';
+import { t } from 'i18next';
+import { Modal } from 'react-bootstrap';
+import { IconClose } from '@douyinfe/semi-icons';
 
 const AddUser = (props) => {
+
   const originInputs = {
     username: '',
     display_name: '',
@@ -31,80 +33,39 @@ const AddUser = (props) => {
       setInputs(originInputs);
       props.refresh();
       props.handleClose();
+      props.handleUserClose();
     } else {
       showError(message);
     }
     setLoading(false);
   };
 
-  const handleCancel = () => {
-    props.handleClose();
-  };
 
   return (
-    <>
-      <SideSheet
-        placement={'left'}
-        title={<Title level={3}>{'添加用户'}</Title>}
-        headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
-        bodyStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
-        visible={props.visible}
-        footer={
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Space>
-              <Button theme='solid' size={'large'} onClick={submit}>
-                提交
-              </Button>
-              <Button
-                theme='solid'
-                size={'large'}
-                type={'tertiary'}
-                onClick={handleCancel}
-              >
-                取消
-              </Button>
-            </Space>
-          </div>
-        }
-        closeIcon={null}
-        onCancel={() => handleCancel()}
-        width={isMobile() ? '100%' : 600}
-      >
-        <Spin spinning={loading}>
-          <Input
-            style={{ marginTop: 20 }}
-            label='用户名'
-            name='username'
-            addonBefore={'用户名'}
-            placeholder={'请输入用户名'}
-            onChange={(value) => handleInputChange('username', value)}
-            value={username}
-            autoComplete='off'
-          />
-          <Input
-            style={{ marginTop: 20 }}
-            addonBefore={'显示名'}
-            label='显示名称'
-            name='display_name'
-            autoComplete='off'
-            placeholder={'请输入显示名称'}
-            onChange={(value) => handleInputChange('display_name', value)}
-            value={display_name}
-          />
-          <Input
-            style={{ marginTop: 20 }}
-            label='密 码'
-            name='password'
-            type={'password'}
-            addonBefore={'密码'}
-            placeholder={'请输入密码'}
-            onChange={(value) => handleInputChange('password', value)}
-            value={password}
-            autoComplete='off'
-          />
-        </Spin>
-      </SideSheet>
-    </>
+    <Modal show={props.userShow} onHide={props.handleUserClose} centered size="md">
+      <div className='modalHeading'>
+        <h1>{t('添加用户')}</h1>
+        <button onClick={props.handleUserClose}><IconClose /></button>
+      </div>
+      <div className='modalContent walletModal'>
+        <div className="personalInput w-100">
+          <label>{t('用户名')}</label>
+          <input type="text" className="search-input" placeholder={t('请输入用户名')} name='username' autoComplete='off' value={username} onChange={(value) => handleInputChange('username', value.target.value)} />
+        </div>
+        <div className="personalInput w-100">
+          <label>{t('显示名称')}</label>
+          <input type="text" className="search-input" placeholder={t('请输入显示名称')} name='display_name' autoComplete='off' value={display_name} onChange={(value) => handleInputChange('display_name', value.target.value)} />
+        </div>
+        <div className="personalInput w-100">
+          <label>{t('密 码')}</label>
+          <input type="password" className="search-input" placeholder={t('请输入密码')} name='password' autoComplete='off' value={password} onChange={(value) => handleInputChange('password', value.target.value)} />
+        </div>
+        <div className="button-group w-100">
+          <div className="btn btn-cancel" onClick={props.handleUserClose}>{t('取消')}</div>
+          <div onClick={submit} className="btn btn-redeem">{t('提交')}</div>
+        </div>
+      </div>
+    </Modal>
   );
 };
 

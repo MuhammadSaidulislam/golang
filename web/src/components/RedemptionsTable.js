@@ -6,7 +6,7 @@ import {
   showSuccess,
   timestamp2string,
 } from '../helpers';
-
+import { SortIconSvg } from './svgIcon';
 import { ITEMS_PER_PAGE } from '../constants';
 import { renderQuota } from '../helpers/render';
 import {
@@ -15,11 +15,12 @@ import {
   Modal,
   Popconfirm,
   Popover,
-  Table,
   Tag,
 } from '@douyinfe/semi-ui';
 import EditRedemption from '../pages/Redemption/EditRedemption';
 import { useTranslation } from 'react-i18next';
+import { IconSearch, IconPlus } from '@douyinfe/semi-icons';
+import { Table } from "react-bootstrap";
 
 function renderTimestamp(timestamp) {
   return <>{timestamp2string(timestamp)}</>;
@@ -188,6 +189,12 @@ const RedemptionsTable = () => {
     setShowEdit(false);
   };
 
+  const [modalShow, setModalShow] = useState(false);
+  const handleModalClose = () => {
+    setModalShow(false);
+  }
+
+
   const setRedemptionFormat = (redeptions) => {
     setRedemptions(redeptions);
   };
@@ -196,12 +203,12 @@ const RedemptionsTable = () => {
     const res = await API.get(`/api/redemption/?p=${startIdx}&page_size=${pageSize}`);
     const { success, message, data } = res.data;
     if (success) {
-        const newPageData = data.items;
-        setActivePage(data.page);
-        setTokenCount(data.total);
-        setRedemptionFormat(newPageData);
+      const newPageData = data.items;
+      setActivePage(data.page);
+      setTokenCount(data.total);
+      setRedemptionFormat(newPageData);
     } else {
-        showError(message);
+      showError(message);
     }
     setLoading(false);
   };
@@ -282,25 +289,25 @@ const RedemptionsTable = () => {
 
   const searchRedemptions = async (keyword, page, pageSize) => {
     if (searchKeyword === '') {
-        await loadRedemptions(page, pageSize);
-        return;
+      await loadRedemptions(page, pageSize);
+      return;
     }
     setSearching(true);
     const res = await API.get(`/api/redemption/search?keyword=${keyword}&p=${page}&page_size=${pageSize}`);
     const { success, message, data } = res.data;
     if (success) {
-        const newPageData = data.items;
-        setActivePage(data.page);
-        setTokenCount(data.total);
-        setRedemptionFormat(newPageData);
+      const newPageData = data.items;
+      setActivePage(data.page);
+      setTokenCount(data.total);
+      setRedemptionFormat(newPageData);
     } else {
-        showError(message);
+      showError(message);
     }
     setSearching(false);
   };
 
   const handleKeywordChange = async (value) => {
-    setSearchKeyword(value.trim());
+    setSearchKeyword(value.target.value);
   };
 
   const sortRedemption = (key) => {
@@ -328,8 +335,8 @@ const RedemptionsTable = () => {
 
   let pageData = redemptions;
   const rowSelection = {
-    onSelect: (record, selected) => {},
-    onSelectAll: (selected, selectedRows) => {},
+    onSelect: (record, selected) => { },
+    onSelectAll: (selected, selectedRows) => { },
     onChange: (selectedRowKeys, selectedRows) => {
       setSelectedKeys(selectedRows);
     },
@@ -354,56 +361,137 @@ const RedemptionsTable = () => {
         editingRedemption={editingRedemption}
         visiable={showEdit}
         handleClose={closeEdit}
+        modalShow={modalShow}
+        handleModalClose={handleModalClose}
       ></EditRedemption>
-      <Form onSubmit={()=> {
-        searchRedemptions(searchKeyword, activePage, pageSize).then();
-      }}>
-        <Form.Input
-          label={t('搜索关键字')}
-          field='keyword'
-          icon='search'
-          iconPosition='left'
-          placeholder={t('关键字(id或者名称)')}
-          value={searchKeyword}
-          loading={searching}
-          onChange={handleKeywordChange}
-        />
-      </Form>
-      <Divider style={{margin:'5px 0 15px 0'}}/>
-      <div>
-        <Button
-            theme='light'
-            type='primary'
-            style={{ marginRight: 8 }}
-            onClick={() => {
-              setEditingRedemption({
-                id: undefined,
-              });
-              setShowEdit(true);
-            }}
+
+      <div className='searchAdd'>
+        <div className='searchBox'>
+          <div className="search-container">
+            <i className="search-icon"><IconSearch /></i>
+            <input type="text" className="search-input" placeholder={t('关键字(id或者名称)')} value={searchKeyword} onChange={handleKeywordChange} />
+          </div>
+          <button onClick={() => { searchRedemptions(searchKeyword, activePage, pageSize).then(); }} className='searchBtn' style={{ marginLeft: '10px' }}>
+            {t('查询')}
+          </button>
+        </div>
+        <button className='searchBtn'
+          theme='light'
+          type='primary'
+          style={{ marginRight: 8 }}
+          onClick={() => {
+            setEditingRedemption({
+              id: undefined,
+            });
+            setModalShow(true);
+          }}
         >
-          {t('添加兑换码')}
-        </Button>
-        <Button
-            label={t('复制所选兑换码')}
-            type='warning'
-            onClick={async () => {
-              if (selectedKeys.length === 0) {
-                showError(t('请至少选择一个兑换码！'));
-                return;
-              }
-              let keys = '';
-              for (let i = 0; i < selectedKeys.length; i++) {
-                keys += selectedKeys[i].name + '    ' + selectedKeys[i].key + '\n';
-              }
-              await copyText(keys);
-            }}
-        >
-          {t('复制所选兑换码到剪贴板')}
-        </Button>
+          <IconPlus /> {t('添加兑换码')}
+        </button>
       </div>
 
-      <Table
+
+
+
+      <div className="tableData">
+        <div className='tableBox'>
+          <Table borderless hover>
+            <thead>
+              <tr>
+                <th>{t('ID')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('名称')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('状态')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('额度')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('创建时间')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('兑换人ID')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pageData && pageData.map((redemption) => <tr>
+                <td>{redemption.id}</td>
+                <td>{redemption.name}</td>
+                <td>{renderStatus(redemption.status)}</td>
+                <td>{renderQuota(parseInt(redemption.quota))}</td>
+                <td>{renderTimestamp(redemption.created_time)}</td>
+                <td>{redemption.used_user_id === 0 ? t('无') : redemption.used_user_id}</td>
+                <td className="tableActions">
+                  <Popover content={redemption.key} position="top" style={{ padding: 20 }}>
+                    <Button theme="light" type="tertiary" style={{ marginRight: 8 }}>
+                      {t('查看')}
+                    </Button>
+                  </Popover>
+
+                  <Button
+                    theme="light"
+                    type="secondary"
+                    style={{ marginRight: 8 }}
+                    onClick={async () => {
+                      await copyText(redemption.key);
+                    }}
+                  >
+                    {t('复制')}
+                  </Button>
+
+                  <Popconfirm
+                    title={t('确定是否要删除此兑换码？')}
+                    content={t('此修改将不可逆')}
+                    okType="danger"
+                    position="left"
+                    onConfirm={async () => {
+                      await manageRedemption(redemption.id, 'delete', redemption);
+                      removeRecord(redemption.key);
+                    }}
+                  >
+                    <Button theme="light" type="danger" style={{ marginRight: 8 }}>
+                      {t('删除')}
+                    </Button>
+                  </Popconfirm>
+
+                  {redemption.status === 1 ? (
+                    <Button
+                      theme="light"
+                      type="warning"
+                      style={{ marginRight: 8 }}
+                      onClick={async () => {
+                        await manageRedemption(redemption.id, 'disable', redemption);
+                      }}
+                    >
+                      {t('禁用')}
+                    </Button>
+                  ) : (
+                    <Button
+                      theme="light"
+                      type="secondary"
+                      style={{ marginRight: 8 }}
+                      onClick={async () => {
+                        await manageRedemption(redemption.id, 'enable', redemption);
+                      }}
+                      disabled={redemption.status === 3}
+                    >
+                      {t('启用')}
+                    </Button>
+                  )}
+
+                  <Button
+                    theme="light"
+                    type="tertiary"
+                    onClick={() => {
+                      setEditingRedemption(redemption);
+                      setModalShow(true);
+                    }}
+                    disabled={redemption.status !== 1}
+                  >
+                    {t('编辑')}
+                  </Button>
+                </td>
+
+              </tr>)}
+            </tbody>
+          </Table>
+        </div>
+      </div>
+      {/* <Table
         style={{ marginTop: 20 }}
         columns={columns}
         dataSource={pageData}
@@ -433,7 +521,8 @@ const RedemptionsTable = () => {
         loading={loading}
         rowSelection={rowSelection}
         onRow={handleRow}
-      ></Table>
+      ></Table> */}
+
     </>
   );
 };

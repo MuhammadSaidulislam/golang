@@ -847,102 +847,103 @@ const LogsTable = () => {
         </div>
       </div>
       {logs && logs.length === 0 ? <NoData /> : <>
-        <div className="tableBox">
-          <Table borderless hover>
-            <thead>
-              <tr>
-                <th>{t('时间')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('令牌')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('分组')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('类型')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('模型')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('花费')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('详情')} <SortIconSvg color="--semi-table-thead-0" /></th>
-              </tr>
-            </thead>
-            <tbody>
-              {logs && logs.map((logs, index) => (
-                <tr key={index}>
-                  <td>{formatDate(logs.created_at)}</td>
-                  <td>{logs.type === 0 || logs.type === 2 ? <Tag
-                    color='grey'
-                    size='large'
-                    onClick={(event) => {
-                      //cancel the row click event
-                      copyText(event, logs.token_name);
-                    }}
-                  >
-                    {logs.token_name}
-                  </Tag> : ""}</td>
-                  <td>
-                    {([0, 2].includes(logs.type)) ? (
-                      logs.group ? (
-                        renderGroup(logs.group)
-                      ) : (() => {
-                        try {
-                          const other = JSON.parse(logs.other || "{}");
-                          return other?.group ? renderGroup(other.group) : null;
-                        } catch (e) {
-                          return null;
-                        }
-                      })()
-                    ) : null}
-                  </td>
-                  <td>{renderType(logs.type)}</td>
-                  <td>{logs.type === 0 || logs.type === 2 ? <Tag
-                    color={stringToColor(logs.model_name)}
-                    size='large'
-                    onClick={(event) => {
-                      copyText(event, logs.model_name);
-                    }}
-                  >
-                    {logs.model_name}
-                  </Tag> : ""}</td>
-                  <td>{logs.type === 0 || logs.type === 2 ?
-                    <>{renderQuota(logs.quota, 6)}</> : ""}</td>
-                  <td>
-                    {(() => {
-                      const other = getLogOther(logs.other);
+        <div className="tableData">
+          <div className="tableBox">
+            <Table borderless hover>
+              <thead>
+                <tr>
+                  <th>{t('时间')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                  <th>{t('令牌')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                  <th>{t('分组')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                  <th>{t('类型')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                  <th>{t('模型')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                  <th>{t('花费')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                  <th>{t('详情')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                </tr>
+              </thead>
+              <tbody>
+                {logs && logs.map((logs, index) => (
+                  <tr key={index}>
+                    <td>{formatDate(logs.created_at)}</td>
+                    <td>{logs.type === 0 || logs.type === 2 ? <Tag
+                      color='grey'
+                      size='large'
+                      onClick={(event) => {
+                        //cancel the row click event
+                        copyText(event, logs.token_name);
+                      }}
+                    >
+                      {logs.token_name}
+                    </Tag> : ""}</td>
+                    <td>
+                      {([0, 2].includes(logs.type)) ? (
+                        logs.group ? (
+                          renderGroup(logs.group)
+                        ) : (() => {
+                          try {
+                            const other = JSON.parse(logs.other || "{}");
+                            return other?.group ? renderGroup(other.group) : null;
+                          } catch (e) {
+                            return null;
+                          }
+                        })()
+                      ) : null}
+                    </td>
+                    <td>{renderType(logs.type)}</td>
+                    <td>{logs.type === 0 || logs.type === 2 ? <Tag
+                      color={stringToColor(logs.model_name)}
+                      size='large'
+                      onClick={(event) => {
+                        copyText(event, logs.model_name);
+                      }}
+                    >
+                      {logs.model_name}
+                    </Tag> : ""}</td>
+                    <td>{logs.type === 0 || logs.type === 2 ?
+                      <>{renderQuota(logs.quota, 6)}</> : ""}</td>
+                    <td>
+                      {(() => {
+                        const other = getLogOther(logs.other);
 
-                      if (other == null || logs.type !== 2) {
+                        if (other == null || logs.type !== 2) {
+                          return (
+                            <Paragraph
+                              ellipsis={{
+                                rows: 2,
+                                showTooltip: {
+                                  type: 'popover',
+                                  opts: { style: { width: 240 } },
+                                },
+                              }}
+                              style={{ maxWidth: 240 }}
+                            >
+                              {logs.content}
+                            </Paragraph>
+                          );
+                        }
+
+                        const content = renderModelPriceSimple(
+                          other.model_ratio,
+                          other.model_price,
+                          other.group_ratio,
+                        );
+
                         return (
                           <Paragraph
-                            ellipsis={{
-                              rows: 2,
-                              showTooltip: {
-                                type: 'popover',
-                                opts: { style: { width: 240 } },
-                              },
-                            }}
+                            ellipsis={{ rows: 2 }}
                             style={{ maxWidth: 240 }}
                           >
-                            {logs.content}
+                            {content}
                           </Paragraph>
                         );
-                      }
-
-                      const content = renderModelPriceSimple(
-                        other.model_ratio,
-                        other.model_price,
-                        other.group_ratio,
-                      );
-
-                      return (
-                        <Paragraph
-                          ellipsis={{ rows: 2 }}
-                          style={{ maxWidth: 240 }}
-                        >
-                          {content}
-                        </Paragraph>
-                      );
-                    })()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+                      })()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
         </div>
-
         {/* Table Pagination */}
         <TablePagination pageToSize={pageToSize} setPageToSize={setPageToSize} setCurrentPage={setCurrentPage} startItem={startItem} endItem={endItem} currentPage={currentPage} pageNumbers={pageNumbers} isLastPage={isLastPage} />
       </>

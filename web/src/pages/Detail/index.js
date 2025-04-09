@@ -36,7 +36,6 @@ import contactIcon from "../../assets/contactUs.png";
 import aiIcon from "../../assets/platform.svg";
 import blogIcon from "../../assets/blog.svg";
 import settingIcon from "../../assets/Setting.svg";
-import DashboardNav from '../../components/DashboardNav.js';
 import DashboardLayout from './../../components/DashboardLayout';
 import { IconChevronDown } from '@douyinfe/semi-icons';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';

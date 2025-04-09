@@ -5,7 +5,6 @@ import {
   Form,
   Popconfirm,
   Space,
-  Table,
   Tag,
   Tooltip,
 } from '@douyinfe/semi-ui';
@@ -14,6 +13,9 @@ import { renderGroup, renderNumber, renderQuota } from '../helpers/render';
 import AddUser from '../pages/User/AddUser';
 import EditUser from '../pages/User/EditUser';
 import { useTranslation } from 'react-i18next';
+import { Table } from "react-bootstrap";
+import { SortIconSvg } from './svgIcon';
+import { IconPlus, IconSearch } from '@douyinfe/semi-icons';
 
 const UsersTable = () => {
   const { t } = useTranslation();
@@ -242,6 +244,21 @@ const UsersTable = () => {
   const [editingUser, setEditingUser] = useState({
     id: undefined,
   });
+  const [userShow, setUserShow] = useState(false);
+  const handleUserClose = () => {
+    setUserShow(false);
+  }
+  const [updateShow, setUpdateShow] = useState(false);
+  const handleUpdateClose = () => {
+    setUpdateShow(false);
+  }
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageToSize, setPageToSize] = useState(10);
+  const [isLastPage, setIsLastPage] = useState(false);
+  const [totalItems, setTotalItems] = useState(0);
+
+
 
   const removeRecord = (key) => {
     let newDataSource = [...users];
@@ -329,34 +346,34 @@ const UsersTable = () => {
 
   const searchUsers = async (startIdx, pageSize, searchKeyword, searchGroup) => {
     if (searchKeyword === '' && searchGroup === '') {
-        // if keyword is blank, load files instead.
-        await loadUsers(startIdx, pageSize);
-        return;
+      // if keyword is blank, load files instead.
+      await loadUsers(startIdx, pageSize);
+      return;
     }
     setSearching(true);
     const res = await API.get(`/api/user/search?keyword=${searchKeyword}&group=${searchGroup}&p=${startIdx}&page_size=${pageSize}`);
     const { success, message, data } = res.data;
     if (success) {
-        const newPageData = data.items;
-        setActivePage(data.page);
-        setUserCount(data.total);
-        setUserFormat(newPageData);
+      const newPageData = data.items;
+      setActivePage(data.page);
+      setUserCount(data.total);
+      setUserFormat(newPageData);
     } else {
-        showError(message);
+      showError(message);
     }
     setSearching(false);
   };
 
   const handleKeywordChange = async (value) => {
-    setSearchKeyword(value.trim());
+    setSearchKeyword(value.target.value);
   };
 
   const handlePageChange = (page) => {
     setActivePage(page);
     if (searchKeyword === '' && searchGroup === '') {
-        loadUsers(page, pageSize).then();
+      loadUsers(page, pageSize).then();
     } else {
-        searchUsers(page, pageSize, searchKeyword, searchGroup).then();
+      searchUsers(page, pageSize, searchKeyword, searchGroup).then();
     }
   };
 
@@ -416,34 +433,33 @@ const UsersTable = () => {
         refresh={refresh}
         visible={showAddUser}
         handleClose={closeAddUser}
+        userShow={userShow}
+        handleUserClose={handleUserClose}
       ></AddUser>
       <EditUser
         refresh={refresh}
         visible={showEditUser}
         handleClose={closeEditUser}
         editingUser={editingUser}
+        updateShow={updateShow}
+        handleUpdateClose={handleUpdateClose}
       ></EditUser>
+
+
       <Form
         onSubmit={() => {
           searchUsers(activePage, pageSize, searchKeyword, searchGroup);
         }}
         labelPosition='left'
       >
-        <div style={{ display: 'flex' }}>
-          <Space>
+        <div className='d-flex justify-content-between align-items-center'>
+          <div className='d-flex align-items-center'>
             <Tooltip content={t('支持搜索用户的 ID、用户名、显示名称和邮箱地址')}>
-              <Form.Input
-                label={t('搜索关键字')}
-                icon='search'
-                field='keyword'
-                iconPosition='left'
-                placeholder={t('搜索关键字')}
-                value={searchKeyword}
-                loading={searching}
-                onChange={(value) => handleKeywordChange(value)}
-              />
+              <div className="search-container" style={{ width: "205px" }}>
+                <i className="search-icon"><IconSearch /></i>
+                <input type="text" className="search-input" placeholder={t('搜索关键字')} value={searchKeyword} onChange={handleKeywordChange} />
+              </div>
             </Tooltip>
-            
             <Form.Select
               field='group'
               label={t('分组')}
@@ -453,28 +469,163 @@ const UsersTable = () => {
                 searchUsers(activePage, pageSize, searchKeyword, value);
               }}
             />
-            <Button
-              label={t('查询')}
-              type='primary'
-              htmlType='submit'
-              className='btn-margin-right'
-            >
+            <button className='searchBtn' type="submit" style={{ marginLeft: '10px' }}>
               {t('查询')}
-            </Button>
-            <Button
-              theme='light'
-              type='primary'
-              onClick={() => {
-                setShowAddUser(true);
-              }}
-            >
-              {t('添加用户')}
-            </Button>
-          </Space>
+            </button>
+          </div>
+
+          <button className='searchBtn' style={{ marginRight: 8 }} onClick={() => setUserShow(true)} >
+            <IconPlus /> {t('添加用户')}
+          </button>
         </div>
       </Form>
 
-      <Table
+      <div className="tableData">
+        <div className='tableBox'>
+          <Table borderless hover>
+            <thead>
+              <tr>
+                <th>{t('ID')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('用户名')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('分组')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('统计信息')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('邀请信息')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('角色')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('状态')}</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users && users.map((user) => <tr>
+                <td>{user.id}</td>
+                <td>{user.username}</td>
+                <td>{renderGroup(user.group)}</td>
+                <td> <Tooltip content={t('剩余额度')}>
+                  <Tag color='white' size='large'>
+                    {renderQuota(user.quota)}
+                  </Tag>
+                </Tooltip>
+                  <Tooltip content={t('已用额度')}>
+                    <Tag color='white' size='large'>
+                      {renderQuota(user.used_quota)}
+                    </Tag>
+                  </Tooltip>
+                  <Tooltip content={t('调用次数')}>
+                    <Tag color='white' size='large'>
+                      {renderNumber(user.request_count)}
+                    </Tag>
+                  </Tooltip>
+                </td>
+                <td>
+                  <Tooltip content={t('邀请人数')}>
+                    <Tag color='white' size='large'>
+                      {renderNumber(user.aff_count)}
+                    </Tag>
+                  </Tooltip>
+                  <Tooltip content={t('邀请总收益')}>
+                    <Tag color='white' size='large'>
+                      {renderQuota(user.aff_history_quota)}
+                    </Tag>
+                  </Tooltip>
+                  <Tooltip content={t('邀请人ID')}>
+                    {user.inviter_id === 0 ? (
+                      <Tag color='white' size='large'>
+                        {t('无')}
+                      </Tag>
+                    ) : (
+                      <Tag color='white' size='large'>
+                        {user.inviter_id}
+                      </Tag>
+                    )}
+                  </Tooltip>
+                </td>
+                <td>{renderRole(user.role)}</td>
+                <td> {user.DeletedAt !== null ? (
+                  <Tag color='red'>{t('已注销')}</Tag>
+                ) : (
+                  renderStatus(user.status)
+                )}</td>
+                <td className='tableActions'>
+                  {user.DeletedAt !== null ? (
+                    ""
+                  ) : (
+                    <>
+                      <Popconfirm
+                        title={t('确定？')}
+                        okType={'warning'}
+                        onConfirm={() => {
+                          manageUser(user.id, user?.role === 1 ? "promote" : "demote", user);
+                        }}
+                      >
+                        {user?.role === 1 ? <Button theme='light' type='warning' style={{ marginRight: '2px' }}>
+                          {t('提升')}
+                        </Button> : <Button theme='light' type='secondary' style={{ marginRight: '2px' }}>
+                          {t('降级')}
+                        </Button>}
+                      </Popconfirm>
+
+                      {user.status === 1 ? (
+                        <Button
+                          theme='light'
+                          type='warning'
+                          style={{ marginRight: '2px' }}
+                          onClick={async () => {
+                            manageUser(user.id, 'disable', user);
+                          }}
+                        >
+                          {t('禁用')}
+                        </Button>
+                      ) : (
+                        <Button
+                          theme='light'
+                          type='secondary'
+                          style={{ marginRight: '2px' }}
+                          onClick={async () => {
+                            manageUser(user.id, 'enable', user);
+                          }}
+                          disabled={user.status === 3}
+                        >
+                          {t('启用')}
+                        </Button>
+                      )}
+                      <Button
+                        theme='light'
+                        type='tertiary'
+                        style={{ marginRight: '2px' }}
+                        onClick={() => {
+                          setEditingUser(user);
+                          setUpdateShow(true);
+                        }}
+                      >
+                        {t('编辑')}
+                      </Button>
+                      <Popconfirm
+                        title={t('确定是否要注销此用户？')}
+                        content={t('相当于删除用户，此修改将不可逆')}
+                        okType={'danger'}
+                        position={'left'}
+                        onConfirm={() => {
+                          manageUser(user.id, 'delete', user).then(() => {
+                            removeRecord(user.id);
+                          });
+                        }}
+                      >
+                        <Button theme='light' type='danger' style={{ marginRight: '2px' }}>
+                          {t('注销')}
+                        </Button>
+                      </Popconfirm>
+                    </>
+                  )}
+                </td>
+              </tr>)}
+            </tbody>
+          </Table>
+        </div>
+      </div>
+      { /* 
+      <TablePagination pageToSize={pageToSize} setPageToSize={setPageToSize} setCurrentPage={setCurrentPage} startItem={startItem} endItem={endItem} currentPage={currentPage} pageNumbers={pageNumbers} isLastPage={isLastPage} />
+*/}
+      { /*  <Table
         columns={columns}
         dataSource={users}
         pagination={{
@@ -495,7 +646,7 @@ const UsersTable = () => {
           onPageChange: handlePageChange,
         }}
         loading={loading}
-      />
+      /> */}
     </>
   );
 };

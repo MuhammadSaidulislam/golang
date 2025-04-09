@@ -686,51 +686,53 @@ const TokensTable = () => {
       </div>
 
       {/* <NoData description={description} btnFunction={addToken} /> */}
-      <div className='tableBox'>
-        <Table borderless hover>
-          <thead>
-            <tr>
-              <th>Token name <SortIconSvg color="--semi-table-thead-0" /></th>
-              <th>Status <SortIconSvg color="--semi-table-thead-0" /></th>
-              <th>Quota used <SortIconSvg color="--semi-table-thead-0" /></th>
-              <th>Quota Bal <SortIconSvg color="--semi-table-thead-0" /></th>
-              <th>Created <SortIconSvg color="--semi-table-thead-0" /></th>
-              <th>Expiration <SortIconSvg color="--semi-table-thead-0" /></th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tokenList && tokenList.map((data) => <tr>
-              <td>{data.name}</td>
-              <td>{renderStatus(data.status, data.model_limits_enabled)}
-                {renderGroup(data.group)}</td>
-              <td>{renderQuota(parseInt(data.used_quota))}</td>
-              <td>{renderQuota(parseInt(data.remain_quota))}</td>
-              <td>{formatDate(data.created_time)}</td>
-              <td>{data.expired_time === -1 ? t('永不过期') : formatDate(data.expired_time)}</td>
-              <td className='tableActions'>
-                <button onClick={async (text) => { await copyText('sk-' + data.key); }}><img src={copyIcon} alt="tableAction" /></button>
-                <button onClick={() => onOpenLink('default', chatMessage[0].link, data)}><img src={chatIcon} alt="tableAction" /> </button>
-                <button onClick={() => { setEditingToken(data); setShowEdit(true); }}><img src={editIcon} alt="tableAction" /></button>
-                {data.status === 1 ? <button onClick={async () => { manageToken(data.id, 'disable', data); }}><img src={disableIcon} alt="tableAction" /></button> : <button onClick={async () => { manageToken(data.id, 'enable', data); }}><img src={enableIcon} alt="tableAction" /></button>}
-                <Popconfirm
-                  title={t('确定是否要删除此令牌？')}
-                  content={t('此修改将不可逆')}
-                  okType={'danger'}
-                  position={'left'}
-                  onConfirm={() => {
-                    manageToken(data.id, 'delete', data).then(() => {
-                      removeRecord(data.key);
-                    });
-                  }}
-                >
-                  <button><img src={deleteIcon} alt="tableAction" /></button>
-                </Popconfirm>
+      <div className="tableData">
+        <div className='tableBox'>
+          <Table borderless hover>
+            <thead>
+              <tr>
+                <th>Token name <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Status <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Quota used <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Quota Bal <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Created <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Expiration <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tokenList && tokenList.map((data) => <tr>
+                <td>{data.name}</td>
+                <td>{renderStatus(data.status, data.model_limits_enabled)}
+                  {renderGroup(data.group)}</td>
+                <td>{renderQuota(parseInt(data.used_quota))}</td>
+                <td>{renderQuota(parseInt(data.remain_quota))}</td>
+                <td>{formatDate(data.created_time)}</td>
+                <td>{data.expired_time === -1 ? t('永不过期') : formatDate(data.expired_time)}</td>
+                <td className='tableActions'>
+                  <button onClick={async (text) => { await copyText('sk-' + data.key); }}><img src={copyIcon} alt="tableAction" /></button>
+                  <button onClick={() => onOpenLink('default', chatMessage[0].link, data)}><img src={chatIcon} alt="tableAction" /> </button>
+                  <button onClick={() => { setEditingToken(data); setShowEdit(true); }}><img src={editIcon} alt="tableAction" /></button>
+                  {data.status === 1 ? <button onClick={async () => { manageToken(data.id, 'disable', data); }}><img src={disableIcon} alt="tableAction" /></button> : <button onClick={async () => { manageToken(data.id, 'enable', data); }}><img src={enableIcon} alt="tableAction" /></button>}
+                  <Popconfirm
+                    title={t('确定是否要删除此令牌？')}
+                    content={t('此修改将不可逆')}
+                    okType={'danger'}
+                    position={'left'}
+                    onConfirm={() => {
+                      manageToken(data.id, 'delete', data).then(() => {
+                        removeRecord(data.key);
+                      });
+                    }}
+                  >
+                    <button><img src={deleteIcon} alt="tableAction" /></button>
+                  </Popconfirm>
 
-              </td>
-            </tr>)}
-          </tbody>
-        </Table>
+                </td>
+              </tr>)}
+            </tbody>
+          </Table>
+        </div>
       </div>
       {  /* Pagination */}
       <TablePagination pageToSize={pageToSize} setPageToSize={setPageToSize} setCurrentPage={setCurrentPage} startItem={startItem} endItem={endItem} currentPage={currentPage} pageNumbers={pageNumbers} isLastPage={isLastPage} />

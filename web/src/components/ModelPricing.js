@@ -22,10 +22,12 @@ import {
   IconHelpCircle,
   IconFilter,
   IconSort,
+  IconChevronLeft,
+  IconChevronRight,
 } from '@douyinfe/semi-icons';
 import { UserContext } from '../context/User/index.js';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
-import { Table } from "react-bootstrap";
+import { Dropdown, Table } from "react-bootstrap";
 import checkMark from "../assets/checkTable.svg";
 import sortIcon from "../assets/sort.svg";
 import TablePagination from './TablePagination.js';
@@ -302,7 +304,7 @@ const ModelPricing = () => {
   const loadPricing = async () => {
     setLoading(true);
     let url = '';
-    url = `https://api.duckagi.com/api/pricing`;
+    url = `/api/pricing`;
     const res = await API.get(url);
     const { success, message, data, group_ratio, usable_group } = res.data;
     if (success) {
@@ -395,13 +397,58 @@ const ModelPricing = () => {
                       </tbody>
                     </Table>
                   </div>
-                  <TablePagination
-                    totalItems={totalItems}
-                    itemsPerPage={itemsPerPage}
-                    setItemsPerPage={setItemsPerPage}
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                  />
+                  <div className="tablePagination">
+                    <div className="leftItems">
+                      {/* Items per page dropdown */}
+                      <Dropdown className="bulkDropdown">
+                        <Dropdown.Toggle id="dropdown-basic">{itemsPerPage}</Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          {[10, 20, 30, 50, 100].map((size) => (
+                            <Dropdown.Item key={size} onClick={() => { setItemsPerPage(size); setCurrentPage(1); }}>
+                              {size}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                      <p className="itemNumber">
+                        {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} items
+                      </p>
+                    </div>
+
+                    <div className="leftItems">
+
+                      <Dropdown className="bulkDropdown pcPagPrice">
+                        <Dropdown.Toggle id="dropdown-basic">{currentPage}</Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          {[...Array(totalPages)].map((_, index) => (
+                            <Dropdown.Item key={index + 1} onClick={() => setCurrentPage(index + 1)}>
+                              {index + 1}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+
+
+                      {/* Prev & Next buttons */}
+                      <button className="pagArrow" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
+                        <IconChevronLeft />
+                      </button>
+                      {/* Page number dropdown */}
+                      <div className='mobilePagPrice'>
+                        {[...Array(totalPages)].map((_, index) => (
+                          <button
+                            onClick={() => setCurrentPage(index + 1)}
+                            key={index + 1}
+                          >
+                            {index + 1}
+                          </button>
+                        ))}
+                      </div>
+                      <button className="pagArrow" onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
+                        <IconChevronRight />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

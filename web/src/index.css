@@ -211,6 +211,7 @@ code {
 }
 .rgbBtn {
   font-family: 'Open Sans', sans-serif;
+  text-decoration: none;
   font-weight: 700;
   font-size: 18px;
   line-height: 24px;
@@ -245,6 +246,12 @@ code {
   -ms-border-radius: 16px;
   -o-border-radius: 16px;
 }
+.transparentBtn:hover {
+  color: var(--semi-text-white-black-1);
+}
+.rgbBtn:hover {
+  color: white;
+}
 .mr-2 {
   margin-right: 24px;
 }
@@ -255,5 +262,6 @@ code {
   .rgbBtn,
   .transparentBtn {
     padding: 14px 22px;
+    font-size: 14px;
   }
 }

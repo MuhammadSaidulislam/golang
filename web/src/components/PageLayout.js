@@ -12,7 +12,6 @@ import { setStatusData } from '../helpers/data.js';
 import { UserContext } from '../context/User/index.js';
 import { StatusContext } from '../context/Status/index.js';
 import CommonHeader from './CommonHeader.js';
-import DashboardNav from './DashboardNav.js';
 const { Sider, Content, Header, Footer } = Layout;
 
 

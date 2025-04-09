@@ -16,8 +16,9 @@ import ModelRatioSettings from '../pages/Setting/Operation/ModelRatioSettings.js
 import { API, showError, showSuccess } from '../helpers';
 import SettingsChats from '../pages/Setting/Operation/SettingsChats.js';
 import { useTranslation } from 'react-i18next';
+import { IconArrowLeft } from '@douyinfe/semi-icons';
 
-const OperationSetting = () => {
+const OperationSetting = ({ setMobileTab }) => {
   const { t } = useTranslation();
   let [inputs, setInputs] = useState({
     QuotaForNewUser: 0,
@@ -110,6 +111,7 @@ const OperationSetting = () => {
 
   return (
     <>
+      <p className="accountText" onClick={() => setMobileTab('')}> <IconArrowLeft /> Account Settings</p>
       <Spin spinning={loading} size='large'>
         {/* 通用设置 */}
         <Card style={{ marginTop: '10px' }}>
