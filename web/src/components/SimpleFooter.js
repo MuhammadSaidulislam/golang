@@ -18,7 +18,7 @@ const SimpleFooter = () => {
                                 <Link to="/" className="nav-link active">{t('首页')}</Link>
                             </li>
                             <li className="nav-item">
-                                <Link to="/console" className="nav-link">{t('控制台')}</Link>
+                                <Link to="/detail" className="nav-link">{t('控制台')}</Link>
                             </li>
                             <li className="nav-item">
                                 <Link to="/pricing" className="nav-link">{t('定价')}</Link>

@@ -2087,6 +2087,23 @@
 .mobilePagPrice {
   display: flex;
 }
+.userHeadBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* dropdown */
+.dashboardDropdown {
+  /* background-color: red !important; */
+  padding: 15px !important;
+  min-width: 305px !important;
+}
+.dashboardDropdown .semi-form-horizontal .semi-form-field {
+  padding-right: 0px;
+}
+.dashboardDropdown .semi-form-horizontal .semi-form-field:last-child {
+  margin-right: 0px;
+}
 @media only screen and (max-width: 575.98px) {
   .content.is-open {
     /*margin-left: 100%;*/
@@ -2309,5 +2326,20 @@
   }
   .mobilePagPrice {
     display: none;
+  }
+  .wallet-card .cardContent p {
+    font-size: 15px;
+  }
+  .wallet-card {
+    padding: 16px 18px;
+  }
+  .searchBox {
+    width: 100%;
+  }
+  .search-container {
+    width: 100%;
+  }
+  .userHeadBox {
+    flex-direction: column;
   }
 }

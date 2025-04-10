@@ -372,11 +372,9 @@ const TopUp = () => {
             <button className='searchBtn' style={{ marginLeft: '10px' }}>
               {t('查询')}
             </button>
-            <div className='filterOption'>
-              <button><img src={filterIcon} alt="filter" /> Filter</button>
+            {/* <div className='filterOption'>
               <button><img src={downloadIcon} alt="download" /></button>
-
-            </div>
+            </div> */}
           </div>
           <div className='cardTime'>
             <button className='rechargeBtn' onClick={() => setPaymentShow(true)}> <img src={walletLight} alt="walletLight" /> Recharge</button>

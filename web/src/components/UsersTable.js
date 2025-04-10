@@ -452,8 +452,8 @@ const UsersTable = () => {
         }}
         labelPosition='left'
       >
-        <div className='d-flex justify-content-between align-items-center'>
-          <div className='d-flex align-items-center'>
+        <div className='userHeadBox'>
+          <div className='d-flex align-items-center w-100'>
             <Tooltip content={t('支持搜索用户的 ID、用户名、显示名称和邮箱地址')}>
               <div className="search-container" style={{ width: "205px" }}>
                 <i className="search-icon"><IconSearch /></i>

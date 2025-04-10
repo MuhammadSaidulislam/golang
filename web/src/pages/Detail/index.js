@@ -169,6 +169,8 @@ const Detail = (props) => {
   );
   const [pieData, setPieData] = useState([{ type: 'null', value: '0' }]);
   const [lineData, setLineData] = useState([]);
+  console.log('lineData', lineData);
+
   const [spec_pie, setSpecPie] = useState({
     type: 'pie',
     data: [{
@@ -533,16 +535,17 @@ const Detail = (props) => {
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  const toggle = () => {
-    setIsOpen(!isOpen);
-  };
+
+  const [graphModel, setGraphModel] = useState(false);
+  const [chartModel, setChartModel] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [userDropdown, setUserDropdown] = useState(false);
   const toggleUserDropdown = (e) => {
     e.stopPropagation();
     setUserDropdown(!userDropdown);
   };
 
-  const [activeIndex, setActiveIndex] = useState(0);
+
   const onPieEnter = useCallback(
     (_, index) => {
       setActiveIndex(index);
@@ -664,81 +667,85 @@ const Detail = (props) => {
         <div className='modelGraph'>
           <div className="graphHeading mb-2">
             <h2>Model Consumption distribution</h2>
-            <div className="d-flex gap-2">
-              <Form ref={formRef} layout='horizontal' style={{ marginTop: 10 }}>
-                <>
-                  <Form.DatePicker
-                    field='start_timestamp'
-                    label={t('起始时间')}
-                    style={{ width: 272 }}
-                    initValue={start_timestamp}
-                    value={start_timestamp}
-                    type='dateTime'
-                    name='start_timestamp'
-                    onChange={(value) =>
-                      handleInputChange(value, 'start_timestamp')
-                    }
-                  />
-                  <Form.DatePicker
-                    field='end_timestamp'
-                    fluid
-                    label={t('结束时间')}
-                    style={{ width: 272 }}
-                    initValue={end_timestamp}
-                    value={end_timestamp}
-                    type='dateTime'
-                    name='end_timestamp'
-                    onChange={(value) => handleInputChange(value, 'end_timestamp')}
-                  />
-                  <Form.Select
-                    field='data_export_default_time'
-                    label={t('时间粒度')}
-                    style={{ width: 176 }}
-                    initValue={dataExportDefaultTime}
-                    placeholder={t('时间粒度')}
-                    name='data_export_default_time'
-                    optionList={[
-                      { label: t('小时'), value: 'hour' },
-                      { label: t('天'), value: 'day' },
-                      { label: t('周'), value: 'week' },
-                    ]}
-                    onChange={(value) =>
-                      handleInputChange(value, 'data_export_default_time')
-                    }
-                  ></Form.Select>
-                  {isAdminUser && (
-                    <>
-                      <Form.Input
-                        field='username'
-                        label={t('用户名称')}
-                        style={{ width: 176 }}
-                        value={username}
-                        placeholder={t('可选值')}
-                        name='username'
-                        onChange={(value) => handleInputChange(value, 'username')}
+            <div className='cardTime'>
+              <div className="icon-container" onClick={() => setGraphModel(!graphModel)}>
+                <div className="user-icon">
+                  Filter <IconChevronDown />
+                </div>
+              </div>
+              {graphModel && (
+                <div className="dropdown dashboardDropdown">
+                  <Form ref={formRef} layout='horizontal' style={{ marginTop: 10 }}>
+                    <div className='w-100'>
+                      <Form.DatePicker
+                        field='start_timestamp'
+                        label={t('起始时间')}
+                        style={{ width: '100%' }}
+                        initValue={start_timestamp}
+                        value={start_timestamp}
+                        type='dateTime'
+                        name='start_timestamp'
+                        onChange={(value) => {
+                          handleInputChange(value, 'start_timestamp');
+                        }}
                       />
-                    </>
-                  )}
-                  <Button
-                    label={t('查询')}
-                    type='primary'
-                    htmlType='submit'
-                    className='btn-margin-right'
-                    onClick={refresh}
-                    loading={loading}
-                    style={{ marginTop: 24 }}
-                  >
-                    {t('查询')}
-                  </Button>
-                  <Form.Section>
-                  </Form.Section>
-                </>
-              </Form>
+                    </div>
+                    <div className='w-100 mt-3'>
+                      <Form.DatePicker
+                        field='end_timestamp'
+                        fluid
+                        label={t('结束时间')}
+                        style={{ width: '100%' }}
+                        initValue={end_timestamp}
+                        value={end_timestamp}
+                        type='dateTime'
+                        name='end_timestamp'
+                        onChange={(value) => {
+                          handleInputChange(value, 'end_timestamp');
+                        }}
+                      />
+                    </div>
+                    <div className='w-100 mt-3'>
+                      <Form.Select
+                        field='data_export_default_time'
+                        label={t('时间粒度')}
+                        style={{ width: '100%' }}
+                        initValue={dataExportDefaultTime}
+                        placeholder={t('时间粒度')}
+                        name='data_export_default_time'
+                        optionList={[
+                          { label: t('小时'), value: 'hour' },
+                          { label: t('天'), value: 'day' },
+                          { label: t('周'), value: 'week' },
+                        ]}
+                        onChange={(value) =>
+                          handleInputChange(value, 'data_export_default_time')
+                        }
+                      ></Form.Select>
+                    </div>
+                    <div className='w-100 mt-3'>
+                      {isAdminUser && (
+                        <Form.Input
+                          field='username'
+                          label={t('用户名称')}
+                          style={{ width: '100%' }}
+                          value={username}
+                          placeholder={t('可选值')}
+                          name='username'
+                          onChange={(value) => handleInputChange(value, 'username')}
+                        />
+                      )}
+                    </div>
+                    <button className='searchBtn d-block mt-3 w-100' type='submit' onClick={refresh} >
+                      {t('查询')}
+                    </button>
+                  </Form>
+                </div>)}
             </div>
           </div>
           <div className="h-48" style={{ height: '280px' }}>
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={areaData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <AreaChart data={lineData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#4889F4" stopOpacity={0.8} />
@@ -764,76 +771,80 @@ const Detail = (props) => {
         <div className="modelGraph">
           <div className="graphHeading mb-2">
             <h2>Model Consumption distribution</h2>
-            <div className="d-flex gap-2">
-              <Form ref={formRef} layout='horizontal' style={{ marginTop: 10 }}>
-                <>
-                  <Form.DatePicker
-                    field='start_timestamp'
-                    label={t('起始时间')}
-                    style={{ width: 272 }}
-                    initValue={start_timestamp}
-                    value={start_timestamp}
-                    type='dateTime'
-                    name='start_timestamp'
-                    onChange={(value) =>
-                      handleInputChange(value, 'start_timestamp')
-                    }
-                  />
-                  <Form.DatePicker
-                    field='end_timestamp'
-                    fluid
-                    label={t('结束时间')}
-                    style={{ width: 272 }}
-                    initValue={end_timestamp}
-                    value={end_timestamp}
-                    type='dateTime'
-                    name='end_timestamp'
-                    onChange={(value) => handleInputChange(value, 'end_timestamp')}
-                  />
-                  <Form.Select
-                    field='data_export_default_time'
-                    label={t('时间粒度')}
-                    style={{ width: 176 }}
-                    initValue={dataExportDefaultTime}
-                    placeholder={t('时间粒度')}
-                    name='data_export_default_time'
-                    optionList={[
-                      { label: t('小时'), value: 'hour' },
-                      { label: t('天'), value: 'day' },
-                      { label: t('周'), value: 'week' },
-                    ]}
-                    onChange={(value) =>
-                      handleInputChange(value, 'data_export_default_time')
-                    }
-                  ></Form.Select>
-                  {isAdminUser && (
-                    <>
-                      <Form.Input
-                        field='username'
-                        label={t('用户名称')}
-                        style={{ width: 176 }}
-                        value={username}
-                        placeholder={t('可选值')}
-                        name='username'
-                        onChange={(value) => handleInputChange(value, 'username')}
+            <div className='cardTime'>
+              <div className="icon-container" onClick={() => setChartModel(!chartModel)}>
+                <div className="user-icon">
+                  Filter <IconChevronDown />
+                </div>
+              </div>
+              {chartModel && (
+                <div className="dropdown dashboardDropdown">
+                  <Form ref={formRef} layout='horizontal' style={{ marginTop: 10 }}>
+                    <div className='w-100'>
+                      <Form.DatePicker
+                        field='start_timestamp'
+                        label={t('起始时间')}
+                        style={{ width: '100%' }}
+                        initValue={start_timestamp}
+                        value={start_timestamp}
+                        type='dateTime'
+                        name='start_timestamp'
+                        onChange={(value) => {
+                          handleInputChange(value, 'start_timestamp');
+                        }}
                       />
-                    </>
-                  )}
-                  <Button
-                    label={t('查询')}
-                    type='primary'
-                    htmlType='submit'
-                    className='btn-margin-right'
-                    onClick={refresh}
-                    loading={loading}
-                    style={{ marginTop: 24 }}
-                  >
-                    {t('查询')}
-                  </Button>
-                  <Form.Section>
-                  </Form.Section>
-                </>
-              </Form>
+                    </div>
+                    <div className='w-100 mt-3'>
+                      <Form.DatePicker
+                        field='end_timestamp'
+                        fluid
+                        label={t('结束时间')}
+                        style={{ width: '100%' }}
+                        initValue={end_timestamp}
+                        value={end_timestamp}
+                        type='dateTime'
+                        name='end_timestamp'
+                        onChange={(value) => {
+                          handleInputChange(value, 'end_timestamp');
+                        }}
+                      />
+                    </div>
+                    <div className='w-100 mt-3'>
+                      <Form.Select
+                        field='data_export_default_time'
+                        label={t('时间粒度')}
+                        style={{ width: '100%' }}
+                        initValue={dataExportDefaultTime}
+                        placeholder={t('时间粒度')}
+                        name='data_export_default_time'
+                        optionList={[
+                          { label: t('小时'), value: 'hour' },
+                          { label: t('天'), value: 'day' },
+                          { label: t('周'), value: 'week' },
+                        ]}
+                        onChange={(value) =>
+                          handleInputChange(value, 'data_export_default_time')
+                        }
+                      ></Form.Select>
+                    </div>
+                    <div className='w-100 mt-3'>
+                      {isAdminUser && (
+                        <Form.Input
+                          field='username'
+                          label={t('用户名称')}
+                          style={{ width: '100%' }}
+                          value={username}
+                          placeholder={t('可选值')}
+                          name='username'
+                          onChange={(value) => handleInputChange(value, 'username')}
+                        />
+                      )}
+                    </div>
+                    <button className='searchBtn d-block mt-3 w-100' type='submit' onClick={refresh} >
+                      {t('查询')}
+                    </button>
+                  </Form>
+                </div>)}
             </div>
           </div>
           <div className="h-48" style={{ height: '280px' }}>
