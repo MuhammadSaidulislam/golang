@@ -390,10 +390,10 @@ const PersonalSetting = () => {
             <div className="tab-content">
                 <div className={`tab-pane ${activeTab === 'account' ? 'active' : ''}`}>
 
-                    <div className="tabHeading">
+                    {/* <div className="tabHeading">
                         <h6>Account Settings</h6>
                         <button>{t('节省')}</button>
-                    </div>
+                    </div> */}
 
                     {!mobileTab ? <div className='gap-2 settingInfoBox'>
                         <div className='wallet-card' style={{ minHeight: '145px', width: '100%' }}>
@@ -880,7 +880,7 @@ const PersonalSetting = () => {
                                     <IconChevronRight />
                                 </div>
                             </div>
-                            <div className='tabSetting' onClick={() => setMobileTab('operation')}>
+                            {isAdmin() && <> <div className='tabSetting' onClick={() => setMobileTab('operation')}>
                                 <div className='tabProfile'>
                                     <img src={phoneIcon} alt="setting" />
                                     <p>Operation Settings</p>
@@ -889,24 +889,25 @@ const PersonalSetting = () => {
                                     <IconChevronRight />
                                 </div>
                             </div>
-                            <div className='tabSetting' onClick={() => setMobileTab('system')}>
-                                <div className='tabProfile'>
-                                    <img src={profileIcon} alt="setting" />
-                                    <p>System Settings</p>
+                                <div className='tabSetting' onClick={() => setMobileTab('system')}>
+                                    <div className='tabProfile'>
+                                        <img src={profileIcon} alt="setting" />
+                                        <p>System Settings</p>
+                                    </div>
+                                    <div className='tabArrow'>
+                                        <IconChevronRight />
+                                    </div>
                                 </div>
-                                <div className='tabArrow'>
-                                    <IconChevronRight />
-                                </div>
-                            </div>
-                            <div className='tabSetting' onClick={() => setMobileTab('other')}>
-                                <div className='tabProfile'>
-                                    <img src={profileIcon} alt="setting" />
-                                    <p>Other Settings</p>
-                                </div>
-                                <div className='tabArrow'>
-                                    <IconChevronRight />
-                                </div>
-                            </div>
+                                <div className='tabSetting' onClick={() => setMobileTab('other')}>
+                                    <div className='tabProfile'>
+                                        <img src={profileIcon} alt="setting" />
+                                        <p>Other Settings</p>
+                                    </div>
+                                    <div className='tabArrow'>
+                                        <IconChevronRight />
+                                    </div>
+                                </div></>
+                            }
                         </div>
                     </>}
 

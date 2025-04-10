@@ -943,7 +943,8 @@
   gap: 5px;
 }
 
-.filterOption button {
+.filterOption button,
+.user-icon button {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   font-size: 11px;
