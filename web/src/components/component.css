@@ -2355,4 +2355,7 @@
   .userHeadBox {
     flex-direction: column;
   }
+  .sidebar .bottomNav {
+    margin-bottom: 50px;
+  }
 }
