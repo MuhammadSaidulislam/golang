@@ -429,6 +429,7 @@ const LogsTable = () => {
   const [logCount, setLogCount] = useState(ITEMS_PER_PAGE);
   const [pageSize, setPageSize] = useState(ITEMS_PER_PAGE);
   const [logType, setLogType] = useState(0);
+  const [chartModel, setChartModel] = useState(false);
   const isAdminUser = isAdmin();
   let now = new Date();
   // 初始化start_timestamp为今天0点
@@ -717,7 +718,6 @@ const LogsTable = () => {
     pageNumbers.push(i);
   }
 
-  console.log('pageNumbers', pageNumbers, startItem, endItem);
 
 
   return (
@@ -759,19 +759,8 @@ const LogsTable = () => {
       {/* Table header */}
       <div className='searchHeader'>
         <div className='searchFilter'>
-          <div className='searchOption'>
+          <div className='searchOption w-auto'>
             <Form>
-              <Form.DatePicker
-                initValue={[start_timestamp, end_timestamp]}
-                type="dateTimeRange"
-                name="range_timestamp"
-                onChange={(value) => {
-                  if (Array.isArray(value) && value.length === 2) {
-                    handleInputChange(value[0], 'start_timestamp');
-                    handleInputChange(value[1], 'end_timestamp');
-                  }
-                }}
-              />
               <div className="search-container">
                 <i className="search-icon"><IconSearch /></i>
                 <Form.Input
@@ -782,55 +771,116 @@ const LogsTable = () => {
                   onChange={(value) => handleInputChange(value, 'token_name')}
                 />
               </div>
-              <div className="search-container">
-                <i className="search-icon"><IconSearch /></i>
-                <Form.Input
-                  value={model_name}
-                  placeholder={t('模型名称')}
-                  name='model_name'
-                  className="search-input-form"
-                  onChange={(value) => handleInputChange(value, 'model_name')}
-                />
-              </div>
-              <div className="search-container">
-                <i className="search-icon"><IconSearch /></i>
-                <Form.Input
-                  value={group}
-                  placeholder={t('分组')}
-                  name='group'
-                  className="search-input-form"
-                  onChange={(value) => handleInputChange(value, 'group')}
-                />
-              </div>
-              {isAdminUser && (
-                <>
-                  <div className="search-container">
-                    <i className="search-icon"><IconSearch /></i>
-                    <Form.Input
-                      value={channel}
-                      placeholder={t('渠道 ID')}
-                      name='channel'
-                      className="search-input-form"
-                      onChange={(value) => handleInputChange(value, 'channel')}
-                    />
-                  </div>
-                  <div className="search-container">
-                    <i className="search-icon"><IconSearch /></i>
-                    <Form.Input
-                      value={username}
-                      placeholder={t('用户名称')}
-                      name='username'
-                      className="search-input-form"
-                      onChange={(value) => handleInputChange(value, 'username')}
-                    />
-                  </div>
-                </>
-              )}
-              <button type="submit" onClick={refresh} loading={loading} className='searchBtn'>
-                {t('查询')}
-              </button>
-
+              <button type="submit" onClick={refresh} loading={loading} className='searchBtn' style={{ marginLeft: '12px' }}>{t('查询')}</button>
             </Form>
+          </div>
+          <div className=''>
+            <div className='cardTime'>
+              <div className="icon-container" onClick={() => setChartModel(!chartModel)}>
+                <div className="user-icon">
+                  <button className="d-flex align-items-center"><img src={filterIcon} alt="filter" style={{ marginRight: '5px' }} /> <span>Filter</span></button>
+                </div>
+              </div>
+              {chartModel && <div className="dropdown dashboardDropdown">
+                <Form>
+                  {/*   <Form.DatePicker
+                    initValue={[start_timestamp, end_timestamp]}
+                    type="dateTimeRange"
+                    name="range_timestamp"
+                    onChange={(value) => {
+                      if (Array.isArray(value) && value.length === 2) {
+                        handleInputChange(value[0], 'start_timestamp');
+                        handleInputChange(value[1], 'end_timestamp');
+                      }
+                    }}
+                  />  */}
+
+                  <Form.DatePicker field="start_timestamp" label={t('起始时间')} style={{ width: '236px', marginBottom: '10px' }}
+                    initValue={start_timestamp}
+                    value={start_timestamp} type='dateTime'
+                    name='start_timestamp'
+                    onChange={value => handleInputChange(value, 'start_timestamp')} />
+                  <Form.DatePicker field="end_timestamp" fluid label={t('结束时间')} style={{ width: '236px', marginBottom: '10px' }}
+                    initValue={end_timestamp}
+                    value={end_timestamp} type='dateTime'
+                    name='end_timestamp'
+                    onChange={value => handleInputChange(value, 'end_timestamp')} />
+
+                  <div>
+                    <label>{t('令牌名称')}</label>
+                    <div className="search-container w-100">
+                      <i className="search-icon"><IconSearch /></i>
+                      <Form.Input
+                        value={token_name}
+                        placeholder={t('令牌名称')}
+                        name='token_name'
+                        className="search-input-form"
+                        onChange={(value) => handleInputChange(value, 'token_name')}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label>{t('模型名称')}</label>
+                    <div className="search-container w-100">
+                      <i className="search-icon"><IconSearch /></i>
+                      <Form.Input
+                        value={model_name}
+                        placeholder={t('模型名称')}
+                        name='model_name'
+                        className="search-input-form"
+                        onChange={(value) => handleInputChange(value, 'model_name')}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label>{t('分组')}</label>
+                    <div className="search-container w-100">
+                      <i className="search-icon"><IconSearch /></i>
+                      <Form.Input
+                        value={group}
+                        placeholder={t('分组')}
+                        name='group'
+                        className="search-input-form"
+                        onChange={(value) => handleInputChange(value, 'group')}
+                      />
+                    </div>
+                  </div>
+                  {isAdminUser && (
+                    <>
+                      <div>
+                        <label>{t('渠道 ID')}</label>
+                        <div className="search-container w-100">
+                          <i className="search-icon"><IconSearch /></i>
+                          <Form.Input
+                            value={channel}
+                            placeholder={t('渠道 ID')}
+                            name='channel'
+                            className="search-input-form"
+                            onChange={(value) => handleInputChange(value, 'channel')}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label>{t('用户名称')}</label>
+                        <div className="search-container w-100">
+                          <i className="search-icon"><IconSearch /></i>
+                          <Form.Input
+                            value={username}
+                            placeholder={t('用户名称')}
+                            name='username'
+                            className="search-input-form"
+                            onChange={(value) => handleInputChange(value, 'username')}
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  <button type="submit" onClick={refresh} loading={loading} className='searchBtn w-100'>
+                    {t('查询')}
+                  </button>
+                </Form>
+              </div>}
+            </div>
           </div>
           {/* <div className='filterOption'>
               <button><img src={filterIcon} alt="filter" /> Filter</button>
@@ -852,13 +902,13 @@ const LogsTable = () => {
             <Table borderless hover>
               <thead>
                 <tr>
-                  <th>{t('时间')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                  <th>{t('令牌')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                  <th>{t('分组')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                  <th>{t('类型')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                  <th>{t('模型')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                  <th>{t('花费')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                  <th>{t('详情')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                  <th>{t('时间')}</th>
+                  <th>{t('令牌')}</th>
+                  <th>{t('分组')}</th>
+                  <th>{t('类型')}</th>
+                  <th>{t('模型')}</th>
+                  <th>{t('花费')}</th>
+                  <th>{t('详情')}</th>
                 </tr>
               </thead>
               <tbody>

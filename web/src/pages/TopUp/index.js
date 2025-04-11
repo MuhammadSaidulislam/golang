@@ -387,13 +387,13 @@ const TopUp = () => {
             <Table borderless hover>
               <thead>
                 <tr>
-                  <th>Submission Date/Time <SortIconSvg color="--semi-table-thead-0" /></th>
-                  <th>Spend time <SortIconSvg color="--semi-table-thead-0" /></th>
-                  <th>Type <SortIconSvg color="--semi-table-thead-0" /></th>
-                  <th>Task ID <SortIconSvg color="--semi-table-thead-0" /></th>
-                  <th>Schedule <SortIconSvg color="--semi-table-thead-0" /></th>
-                  <th>Result <SortIconSvg color="--semi-table-thead-0" /></th>
-                  <th>Prompt <SortIconSvg color="--semi-table-thead-0" /></th>
+                  <th>Submission Date/Time</th>
+                  <th>Spend time</th>
+                  <th>Type</th>
+                  <th>Task ID</th>
+                  <th>Schedule</th>
+                  <th>Result</th>
+                  <th>Prompt</th>
                 </tr>
               </thead>
               <tbody>

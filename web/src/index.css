@@ -14,6 +14,8 @@ body[theme-mode='dark'] .semi-always-light,
   --semi-text-white-black-2: #666666;
   --semi-dashboard-bg-0: rgb(255, 255, 255);
   --semi-table-thead-0: #2c2d33;
+  --semi-dashboard-nav-0: #d9dfff;
+  --semi-box-black-0: #f5f6f8b2;
 }
 body[theme-mode='dark'],
 body .semi-always-dark,
@@ -26,6 +28,8 @@ body .semi-always-dark,
   --semi-text-white-black-2: #ffffff;
   --semi-dashboard-bg-0: rgb(19, 19, 19);
   --semi-table-thead-0: rgb(255, 255, 255);
+  --semi-dashboard-nav-0: #35363c;
+  --semi-box-black-0: rgb(19, 19, 19);
 }
 body {
   margin: 0;

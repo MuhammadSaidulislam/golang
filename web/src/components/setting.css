@@ -26,14 +26,28 @@
   border: none !important;
 }
 .settingTab .nav-link.active {
-  color: #2b2f32 !important;
+  color: var(--semi-color-text-0) !important;
   border: none !important;
   border-bottom: 4px solid #5570f1 !important;
   background-color: transparent !important;
 }
-.personalInfo {
-  background-color: #f5f6f8b2;
+.settingFirst {
+  display: flex;
+  flex-direction: column;
+  background-color: red;
+  background-color: var(--semi-box-black-0);
   padding: 24px;
+  border: 1px solid #f5f6f8b2;
+  border-radius: 12px;
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+  -ms-border-radius: 12px;
+  -o-border-radius: 12px;
+}
+.personalInfo {
+  background-color: var(--semi-box-black-0);
+  padding: 24px;
+  border: 1px solid #f5f6f8b2;
   border-radius: 12px;
   -webkit-border-radius: 12px;
   -moz-border-radius: 12px;

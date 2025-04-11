@@ -691,12 +691,12 @@ const TokensTable = () => {
           <Table borderless hover>
             <thead>
               <tr>
-                <th>Token name <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>Status <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>Quota used <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>Quota Bal <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>Created <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>Expiration <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>Token name</th>
+                <th>Status</th>
+                <th>Quota used</th>
+                <th>Quota Bal</th>
+                <th>Created</th>
+                <th>Expiration</th>
                 <th>Actions</th>
               </tr>
             </thead>

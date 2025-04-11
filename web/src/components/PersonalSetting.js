@@ -361,7 +361,7 @@ const PersonalSetting = () => {
                 {isAdmin() && <>
                     <li className="nav-item">
                         <button
-                            className={`nav-link px-4 pb-2 ${activeTab === 'operation' ? 'active text-primary border-bottom border-primary' : 'text-secondary'}`}
+                            className={`nav-link px-4 pb-2 ${activeTab === 'operation' ? 'active border-bottom border-primary' : ''}`}
                             onClick={() => setActiveTab('operation')}
                         >
                             {t('运营设置')}
@@ -369,7 +369,7 @@ const PersonalSetting = () => {
                     </li>
                     <li className="nav-item">
                         <button
-                            className={`nav-link px-4 pb-2 ${activeTab === 'system' ? 'active text-primary border-bottom border-primary' : 'text-secondary'}`}
+                            className={`nav-link px-4 pb-2 ${activeTab === 'system' ? 'active border-bottom border-primary' : ''}`}
                             onClick={() => setActiveTab('system')}
                         >
                             {t('系统设置')}
@@ -377,7 +377,7 @@ const PersonalSetting = () => {
                     </li>
                     <li className="nav-item">
                         <button
-                            className={`nav-link px-4 pb-2 ${activeTab === 'other' ? 'active text-primary border-bottom border-primary' : 'text-secondary'}`}
+                            className={`nav-link px-4 pb-2 ${activeTab === 'other' ? 'active border-bottom border-primary' : ''}`}
                             onClick={() => setActiveTab('other')}
                         >
                             {t('其他设置')}
@@ -539,7 +539,7 @@ const PersonalSetting = () => {
                         <div className="col-md-6">
 
                             {/* User Form Section */}
-                            <div className="d-flex flex-column">
+                            <div className="settingFirst">
 
                                 <div className="imageBody d-flex justify-content-between w-100 gap-2 mb-3">
                                     {/* <div className="personalImage">

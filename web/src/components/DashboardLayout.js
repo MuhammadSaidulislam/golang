@@ -27,7 +27,7 @@ import notificationIcon from "../assets/Notification.svg";
 import { IconUser, IconGift, IconLayers } from '@douyinfe/semi-icons';
 import { renderQuota, stringToColor } from '../helpers/render';
 import { API } from './../helpers';
-
+import { DashboardIconSvg, ChatIconSvg, TokenIconSvg, WalletIconSvg, LogsIconSvg, DrawingIconSvg, TasksIconSvg, PriceIconSvg, SettingIconSvg } from './svgIcon.js';
 
 const DashboardLayout = ({ children, ...props }) => {
     const { t } = useTranslation();
@@ -305,20 +305,20 @@ const DashboardLayout = ({ children, ...props }) => {
                 <div className={`sidebar ${isOpen ? "is-open" : ""}`}>
                     <nav className="flex-column middleNav">
                         <ul>
-                            <li><Link to="/detail" className={urlParams === "detail" ? "nav-link activeMenu" : "nav-link"}><img src={dashboardIcon} alt="dashboardIcon" /> {t('数据看板')}</Link></li>
-                            <li><Link to="/playground" className={urlParams === "playground" ? "nav-link activeMenu" : "nav-link"}><img src={dashboardIcon} alt="dashboardIcon" /> {t('操场')}</Link></li>
-                            <li><Link to="/chat/0" className={urlParams === "chat/0" ? "nav-link activeMenu" : "nav-link"}><img src={chatIcon} alt="dashboardIcon" /> {t('聊天')}</Link></li>
-                            <li><Link to="/token" className={urlParams === "token" ? "nav-link activeMenu" : "nav-link"}><img src={tokenIcon} alt="dashboardIcon" /> {t('令牌')}</Link></li>
+                            <li><Link to="/detail" className={urlParams === "detail" ? "nav-link activeMenu" : "nav-link"}><DashboardIconSvg color="--semi-table-thead-0" /> {t('数据看板')}</Link></li>
+                            <li><Link to="/playground" className={urlParams === "playground" ? "nav-link activeMenu" : "nav-link"}><DashboardIconSvg color="--semi-table-thead-0" /> {t('操场')}</Link></li>
+                            <li><Link to="/chat/0" className={urlParams === "chat/0" ? "nav-link activeMenu" : "nav-link"}><ChatIconSvg color="--semi-table-thead-0" /> {t('聊天')}</Link></li>
+                            <li><Link to="/token" className={urlParams === "token" ? "nav-link activeMenu" : "nav-link"}><TokenIconSvg color="--semi-table-thead-0" /> {t('令牌')}</Link></li>
                             {isAdmin() ?
                                 <>  <li><Link to="/channel" className={urlParams === "channel" ? "nav-link activeMenu" : "nav-link"}><IconLayers /> {t('渠道')}</Link></li>
                                     <li><Link to="/redemption" className={urlParams === "redemption" ? "nav-link activeMenu" : "nav-link"}><IconGift /> {t('兑换码')}</Link></li>
                                     <li><Link to="/user" className={urlParams === "user" ? "nav-link activeMenu" : "nav-link"}><IconUser /> {t('用户管理')}</Link></li></>
                                 : ""}
-                            <li><Link to="/topup" className={urlParams === "topup" ? "nav-link activeMenu" : "nav-link"}><img src={walletIcon} alt="dashboardIcon" /> {t('钱包')}</Link></li>
-                            <li><Link to="/log" className={urlParams === "log" ? "nav-link activeMenu" : "nav-link"}><img src={playIcon} alt="dashboardIcon" /> {t('日志')}</Link></li>
-                            <li><Link to="/midjourney" className={urlParams === "midjourney" ? "nav-link activeMenu" : "nav-link"}><img src={logsIcon} alt="dashboardIcon" /> {t('绘图')}</Link></li>
-                            <li><Link to="/task" className={urlParams === "task" ? "nav-link activeMenu" : "nav-link"}><img src={tasksIcon} alt="dashboardIcon" /> {t('异步任务')}</Link></li>
-                            <li><Link to="/pricing" className={urlParams === "pricing" ? "nav-link activeMenu" : "nav-link"}><img src={priceIcon} alt="dashboardIcon" /> {t('定价')}</Link></li>
+                            <li><Link to="/topup" className={urlParams === "topup" ? "nav-link activeMenu" : "nav-link"}><WalletIconSvg color="--semi-table-thead-0" /> {t('钱包')}</Link></li>
+                            <li><Link to="/log" className={urlParams === "log" ? "nav-link activeMenu" : "nav-link"}><LogsIconSvg color="--semi-table-thead-0" /> {t('日志')}</Link></li>
+                            <li><Link to="/midjourney" className={urlParams === "midjourney" ? "nav-link activeMenu" : "nav-link"}><DrawingIconSvg color="--semi-table-thead-0" /> {t('绘图')}</Link></li>
+                            <li><Link to="/task" className={urlParams === "task" ? "nav-link activeMenu" : "nav-link"}><TasksIconSvg color="--semi-table-thead-0" /> {t('异步任务')}</Link></li>
+                            <li><Link to="/pricing" className={urlParams === "pricing" ? "nav-link activeMenu" : "nav-link"}><PriceIconSvg color="--semi-table-thead-0" /> {t('定价')}</Link></li>
                         </ul>
                     </nav>
                     <nav className="flex-column bottomNav">
@@ -328,7 +328,7 @@ const DashboardLayout = ({ children, ...props }) => {
                             <li><Link target="_blank" to="https://www.askais.com" className={urlParams === "ai" ? "nav-link activeMenu" : "nav-link"}><img src={aiIcon} alt="dashboardIcon" /> {t('人工智能平台')}</Link></li>
                             <li><Link target="_blank" to="https://t.me/askais" className={urlParams === "contact" ? "nav-link activeMenu" : "nav-link"}><img src={contactIcon} alt="dashboardIcon" /> {t('联系我们')}</Link></li>
                             <li><Link target="_blank" to="http://blog.askais.com" className={urlParams === "blog" ? "nav-link activeMenu" : "nav-link"}><img src={blogIcon} alt="dashboardIcon" /> {t('博客')}</Link></li>
-                            <li className='settings'><Link to="/setting" className={urlParams === "setting" ? "nav-link activeMenu" : "nav-link"}><img src={settingIcon} alt="dashboardIcon" /> {t('设置')}</Link></li>
+                            <li className='settings'><Link to="/setting" className={urlParams === "setting" ? "nav-link activeMenu" : "nav-link"}><SettingIconSvg color="--semi-table-thead-0" /> {t('设置')}</Link></li>
                         </ul>
                     </nav>
                 </div>

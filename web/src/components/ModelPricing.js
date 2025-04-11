@@ -380,9 +380,9 @@ const ModelPricing = () => {
                       <thead>
                         <tr>
                           <th></th>
-                          <th>Model <SortIconSvg color="--semi-table-thead-0" /></th>
-                          <th>Billing Type <SortIconSvg color="--semi-table-thead-0" /></th>
-                          <th>Available groups <SortIconSvg color="--semi-table-thead-0" /></th>
+                          <th>Model</th>
+                          <th>Billing Type</th>
+                          <th>Available groups</th>
                         </tr>
                       </thead>
                       <tbody>

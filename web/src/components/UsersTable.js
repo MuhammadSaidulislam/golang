@@ -485,12 +485,12 @@ const UsersTable = () => {
           <Table borderless hover>
             <thead>
               <tr>
-                <th>{t('ID')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('用户名')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('分组')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('统计信息')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('邀请信息')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('角色')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('ID')}</th>
+                <th>{t('用户名')}</th>
+                <th>{t('分组')}</th>
+                <th>{t('统计信息')}</th>
+                <th>{t('邀请信息')}</th>
+                <th>{t('角色')}</th>
                 <th>{t('状态')}</th>
                 <th>Actions</th>
               </tr>

@@ -398,12 +398,12 @@ const RedemptionsTable = () => {
           <Table borderless hover>
             <thead>
               <tr>
-                <th>{t('ID')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('名称')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('状态')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('额度')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('创建时间')} <SortIconSvg color="--semi-table-thead-0" /></th>
-                <th>{t('兑换人ID')} <SortIconSvg color="--semi-table-thead-0" /></th>
+                <th>{t('ID')}</th>
+                <th>{t('名称')}</th>
+                <th>{t('状态')}</th>
+                <th>{t('额度')}</th>
+                <th>{t('创建时间')}</th>
+                <th>{t('兑换人ID')}</th>
                 <th>Actions</th>
               </tr>
             </thead>

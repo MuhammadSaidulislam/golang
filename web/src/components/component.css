@@ -381,14 +381,17 @@
   color: var(--semi-color-text-0);
 }
 .sidebar ul li:has(a.activeMenu) {
-  background: #d9dfff;
+  background: var(--semi-dashboard-nav-0);
 }
 .sidebar ul li a img {
   margin-right: 11px;
 }
+.sidebar ul li a svg {
+  margin-right: 11px;
+}
 .sidebar ul li a span {
   font-size: 22px;
-  margin-right: 11px;
+  /* margin-right: 11px; */
 }
 .collapse.show,
 .collapsing {
@@ -601,12 +604,17 @@
   position: absolute;
   top: 45px;
   right: 0;
-  background-color: white;
-  border-radius: 6px;
+  background-color: var(--semi-dashboard-bg-0);
+  border: 1px solid rgb(255, 255, 255);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 10px 0;
   min-width: 180px;
   z-index: 100;
+  border-radius: 6px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -ms-border-radius: 6px;
+  -o-border-radius: 6px;
 }
 .mobileDashNav .dropdown {
   position: absolute;
@@ -623,7 +631,8 @@
   position: absolute;
   top: 45px;
   right: 0;
-  background-color: white;
+  background-color: var(--semi-dashboard-bg-0);
+  border: 1px solid rgb(255, 255, 255);
   border-radius: 6px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 10px 0;
@@ -821,7 +830,7 @@
   -o-border-radius: 12px;
 }
 .firstBox {
-  background-color: rgb(255, 255, 255);
+  background-color: var(--semi-dashboard-bg-0);
   padding: 15px 16px;
   display: flex;
   flex-direction: column;
@@ -1795,7 +1804,7 @@
 }
 .chatBox .chatMessage .semi-chat {
   max-width: 100%;
-  background-color: rgb(255, 255, 255);
+  background-color: var(--semi-color-bg-0);
 }
 .chatBox .chatMessage .semi-chat .semi-chat-chatBox-right {
   flex-direction: row;
@@ -1925,7 +1934,7 @@
   width: 100%;
   padding: 24px 20px;
   margin-top: 20px;
-  background-color: rgb(255, 255, 255);
+  background-color: var(--semi-dashboard-bg-0);
   border-radius: 12px;
   -webkit-border-radius: 12px;
   -moz-border-radius: 12px;
@@ -2133,6 +2142,9 @@
 }
 
 @media (max-width: 800px) {
+  .sidebar {
+    max-height: calc(100vh - 58px);
+  }
   .sidebar ul {
     padding-left: 14px;
   }
@@ -2273,7 +2285,7 @@
     padding: 0px;
   }
   .App:has(.is-open) {
-    max-height: calc(100vh - 89px);
+    max-height: calc(100vh - 58px);
   }
   .chatBox {
     height: calc(100vh - 66px);
