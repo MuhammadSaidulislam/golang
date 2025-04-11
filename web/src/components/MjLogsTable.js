@@ -50,6 +50,7 @@ const LogsTable = () => {
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
+  const [chartModel, setChartModel] = useState(false);
   function renderType(type) {
 
     switch (type) {
@@ -581,9 +582,63 @@ const LogsTable = () => {
                 {t('查询')}
               </button>
             </div>
-            <div className='filterOption'>
-              <button><img src={filterIcon} alt="filter" /> Filter</button>
-              <button><img src={downloadIcon} alt="download" /></button>
+            <div className=''>
+              <div className='cardTime'>
+                <div className="icon-container" onClick={() => setChartModel(!chartModel)}>
+                  <div className="user-icon">
+                    <button className="d-flex align-items-center"><img src={filterIcon} alt="filter" style={{ marginRight: '5px' }} /> <span>Filter</span></button>
+                  </div>
+                </div>
+                {chartModel && <div className="dropdown dashboardDropdown">
+                  <Form layout='horizontal' className="100%" style={{ marginTop: 10 }}>
+                    <Form.Input
+                      field='channel_id'
+                      label={t('渠道 ID')}
+                      style={{ width: '100%' }}
+                      className="w-100"
+                      value={channel_id}
+                      placeholder={t('可选值')}
+                      name='channel_id'
+                      onChange={(value) => handleInputChange(value, 'channel_id')}
+                    />
+                    <Form.Input
+                      field='mj_id'
+                      label={t('任务 ID')}
+                      style={{ width: '100%' }}
+                      value={mj_id}
+                      placeholder={t('可选值')}
+                      name='mj_id'
+                      onChange={(value) => handleInputChange(value, 'mj_id')}
+                    />
+                    <Form.DatePicker
+                      field='start_timestamp'
+                      label={t('起始时间')}
+                      style={{ width: 272 }}
+                      initValue={start_timestamp}
+                      value={start_timestamp}
+                      type='dateTime'
+                      name='start_timestamp'
+                      onChange={(value) => handleInputChange(value, 'start_timestamp')}
+                    />
+                    <Form.DatePicker
+                      field='end_timestamp'
+                      fluid
+                      label={t('结束时间')}
+                      style={{ width: 272 }}
+                      initValue={end_timestamp}
+                      value={end_timestamp}
+                      type='dateTime'
+                      name='end_timestamp'
+                      onChange={(value) => handleInputChange(value, 'end_timestamp')}
+                    />
+
+                    <button type="submit" onClick={refresh} loading={loading} className='searchBtn w-100'>{t('查询')}</button>
+                  </Form>
+                </div>}
+              </div>
+
+              { /*  <button><img src={filterIcon} alt="filter" /> Filter</button> 
+                <button><img src={downloadIcon} alt="download" /></button>
               <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
                 <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
                   Bulk Action
@@ -596,7 +651,7 @@ const LogsTable = () => {
                     Bulk Two
                   </Dropdown.Item>
                 </Dropdown.Menu>
-              </Dropdown>
+              </Dropdown> */}
             </div>
           </div>
         </div>
