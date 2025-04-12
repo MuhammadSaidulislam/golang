@@ -431,7 +431,7 @@
   "一小时后过期": "Expires after one hour",
   "一分钟后过期": "Expires after one minute",
   "创建新的令牌": "Create New Token",
-  "注意，令牌的额度仅用于限制令牌本身的最大额度使用量，实际的使用受到账户的剩余额度限制。": "Note that the quota of the token is only used to limit the maximum quota usage of the token itself, and the actual usage is limited by the remaining quota of the account.",
+  "代币的配额设定了其最大使用限制，但实际使用量取决于账户的剩余配额": "The token's quota sets its maximum usage limit, but actual usage depends on the account's remaining quota",
   "设为无限额度": "Set to unlimited quota",
   "更新令牌信息": "Update Token Information",
   "请输入充值码！": "Please enter the recharge code!",

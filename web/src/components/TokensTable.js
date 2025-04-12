@@ -201,10 +201,14 @@ const TokensTable = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchToken, setSearchToken] = useState('');
   const [searching, setSearching] = useState(false);
+  const [modalShow, setModalShow] = useState(false);
   const [chats, setChats] = useState([]);
   const [editingToken, setEditingToken] = useState({
     id: undefined,
   });
+  const handleModalClose = () => {
+    setModalShow(false);
+  }
 
   const closeEdit = () => {
     setShowEdit(false);
@@ -266,7 +270,6 @@ const TokensTable = () => {
   };
 
   const onOpenLink = async (type, url, record) => {
-    console.log(type, url, record);
     let status = localStorage.getItem('status');
     let serverAddress = '';
     if (status) {
@@ -538,6 +541,8 @@ const TokensTable = () => {
         editingToken={editingToken}
         visiable={showEdit}
         handleClose={closeEdit}
+        modalShow={modalShow}
+        handleModalClose={handleModalClose}
       ></EditToken>
 
       {/* <ModalToken refresh={refresh} visiable={showEdit} editingToken={editingToken} updateShow={updateShow} handleUpdateClose={handleUpdateClose} /> */}
@@ -677,7 +682,7 @@ const TokensTable = () => {
             setEditingToken({
               id: undefined,
             });
-            setShowEdit(true);
+            setModalShow(true);
             setUpdateShow(true);
           }}
         >
@@ -712,7 +717,7 @@ const TokensTable = () => {
                 <td className='tableActions'>
                   <button onClick={async (text) => { await copyText('sk-' + data.key); }}><img src={copyIcon} alt="tableAction" /></button>
                   <button onClick={() => onOpenLink('default', chatMessage[0].link, data)}><img src={chatIcon} alt="tableAction" /> </button>
-                  <button onClick={() => { setEditingToken(data); setShowEdit(true); }}><img src={editIcon} alt="tableAction" /></button>
+                  <button onClick={() => { setEditingToken(data); setModalShow(true); }}><img src={editIcon} alt="tableAction" /></button>
                   {data.status === 1 ? <button onClick={async () => { manageToken(data.id, 'disable', data); }}><img src={disableIcon} alt="tableAction" /></button> : <button onClick={async () => { manageToken(data.id, 'enable', data); }}><img src={enableIcon} alt="tableAction" /></button>}
                   <Popconfirm
                     title={t('确定是否要删除此令牌？')}

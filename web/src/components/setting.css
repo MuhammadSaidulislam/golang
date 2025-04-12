@@ -208,7 +208,8 @@
   margin-bottom: 8px;
   width: 100%;
 }
-.personalInput input {
+.personalInput input,
+.personalInput textarea {
   border: 1px solid #000000;
   background-color: #f1f6f900;
   padding: 12px 16px;
@@ -380,7 +381,17 @@
 .accountText span {
   margin-right: 8px;
 }
+.tokenBox {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
 @media (max-width: 800px) {
+  .tokenBox {
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 0px;
+  }
   .settingPage {
     padding: 0px;
   }

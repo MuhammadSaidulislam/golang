@@ -323,6 +323,7 @@ const ModalToken = ({ updateShow, handleUpdateClose, refresh, editingToken, visi
                             autoComplete='new-password'
                             type='number'
                             position={'top'}
+                            getPopupContainer={() => document.querySelector('.modal-content')}
                             data={[
                                 { value: 500000, label: '1$' },
                                 { value: 5000000, label: '10$' },
@@ -349,6 +350,7 @@ const ModalToken = ({ updateShow, handleUpdateClose, refresh, editingToken, visi
                                     autoComplete='off'
                                     position={'top'}
                                     type='number'
+                                    getPopupContainer={() => document.querySelector('.modal-content')}
                                     data={[
                                         { value: 10, label: t('10个') },
                                         { value: 20, label: t('20个') },
