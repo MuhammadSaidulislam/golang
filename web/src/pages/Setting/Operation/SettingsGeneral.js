@@ -91,6 +91,10 @@ export default function GeneralSettings(props) {
           <Form.Section text={t('通用设置')}>
             <Row gutter={16}>
               <Col span={8}>
+                {/* <div className="personalInput w-100">
+                  <label>{t('充值链接')}</label>
+                  <input type="text" id="TopUpLink" name="TopUpLink" className="search-input" placeholder={t('例如发卡网站的购买链接')} value={inputs.TopUpLink} onChange={(e) => onChange(e.target.value, e)} />
+                </div> */}
                 <Form.Input
                   field={'TopUpLink'}
                   label={t('充值链接')}
@@ -121,6 +125,18 @@ export default function GeneralSettings(props) {
                 />
               </Col>
               <Col span={8}>
+                {                /* <div className="personalInput w-100">
+                  <label>{t('单位美元额度')}</label>
+                  <input
+                    type="text"
+                    id="QuotaPerUnit"
+                    name="QuotaPerUnit"
+                    className="search-input"
+                    placeholder={t('一单位货币能兑换的额度')}
+                    value={inputs.QuotaPerUnit}
+                    onChange={(e) => onChange(e.target.value, e)}
+                  />
+                </div> */}
                 <Form.Input
                   field={'QuotaPerUnit'}
                   label={t('单位美元额度')}

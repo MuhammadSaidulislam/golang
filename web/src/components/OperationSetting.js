@@ -114,9 +114,11 @@ const OperationSetting = ({ setMobileTab }) => {
       <p className="accountText" onClick={() => setMobileTab('')}> <IconArrowLeft /> Account Settings</p>
       <Spin spinning={loading} size='large'>
         {/* 通用设置 */}
+        <p>Start</p>
         <Card style={{ marginTop: '10px' }}>
           <SettingsGeneral options={inputs} refresh={onRefresh} />
         </Card>
+        <p>Start</p>
         {/* 绘图设置 */}
         <Card style={{ marginTop: '10px' }}>
           <SettingsDrawing options={inputs} refresh={onRefresh} />

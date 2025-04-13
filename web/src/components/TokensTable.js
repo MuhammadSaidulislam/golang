@@ -144,7 +144,6 @@ const TokensTable = () => {
             }
 
           } catch (e) {
-            console.log(e);
             showError(t('聊天链接配置错误，请联系管理员'));
           }
         }

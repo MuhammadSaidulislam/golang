@@ -374,9 +374,11 @@
   font-size: 16px;
   line-height: 100%;
   letter-spacing: 0%;
-  color: #202020;
+  color: var(--semi-text-white-black-1);
   display: flex;
   align-items: center;
+  margin: 0px;
+  padding: 20px 0px 10px 20px;
 }
 .accountText span {
   margin-right: 8px;

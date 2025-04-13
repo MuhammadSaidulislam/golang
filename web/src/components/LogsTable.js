@@ -1014,7 +1014,6 @@ const LogsTable = () => {
                         initValue={start_timestamp}
                         type='dateTime'
                         onChange={(value) => {
-                          console.log(value);
                           handleInputChange(value, 'start_timestamp')
                         }}
                       />

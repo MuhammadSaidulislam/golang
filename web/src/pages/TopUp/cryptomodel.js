@@ -61,7 +61,6 @@ const CryptoModel = () => {
                 }).then((res) => {
                     setInfo(res.data);
                     setUuid(res.data.uuid);
-                    console.log("data", res.data);
                     const expirationTime = res.data.created_at + res.data.lifetime;
                     startCountdown(expirationTime);
 
@@ -95,7 +94,6 @@ const CryptoModel = () => {
             const checkTransactionStatus = async () => {
                 try {
                     const response = await API.get(`/api/transaction-status/${uuid}`);
-                    console.log(response)
                     if (response.data.status == "success") {
                         window.location.href = response.data.redirect_url;
                     }

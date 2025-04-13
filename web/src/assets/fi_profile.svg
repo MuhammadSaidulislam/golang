@@ -1,5 +1,5 @@
 <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="29" height="29" rx="4" fill="white"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M14.4807 18.543C9.80736 18.543 5.81641 19.2496 5.81641 22.0794C5.81641 24.9092 9.78204 25.6411 14.4807 25.6411C19.1541 25.6411 23.1439 24.9333 23.1439 22.1047C23.1439 19.276 19.1794 18.543 14.4807 18.543Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" strokeLinejoin="round"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M14.4795 14.5087C17.5464 14.5087 20.0321 12.0218 20.0321 8.95492C20.0321 5.88806 17.5464 3.40234 14.4795 3.40234C11.4127 3.40234 8.92581 5.88806 8.92581 8.95492C8.91546 12.0114 11.3851 14.4983 14.4404 14.5087H14.4795Z" stroke="#130F26" stroke-width="1.42857" stroke-linecap="round" strokeLinejoin="round"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M14.4807 18.543C9.80736 18.543 5.81641 19.2496 5.81641 22.0794C5.81641 24.9092 9.78204 25.6411 14.4807 25.6411C19.1541 25.6411 23.1439 24.9333 23.1439 22.1047C23.1439 19.276 19.1794 18.543 14.4807 18.543Z" stroke="#130F26" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M14.4795 14.5087C17.5464 14.5087 20.0321 12.0218 20.0321 8.95492C20.0321 5.88806 17.5464 3.40234 14.4795 3.40234C11.4127 3.40234 8.92581 5.88806 8.92581 8.95492C8.91546 12.0114 11.3851 14.4983 14.4404 14.5087H14.4795Z" stroke="#130F26" strokeWidth="1.42857" strokeLinecap="round" strokeLinejoin="round"/>
 </svg>

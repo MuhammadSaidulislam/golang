@@ -33,7 +33,6 @@ const AirwallexModel = () => {
     const loadDropInElement = async () => {
       try {
         const env = liveAirwallex ? 'production' : 'demo';
-        console.log("env", env);
         await init({ env, enabledElements: ['payments'] });
 
         const numericAmount = parseFloat(amount);
@@ -71,7 +70,6 @@ const AirwallexModel = () => {
 
         // Attach event listeners
         const onSuccess = (event) => {
-          console.log(`Confirm success with ${JSON.stringify(event.detail)}`);
           navigate('/checkout-success');
         };
 

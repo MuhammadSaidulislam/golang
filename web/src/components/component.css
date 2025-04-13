@@ -661,7 +661,8 @@
 }
 
 .dashboardNav .dashboardOption .walletAmount {
-  background: #12121214;
+  background: var(--semi-background-bg-0);
+  border: 1px solid var(--semi-background-bg-0);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -679,7 +680,7 @@
   -ms-border-radius: 13px;
   -o-border-radius: 13px;
 }
-.dashboardNav .dashboardOption .walletAmount img {
+.dashboardNav .dashboardOption .walletAmount svg {
   margin-left: 8px;
 }
 
@@ -1859,8 +1860,14 @@
   top: 40px;
   left: 0px;
   width: 100%;
-  background-color: rgb(255, 255, 255);
+  background-color: var(--semi-dashboard-bg-0);
+  padding: 10px;
   z-index: 99999;
+  border-radius: 6px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -ms-border-radius: 6px;
+  -o-border-radius: 6px;
 }
 .mobileChat .filterBtn {
   background-color: rgb(255, 255, 255);
@@ -2278,7 +2285,6 @@
     padding: 12px 22px;
   }
   .mainBoard {
-    background-color: #fff;
     height: 100%;
   }
   .mainBoard.is-open {

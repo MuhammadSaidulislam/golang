@@ -298,8 +298,6 @@ const Playground = () => {
 
   function CustomInputRender(props) {
     const { detailProps } = props;
-    console.log('detailProps', detailProps);
-
     const { clearContextNode, uploadNode, inputNode, sendNode, onClick } = detailProps;
 
     return <div className='messageText' onClick={onClick}>
@@ -352,69 +350,67 @@ const Playground = () => {
           {/* Buttons appear here when showFilters is true */}
           {showFilters && (
             <div className="chatDropdown">
-              <Card style={commonOuterStyle}>
-                <div>
-                  <Typography.Text strong>{t('分组')}：</Typography.Text>
-                </div>
-                <Select
-                  placeholder={t('请选择分组')}
-                  name='group'
-                  required
-                  selection
-                  onChange={(value) => {
-                    handleInputChange('group', value);
-                  }}
-                  value={inputs.group}
-                  autoComplete='new-password'
-                  optionList={groups}
-                  renderOptionItem={renderGroupOption}
-                  style={{ width: '100%' }}
-                />
-                <div style={{ marginTop: 10 }}>
-                  <Typography.Text strong>{t('模型')}：</Typography.Text>
-                </div>
-                <Select
-                  placeholder={t('请选择模型')}
-                  name='model'
-                  required
-                  selection
-                  searchPosition='dropdown'
-                  filter
-                  onChange={(value) => {
-                    handleInputChange('model', value);
-                  }}
-                  value={inputs.model}
-                  autoComplete='new-password'
-                  optionList={models}
-                />
+              <div>
+                <Typography.Text strong>{t('分组')}：</Typography.Text>
+              </div>
+              <Select
+                placeholder={t('请选择分组')}
+                name='group'
+                required
+                selection
+                onChange={(value) => {
+                  handleInputChange('group', value);
+                }}
+                value={inputs.group}
+                autoComplete='new-password'
+                optionList={groups}
+                renderOptionItem={renderGroupOption}
+                style={{ width: '100%' }}
+              />
+              <div style={{ marginTop: 10 }}>
+                <Typography.Text strong>{t('模型')}：</Typography.Text>
+              </div>
+              <Select
+                placeholder={t('请选择模型')}
+                name='model'
+                required
+                selection
+                searchPosition='dropdown'
+                filter
+                onChange={(value) => {
+                  handleInputChange('model', value);
+                }}
+                value={inputs.model}
+                autoComplete='new-password'
+                optionList={models}
+              />
 
-                <div style={{ marginTop: 10 }}>
-                  <Typography.Text strong>MaxTokens：</Typography.Text>
-                </div>
-                <Input
-                  placeholder='MaxTokens'
-                  name='max_tokens'
-                  required
-                  autoComplete='new-password'
-                  defaultValue={0}
-                  value={inputs.max_tokens}
-                  onChange={(value) => {
-                    handleInputChange('max_tokens', value);
-                  }}
-                />
-                <div style={{ marginTop: 10 }}>
-                  <Typography.Text strong>Temperature：</Typography.Text>
-                </div>
-                <Slider
-                  step={0.1}
-                  min={0.1}
-                  max={1}
-                  value={inputs.temperature}
-                  onChange={(value) => {
-                    handleInputChange('temperature', value);
-                  }}
-                />
-              </Card>
+              <div style={{ marginTop: 10 }}>
+                <Typography.Text strong>MaxTokens：</Typography.Text>
+              </div>
+              <Input
+                placeholder='MaxTokens'
+                name='max_tokens'
+                required
+                autoComplete='new-password'
+                defaultValue={0}
+                value={inputs.max_tokens}
+                onChange={(value) => {
+                  handleInputChange('max_tokens', value);
+                }}
+              />
+              <div style={{ marginTop: 10 }}>
+                <Typography.Text strong>Temperature：</Typography.Text>
+              </div>
+              <Slider
+                step={0.1}
+                min={0.1}
+                max={1}
+                value={inputs.temperature}
+                onChange={(value) => {
+                  handleInputChange('temperature', value);
+                }}
+              />
             </div>
           )}
 

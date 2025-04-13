@@ -45,8 +45,6 @@ const TopUp = () => {
   const [redemptionCode, setRedemptionCode] = useState('');
   const [topUpCode, setTopUpCode] = useState('');
   const [topUpCount, setTopUpCount] = useState(0);
-  console.log('topUpCount', topUpCount);
-
   const [minTopupCount, setMinTopUpCount] = useState(1);
   const [amount, setAmount] = useState(0.0);
   const [minTopUp, setMinTopUp] = useState(1);
@@ -208,7 +206,6 @@ const TopUp = () => {
   const getUserQuota = async () => {
     let res = await API.get(`/api/user/self`);
     const { success, message, data } = res.data;
-    console.log('amount pay', renderQuota(res.data.data.quota));
     if (success) {
       setUserQuota(data.quota);
     } else {

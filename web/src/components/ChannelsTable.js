@@ -44,7 +44,7 @@ function renderTimestamp(timestamp) {
 
 const ChannelsTable = () => {
   const { t } = useTranslation();
-  
+
   let type2label = undefined;
 
   const renderType = (type) => {
@@ -559,7 +559,7 @@ const ChannelsTable = () => {
       if (!enableTagMode) {
         channelDates.push(channels[i]);
       } else {
-        let tag = channels[i].tag?channels[i].tag:"";
+        let tag = channels[i].tag ? channels[i].tag : "";
         // find from channelTags
         let tagIndex = channelTags[tag];
         let tagChannelDates = undefined;
@@ -745,7 +745,6 @@ const ChannelsTable = () => {
   };
 
   const manageTag = async (tag, action) => {
-    console.log(tag, action);
     let res;
     switch (action) {
       case 'enable':
@@ -1186,7 +1185,7 @@ const ChannelsTable = () => {
         </Space>
       </div>
       <div style={{ marginTop: 20 }}>
-      <Space>
+        <Space>
           <Typography.Text strong>{t('标签聚合模式')}</Typography.Text>
           <Switch
             checked={enableTagMode}
@@ -1199,14 +1198,14 @@ const ChannelsTable = () => {
             }}
           />
           <Button
-        disabled={!enableBatchDelete}
-        theme="light"
-        type="primary"
-        style={{ marginRight: 8 }}
-        onClick={() => setShowBatchSetTag(true)}
-      >
-        {t('批量设置标签')}
-      </Button>
+            disabled={!enableBatchDelete}
+            theme="light"
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={() => setShowBatchSetTag(true)}
+          >
+            {t('批量设置标签')}
+          </Button>
         </Space>
 
       </div>

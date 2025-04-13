@@ -169,7 +169,6 @@ const Detail = (props) => {
   );
   const [pieData, setPieData] = useState([{ type: 'null', value: '0' }]);
   const [lineData, setLineData] = useState([]);
-  console.log('lineData', lineData);
 
   const [spec_pie, setSpecPie] = useState({
     type: 'pie',

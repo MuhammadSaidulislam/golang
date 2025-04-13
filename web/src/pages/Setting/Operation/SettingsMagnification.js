@@ -24,9 +24,7 @@ export default function SettingsMagnification(props) {
 
   async function onSubmit() {
     try {
-      console.log('Starting validation...');
       await refForm.current.validate().then(() => {
-        console.log('Validation passed');
         const updateArray = compareObjects(inputs, inputsRow);
         if (!updateArray.length) return showWarning('你似乎并没有修改什么');
         const requestQueue = updateArray.map((item) => {
@@ -224,27 +222,27 @@ export default function SettingsMagnification(props) {
           <Row gutter={16}>
             <Col span={16}>
               <Form.TextArea
-                  label={'用户可选分组'}
-                  extraText={''}
-                  placeholder={'为一个 JSON 文本，键为分组名称，值为倍率'}
-                  field={'UserUsableGroups'}
-                  autosize={{ minRows: 6, maxRows: 12 }}
-                  trigger='blur'
-                  stopValidateWithError
-                  rules={[
-                    {
-                      validator: (rule, value) => {
-                        return verifyJSON(value);
-                      },
-                      message: '不是合法的 JSON 字符串'
-                    }
-                  ]}
-                  onChange={(value) =>
-                      setInputs({
-                        ...inputs,
-                        UserUsableGroups: value
-                      })
+                label={'用户可选分组'}
+                extraText={''}
+                placeholder={'为一个 JSON 文本，键为分组名称，值为倍率'}
+                field={'UserUsableGroups'}
+                autosize={{ minRows: 6, maxRows: 12 }}
+                trigger='blur'
+                stopValidateWithError
+                rules={[
+                  {
+                    validator: (rule, value) => {
+                      return verifyJSON(value);
+                    },
+                    message: '不是合法的 JSON 字符串'
                   }
+                ]}
+                onChange={(value) =>
+                  setInputs({
+                    ...inputs,
+                    UserUsableGroups: value
+                  })
+                }
               />
             </Col>
           </Row>
