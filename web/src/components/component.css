@@ -874,6 +874,55 @@
   color: #519c66;
 }
 /* card */
+.icon-container-channel {
+  background-color: #6175de;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 10px;
+  border-radius: 12px;
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+  -ms-border-radius: 12px;
+  -o-border-radius: 12px;
+}
+.icon-container-channel button {
+  background-color: transparent;
+  border: none;
+  display: flex;
+  text-wrap: nowrap;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-align: center;
+  vertical-align: middle;
+  color: white;
+}
+.icon-container-channel .createChannel {
+  border-right: 1px solid white;
+  padding-right: 7px;
+}
+.icon-container-channel .channelIcon {
+  padding: 0px 10px;
+}
+.channel-dropdown .dashboardDropdown {
+  min-width: 213px !important;
+}
+.channelDropdown button {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-align: center;
+  vertical-align: middle;
+  color: var(--semi-text-white-black-1);
+  background-color: transparent;
+  border: none;
+  padding: 15px 0px;
+}
 .cardTime {
   display: flex;
   justify-content: space-between;

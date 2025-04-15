@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Button, Col, Form, Row, Spin, Tag } from '@douyinfe/semi-ui';
+import { Button, Col, Form, Row, Spin, Switch, Tag } from '@douyinfe/semi-ui';
 import {
   compareObjects,
   API,
@@ -81,49 +81,88 @@ export default function SettingsDrawing(props) {
           <Form.Section text={t('绘图设置')}>
             <Row gutter={16}>
               <Col span={8}>
-                <Form.Switch
-                  field={'DrawingEnabled'}
-                  label={t('启用绘图功能')}
-                  size='default'
-                  checkedText='｜'
-                  uncheckedText='〇'
-                  onChange={(value) => {
-                    setInputs({
-                      ...inputs,
-                      DrawingEnabled: value,
-                    });
-                  }}
-                />
+                <div className="personalInput w-100">
+                  <label>{t('启用绘图功能')}</label>
+                  <Switch
+                    field={'DrawingEnabled'}
+                    onChange={(value) => {
+                      setInputs({
+                        ...inputs,
+                        DrawingEnabled: value,
+                      });
+                    }}
+                    size="default"
+                    checkedText='｜'
+                    uncheckedText='〇'
+                    style={{
+                      backgroundColor: inputs.DrawingEnabled ? '#dbeafe' : '#f1f5f9',
+                      border: 'none',
+                    }}
+                    innerStyle={{
+                      backgroundColor: '#cbd5e1',
+                      width: 20,
+                      height: 20,
+                      marginTop: 2,
+                      marginLeft: 2,
+                    }}
+                  />
+                </div>
               </Col>
               <Col span={8}>
-                <Form.Switch
-                  field={'MjNotifyEnabled'}
-                  label={t('允许回调（会泄露服务器 IP 地址）')}
-                  size='default'
-                  checkedText='｜'
-                  uncheckedText='〇'
-                  onChange={(value) =>
-                    setInputs({
-                      ...inputs,
-                      MjNotifyEnabled: value,
-                    })
-                  }
-                />
+                <div className="personalInput w-100">
+                  <label>{t('允许回调（会泄露服务器 IP 地址）')}</label>
+                  <Switch
+                    field={'MjNotifyEnabled'}
+                    onChange={(value) => {
+                      setInputs({
+                        ...inputs,
+                        MjNotifyEnabled: value,
+                      });
+                    }}
+                    size="default"
+                    checkedText='｜'
+                    uncheckedText='〇'
+                    style={{
+                      backgroundColor: inputs.MjNotifyEnabled ? '#dbeafe' : '#f1f5f9',
+                      border: 'none',
+                    }}
+                    innerStyle={{
+                      backgroundColor: '#cbd5e1',
+                      width: 20,
+                      height: 20,
+                      marginTop: 2,
+                      marginLeft: 2,
+                    }}
+                  />
+                </div>
               </Col>
               <Col span={8}>
-                <Form.Switch
-                  field={'MjAccountFilterEnabled'}
-                  label={t('允许 AccountFilter 参数')}
-                  size='default'
-                  checkedText='｜'
-                  uncheckedText='〇'
-                  onChange={(value) =>
-                    setInputs({
-                      ...inputs,
-                      MjAccountFilterEnabled: value,
-                    })
-                  }
-                />
+                <div className="personalInput w-100">
+                  <label>{t('允许 AccountFilter 参数')}</label>
+                  <Switch
+                    field={'MjAccountFilterEnabled'}
+                    onChange={(value) => {
+                      setInputs({
+                        ...inputs,
+                        MjAccountFilterEnabled: value,
+                      });
+                    }}
+                    size="default"
+                    checkedText='｜'
+                    uncheckedText='〇'
+                    style={{
+                      backgroundColor: inputs.MjAccountFilterEnabled ? '#dbeafe' : '#f1f5f9',
+                      border: 'none',
+                    }}
+                    innerStyle={{
+                      backgroundColor: '#cbd5e1',
+                      width: 20,
+                      height: 20,
+                      marginTop: 2,
+                      marginLeft: 2,
+                    }}
+                  />
+                </div>
               </Col>
               <Col span={8}>
                 <Form.Switch

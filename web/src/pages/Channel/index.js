@@ -9,12 +9,7 @@ const File = () => {
   return (
     <>
       <DashboardLayout>
-        <Layout.Header>
-          <h3>{t('管理渠道')}</h3>
-        </Layout.Header>
-        <Layout.Content>
-          <ChannelsTable />
-        </Layout.Content>
+        <ChannelsTable />
       </DashboardLayout>
     </>
   );
