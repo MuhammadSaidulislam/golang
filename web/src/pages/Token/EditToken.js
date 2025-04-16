@@ -464,6 +464,7 @@ const EditToken = (props) => {
                   placeholder={t('管理员未设置用户可选分组')}
                   name='gruop'
                   disabled={true}
+                  getPopupContainer={() => document.querySelector('.modal-content')}
                 />
               }
             </div>

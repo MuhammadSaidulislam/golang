@@ -517,6 +517,10 @@ const ChannelsTable = () => {
   const [showBatchSetTag, setShowBatchSetTag] = useState(false);
   const [batchSetTagValue, setBatchSetTagValue] = useState('');
   const [chartModel, setChartModel] = useState(false);
+  const [channelModal, setChannelModal] = useState(false);
+  const channelModalClose = () => {
+    setChannelModal(false);
+  }
 
   const removeRecord = (record) => {
     let newDataSource = [...channels];
@@ -1000,7 +1004,6 @@ const ChannelsTable = () => {
   };
 
   const description = "Add Tokens to start tracking Calls <br /> Distribution Metrics.";
-  console.log('pageData', pageData);
 
 
   return (
@@ -1017,13 +1020,15 @@ const ChannelsTable = () => {
         visible={showEdit}
         handleClose={closeEdit}
         editingChannel={editingChannel}
+        channelModal={channelModal}
+        channelModalClose={channelModalClose}
       />
 
 
 
 
       <div className='searchHeader'>
-        <div className='searchFilter'>
+        <div className='searchFilter channelWrap'>
           <div className='searchOption'>
             <Form
               onSubmit={() => {
@@ -1053,15 +1058,14 @@ const ChannelsTable = () => {
                       searchChannels(searchKeyword, v, searchModel, enableTagMode);
                     }}
                   />
-                  <Button
-                    label={t('查询')}
+                  <button
+                    label={t('查询')} className='searchBtn'
                     type="primary"
                     htmlType="submit"
-                    className="btn-margin-right"
-                    style={{ marginRight: 8 }}
+                    style={{ marginRight: '8px' }}
                   >
                     {t('查询')}
-                  </Button>
+                  </button>
                 </Space>
               </div>
             </Form>
@@ -1069,7 +1073,7 @@ const ChannelsTable = () => {
           <div className=''>
             <div className='cardTime channel-dropdown'>
               <div className="icon-container-channel">
-                <button className="d-flex align-items-center createChannel" onClick={() => { setEditingChannel({ id: undefined }); setShowEdit(true); }}>{t('添加渠道')}</button>
+                <button className="d-flex align-items-center createChannel" onClick={() => { setEditingChannel({ id: undefined }); setChannelModal(true); }}>{t('添加渠道')}</button>
                 <button className="d-flex align-items-center channelIcon" onClick={() => setChartModel(!chartModel)}><IconChevronDown /></button>
               </div>
               {chartModel && <div className="dropdown dashboardDropdown">

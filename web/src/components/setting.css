@@ -388,7 +388,41 @@
   justify-content: space-between;
   gap: 10px;
 }
+.channelBox {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+.channelBox .tokenFirst {
+  width: 50%;
+}
+.tagChannel {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
 @media (max-width: 800px) {
+  .channelWrap .search-container {
+    width: 100% !important;
+  }
+  .channelWrap .semi-space {
+    justify-content: center;
+  }
+  .channelWrap {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .channelBox {
+    flex-wrap: wrap;
+    gap: 0px;
+  }
+  .channelBox .tokenFirst {
+    width: 100%;
+  }
+  .tagChannel {
+    flex-wrap: wrap;
+    gap: 0px;
+  }
   .tokenBox {
     flex-wrap: wrap;
     width: 100%;
