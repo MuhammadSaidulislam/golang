@@ -61,7 +61,6 @@ export default function SettingsChats(props) {
       });
     } catch (error) {
       showError(t('请检查输入'));
-      console.error(error);
     }
   }
 

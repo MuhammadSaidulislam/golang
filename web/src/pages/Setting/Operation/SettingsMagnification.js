@@ -70,7 +70,6 @@ export default function SettingsMagnification(props) {
       });
     } catch (error) {
       showError('请检查输入');
-      console.error(error);
     }
   }
 

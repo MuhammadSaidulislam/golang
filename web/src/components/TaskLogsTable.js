@@ -277,8 +277,6 @@ const LogsTable = () => {
 
     const pageData = logs.slice((activePage - 1) * ITEMS_PER_PAGE, activePage * ITEMS_PER_PAGE);
 
-    console.log('pageData', pageData);
-
 
     const handlePageChange = page => {
         setActivePage(page);

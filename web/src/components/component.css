@@ -2414,4 +2414,8 @@
   .sidebar .bottomNav {
     margin-bottom: 58px;
   }
+  .tableBox tbody tr td,
+  .tableBox thead tr th {
+    padding: 12px 10px;
+  }
 }

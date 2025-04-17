@@ -38,6 +38,12 @@ import TextNumberInput from './custom/TextNumberInput.js';
 import { useTranslation } from 'react-i18next';
 import NoData from './NoData.js';
 import { Table } from 'react-bootstrap';
+import deleteIcon from "../assets/Delete.svg";
+import disableIcon from "../assets/fi_disable.svg";
+import editIcon from "../assets/fi_edit-2.svg";
+import chatIcon from "../assets/fi_chat_2.svg";
+import copyIcon from "../assets/u_copy-alt.svg";
+import enableIcon from "../assets/fi_check.svg";
 
 function renderTimestamp(timestamp) {
   return <>{timestamp2string(timestamp)}</>;
@@ -1270,7 +1276,7 @@ const ChannelsTable = () => {
                         }
                       })()}
                     </td>
-                    <td>
+                    <td className='tableActions'>
                       {(() => {
                         if (channel.children === undefined) {
                           return (
@@ -1279,14 +1285,9 @@ const ChannelsTable = () => {
                                 style={{ marginRight: 1 }}
                                 aria-label={t('测试单个渠道操作项目组')}
                               >
-                                <Button
-                                  theme="light"
-                                  onClick={() => {
-                                    testChannel(channel, '');
-                                  }}
-                                >
+                                <button onClick={() => { testChannel(channel, ''); }}  >
                                   {t('测试')}
-                                </Button>
+                                </button>
                                 <Dropdown
                                   trigger="click"
                                   position="bottomRight"
@@ -1311,46 +1312,20 @@ const ChannelsTable = () => {
                                   });
                                 }}
                               >
-                                <Button theme="light" type="danger" style={{ marginRight: 1 }}>
-                                  {t('删除')}
-                                </Button>
+                                <button><img src={deleteIcon} alt="tableAction" /></button>
                               </Popconfirm>
 
                               {channel.status === 1 ? (
-                                <Button
-                                  theme="light"
-                                  type="warning"
-                                  style={{ marginRight: 1 }}
-                                  onClick={() => {
-                                    manageChannel(channel.id, 'disable', channel);
-                                  }}
-                                >
-                                  {t('禁用')}
-                                </Button>
+                                <button onClick={() => { manageChannel(channel.id, 'disable', channel); }}  >
+                                  <img src={disableIcon} alt="tableAction" />
+                                </button>
                               ) : (
-                                <Button
-                                  theme="light"
-                                  type="secondary"
-                                  style={{ marginRight: 1 }}
-                                  onClick={() => {
-                                    manageChannel(channel.id, 'enable', channel);
-                                  }}
-                                >
-                                  {t('启用')}
-                                </Button>
+                                <button onClick={() => { manageChannel(channel.id, 'enable', channel); }}  >
+                                  <img src={enableIcon} alt="tableAction" />
+                                </button>
                               )}
 
-                              <Button
-                                theme="light"
-                                type="tertiary"
-                                style={{ marginRight: 1 }}
-                                onClick={() => {
-                                  setEditingChannel(channel);
-                                  setShowEdit(true);
-                                }}
-                              >
-                                {t('编辑')}
-                              </Button>
+                              <button onClick={() => { setEditingChannel(channel); setShowEdit(true); }}  ><img src={editIcon} alt="tableAction" />  </button>
 
                               <Popconfirm
                                 title={t('确定是否要复制此渠道？')}
@@ -1361,9 +1336,7 @@ const ChannelsTable = () => {
                                   copySelectedChannel(channel);
                                 }}
                               >
-                                <Button theme="light" type="primary" style={{ marginRight: 1 }}>
-                                  {t('复制')}
-                                </Button>
+                                <button><img src={copyIcon} alt="tableAction" /></button>
                               </Popconfirm>
                             </div>
                           );

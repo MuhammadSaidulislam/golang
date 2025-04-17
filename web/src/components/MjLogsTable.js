@@ -655,37 +655,57 @@ const LogsTable = () => {
             </div>
           </div>
         </div>
-        <div className="tableData">
+        {pageData && pageData.length === 0 ? <NoData description={description} /> : <div className="tableData">
           <div className="tableBox">
             <Table borderless hover>
               <thead>
                 <tr>
-                  <th>Submission Date/Time</th>
-                  <th>Spend time</th>
-                  <th>Type</th>
-                  <th>Task ID</th>
-                  <th>Schedule</th>
-                  <th>Result</th>
-                  <th>Prompt</th>
+                  <th>{t('提交时间')}</th>
+                  <th>{t('花费时间')}</th>
+                  {isAdmin() ? <th>{t('渠道')}</th> : ""}
+                  <th>{t('类型')}</th>
+                  <th>{t('任务ID')}</th>
+                  {isAdmin() ? <th>{t('提交结果')}</th> : ""}
+                  {isAdmin() ? <th>{t('任务状态')}</th> : ""}
+                  <th>{t('进度')}</th>
                 </tr>
               </thead>
               <tbody>
-                {[...Array(50)].map((_, index) => (
+                {pageData && pageData.map((drawing, index) => (
                   <tr key={index}>
-                    <td>12 Aug 2022 - 12:25 am</td>
-                    <td>5</td>
-                    <td>My APIs</td>
-                    <td>AA87</td>
-                    <td>A25</td>
-                    <td>12 Aug 2022 - 12:25 am</td>
-                    <td>Action Prompt</td>
+                    <td>{renderTimestamp(drawing.submit_time / 1000)}</td>
+                    <td>{renderDuration(drawing.submit_time, drawing.finish)}</td>
+                    {isAdmin() ? <td> <Tag
+                      color={colors[parseInt(drawing.channel_id) % colors.length]}
+                      size='large'
+                      onClick={() => {
+                        copyText(drawing.channel_id); // 假设copyText是用于文本复制的函数
+                      }}
+                    >
+                      {drawing.channel_id}
+                    </Tag></td> : ""}
+                    <td>{renderType(drawing.action)}</td>
+                    <td>{drawing.mj_id}</td>
+                    {isAdmin() ? <td>{renderCode(drawing.code)}</td> : ""}
+                    {isAdmin() ? <td>{renderStatus(drawing.status)}</td> : ""}
+                    <td>  <Progress
+                      stroke={
+                        record.status === 'FAILURE'
+                          ? 'var(--semi-color-warning)'
+                          : null
+                      }
+                      percent={drawing.progress ? parseInt(drawing.progress.replace('%', '')) : 0}
+                      showInfo={true}
+                      aria-label='drawing progress'
+                    /></td>
                   </tr>
                 ))}
               </tbody>
             </Table>
           </div>
-        </div>
-        <div className='tablePagination'>
+        </div>}
+
+        {/* <div className='tablePagination'>
           <div className='leftItems'>
             <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
               <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
@@ -719,7 +739,7 @@ const LogsTable = () => {
             <button className='pagArrow'> <IconChevronLeft /> </button>
             <button className='pagArrow'> <IconChevronRight /> </button>
           </div>
-        </div>
+        </div> */}
         { /*   {isAdminUser && showBanner ? (
           <Banner
             type='info'

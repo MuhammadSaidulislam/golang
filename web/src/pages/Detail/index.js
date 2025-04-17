@@ -320,7 +320,6 @@ const Detail = (props) => {
       }
       const res = await API.get(url);
       const { success, message, data } = res.data;
-      console.log(success, message);
 
       if (!success) {
         setQuotaData(data);
