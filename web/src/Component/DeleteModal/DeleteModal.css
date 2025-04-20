@@ -1,0 +1,80 @@
+#delete-confirm .modal-content {
+    width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#delete-confirm .addMemberForm {
+    padding: 24px;
+}
+
+.deleteIcon {
+    text-align: center;
+}
+
+.deleteIcon img {
+    background-color: rgba(255, 241, 243, 1);
+    padding: 12px;
+    font-size: 47px;
+    color: rgba(192, 16, 72, 1);
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+
+.deleteIcon h4 {
+    margin-top: 16px;
+    font-family: "MyCustomFont";
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 28px;
+    text-align: center;
+    color: #1D2939;
+}
+
+.deleteIcon p {
+    margin-top: 8px;
+    margin-bottom: 2rem;
+    font-family: "MyCustomFont";
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    text-align: center;
+    color: #475467;
+}
+
+.deleteBtn {
+    display: flex;
+    justify-content: center;
+}
+
+.deleteBtn button {
+    margin: 0 7px;
+    color: white;
+    min-width: 188px;
+    padding: 12px 18px;
+    font-family: "MyCustomFont";
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 20px;
+    text-align: center;
+    border: none;
+    box-shadow: 0px 6px 30px 0px rgba(42, 55, 119, 0.06);
+    border-radius: 12px !important;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+}
+
+.deleteBtn .cancel {
+    color: #6366F1;
+    background-color: white;
+    border: 1px solid #6366F1;
+}
+
+.deleteBtn .delete {
+    background: #F04438;
+}

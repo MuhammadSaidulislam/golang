@@ -1,0 +1,402 @@
+.mainContent {
+    background: #F7F8FA;
+    /* min-height: 100vh; */
+    padding: 32px 32px 33px 32px;
+    width: 100%;
+    height: calc(100vh - 72px);
+    overflow-y: auto;
+}
+
+.memberBox {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 16px;
+    border: 1px solid #EAECF0;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    -ms-border-radius: 16px;
+    -o-border-radius: 16px;
+    border: 1px solid #EAECF0;
+}
+
+.table>thead {
+    background-color: #F9FAFB;
+    ;
+}
+
+.topLine {
+    padding: 0px 24px;
+    height: 85px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #EAECF0;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.topLine h6 {
+    font-family: 'MyCustomFont';
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 28px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #101828;
+    margin-bottom: 2px;
+}
+
+.topLine h6 svg {
+    color: rgba(102, 112, 133, 1);
+    margin-right: 12px;
+}
+
+.topLine button,
+.topLine a,
+.topLine a:hover {
+    background: #6366F1;
+    padding: 12px 16px;
+    border: none;
+    font-family: 'MyCustomFont';
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: #fff;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+    text-decoration: none;
+    margin-bottom: 0px;
+    display: flex;
+    align-items: center;
+}
+
+.topLine button svg,
+.topLine a svg,
+.topLine a:hover svg {
+    margin-right: 5px;
+}
+
+.topLine .breadLink,
+.topLine .breadLink:hover {
+    font-family: 'MyCustomFont';
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 28px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #101828;
+    margin-bottom: 2px;
+    background-color: #fff;
+    padding: 0px;
+}
+
+.topLine .breadLink svg,
+.topLine .breadLink svg:hover {
+    color: rgba(102, 112, 133, 1) !important;
+    margin-right: 12px !important;
+}
+
+.memberSearch {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.memberSearch input {
+    border: none;
+    box-shadow: 0px 1px 2px 0px #1018280D;
+    padding: 10px 30px 10px 12px;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+    font-family: 'MyCustomFont';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 26px;
+    letter-spacing: 0em;
+    text-align: left;
+    position: relative;
+    background: #F4F7F8;
+}
+
+.memberSearch input::placeholder {
+    color: #98A2B3;
+}
+
+.memberSearch .form-control:focus {
+    color: none !important;
+    background: #F4F7F8;
+    border-color: none !important;
+    outline: 0;
+    box-shadow: none !important;
+}
+
+.searchInput {
+    position: relative;
+    margin-right: 16px;
+}
+
+.searchInput input {
+    min-width: 360px;
+}
+
+.searchInput svg {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translate(0, -50%);
+    -webkit-transform: translate(0, -50%);
+    -moz-transform: translate(0, -50%);
+    -ms-transform: translate(0, -50%);
+    -o-transform: translate(0, -50%);
+}
+
+.memberSearch .filterBtn {
+    background-color: #fff;
+    border: 1px solid #d0d5dd;
+    box-shadow: 0 1px 2px 0 #1018280d;
+    color: #344054;
+    font-family: MyCustomFont;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+    margin-right: 15px;
+    text-align: left;
+}
+
+.spaceList {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 224px);
+    justify-content: space-between;
+}
+
+
+.spaceList .table-responsive {
+    width: 100%;
+}
+
+.spaceList table tbody tr .rate {
+    font-style: normal;
+}
+
+.spaceList table tbody tr td {
+    vertical-align: middle;
+}
+
+.spaceList table tbody tr td:nth-child(1) {
+    color: #101828;
+    font-family: 'MyCustomFont';
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+
+}
+
+.spaceList table tbody tr td:nth-child(2),
+.spaceList table tbody tr td:nth-child(4),
+.spaceList table tbody tr td:nth-child(5),
+.spaceList table tbody tr td:nth-child(6) {
+    color: #475467;
+    font-family: 'MyCustomFont';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.spaceList table tbody tr td:nth-child(3) {
+    color: #101828;
+    font-family: 'MyCustomFont';
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.spaceList table tbody tr td img {
+    width: 40px;
+    height: 40px;
+    margin-right: 6px;
+}
+
+
+
+
+.spaceList table thead tr th:nth-child(1),
+.spaceList table tbody tr td:nth-child(1) {
+    width: 68px;
+    text-align: center;
+    padding: 0px !important;
+    position: relative;
+    vertical-align: middle;
+}
+
+.spaceList table thead tr th:nth-child(2),
+.spaceList table tbody tr td:nth-child(2) {
+    width: 96px;
+    text-align: center;
+    padding: 0px !important;
+    position: relative;
+    justify-content: center;
+}
+
+.spaceList table thead tr th:first-child,
+.spaceList table tbody tr td:first-child {
+    width: 68px;
+}
+
+.spaceList table tbody tr td:nth-child(8) {
+    white-space: nowrap;
+}
+
+.spaceList table tbody tr td:nth-child(7) {
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* 
+.spaceList table thead tr th:nth-child(3) {
+    width: 192px;
+    text-align: left;
+} */
+
+.spaceList table thead tr th:nth-child(3) {
+    width: 186px;
+    text-align: left;
+}
+
+.spaceList table thead tr th:nth-child(4) {
+    width: 188px;
+    text-align: left;
+}
+
+.spaceList table thead tr th:nth-child(5) {
+    width: 119px;
+    text-align: left;
+}
+
+.spaceList table thead tr th:nth-child(6) {
+    width: 153px;
+    text-align: left;
+}
+
+.spaceList table thead tr th:nth-child(7),
+.spaceList table tbody tr td:nth-child(7) {
+    width: 206px;
+    text-align: center;
+}
+
+.spaceList table thead tr th:nth-child(8),
+.spaceList table tbody tr td:nth-child(8) {
+    width: 116px;
+    text-align: center;
+}
+
+.spaceList table thead tr th {
+    font-family: 'MyCustomFont';
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #475467;
+    height: 56px;
+    vertical-align: middle;
+    white-space: nowrap;
+    background-color: #F9FAFB;
+}
+
+.status .unavailable {
+    font-family: 'MyCustomFont';
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: #C01048;
+    background: #FFF1F3;
+    width: auto;
+    padding: 5px 8px;
+    margin-bottom: 0px;
+    border-radius: 16px;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    -ms-border-radius: 16px;
+    -o-border-radius: 16px;
+}
+
+.status .available {
+    font-family: 'MyCustomFont';
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: #027A48;
+    background: #ECFDF3;
+    width: auto;
+    padding: 5px 8px;
+    margin-bottom: 0px;
+    border-radius: 16px;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    -ms-border-radius: 16px;
+    -o-border-radius: 16px;
+}
+
+.deskType span {
+    font-family: 'MyCustomFont';
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0em;
+    text-align: center;
+    width: fit-content;
+    padding: 5px 8px;
+    margin-bottom: 0px;
+    border-radius: 16px;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    -ms-border-radius: 16px;
+    -o-border-radius: 16px;
+}
+
+.deskType .private {
+    color: #175CD3;
+    background: #EFF8FF;
+}
+
+.deskType .dedicated {
+    color: #6366F1;
+    background: #EFF0FE;
+}
+
+.deskType .flex {
+    color: #B54708;
+    background: #FFFAEB;
+}
+
+@media (max-width: 778px) {
+    .searchInput input {
+        min-width: 100%;
+    }
+
+    .mainContent {
+        height: auto !important;
+        padding: 32px 10px 57px 10px;
+    }
+}

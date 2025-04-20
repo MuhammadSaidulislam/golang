@@ -1,0 +1,461 @@
+.invoiceHeading {
+    margin-bottom: 25px;
+    margin-top: -7px;
+}
+
+.ms-2 {
+    margin-left: .5rem !important;
+}
+
+.m-0 {
+    margin: 0 !important;
+}
+
+.invoiceHeading .breadcrumb .breadcrumb-item {
+    padding-left: 16px;
+}
+
+.invoiceHeading .breadcrumb .breadcrumb-item,
+.invoiceHeading .breadcrumb .breadcrumb-item a {
+    font-family: "MyCustomFont";
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(71, 84, 103, 1);
+    text-decoration: none;
+}
+
+.invoiceHeading .breadcrumb .breadcrumb-item::before,
+.invoiceHeading .breadcrumb .breadcrumb-item.active::before {
+    color: #D0D5DD;
+    width: 24px;
+    height: 24px;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.invoiceHeading .breadcrumb .breadcrumb-item.active {
+    font-family: "MyCustomFont";
+    font-size: 14px;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: var(--Primary-700, #3D3FA1);
+    font-style: normal;
+    font-weight: 800;
+    padding-left: 16px;
+}
+
+.profileSave .cancel,
+.profileSave .save {
+    border: 1px solid #6366f1;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+    font-family: MyCustomFont;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 16px;
+    margin-right: 8px;
+    padding: 12px 16px;
+    text-align: center;
+    width: 120px
+}
+
+.profileSave .save {
+    background-color: #6366f1;
+    color: #fff
+}
+
+.profileSave .cancel {
+    background-color: #fff;
+    color: #6366f1;
+}
+
+.add-account-title {
+    color: #344054;
+    color: var(--Gray-700, #344054);
+    font-family: MyCustomFont;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 24px;
+    width: 50%;
+}
+
+.add-account-padding span {
+    padding-right: 0;
+    width: 200px
+}
+
+.add-account-button-flex {
+    align-items: center;
+    display: flex;
+    justify-content: center
+}
+
+.inputField {
+    position: relative;
+    width: 100%;
+}
+
+.inputField span {
+    position: absolute;
+    color: var(--Gray-600, #475467);
+    line-height: 24px;
+    /* 150% */
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    padding: 12px 100px 11px 12px;
+    border: none;
+    border-right-width: medium;
+    border-right-style: none;
+    border-right-color: currentcolor;
+    font-family: 'MyCustomFont';
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0em;
+    text-align: left;
+    background: transparent;
+    z-index: 1;
+    border-right: 1px solid #D0D5DD;
+}
+
+.inputField.resourceName input {
+    padding-left: 170px;
+}
+
+.inputField input::placeholder {
+    color: #98A2B3;
+    font-weight: 300;
+}
+
+.inputField input {
+    width: 100%;
+    border: 1px solid #D0D5DD;
+    color: #171A20;
+    box-shadow: 0px 1px 2px 0px #1018280D;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-right: 12px;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+    font-family: 'MyCustomFont';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    position: relative;
+}
+
+.add-account-input-group {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+
+.add-account-input-group {
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.dropdownInput {
+    width: 100%;
+}
+
+.dropdownField,
+.dropdownField-focused {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.dropdownField,
+.inputField input {
+    border: 1px solid #d0d5dd;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+    position: relative;
+}
+
+.dropdownField,
+.inputField input {
+    border: 1px solid #d0d5dd;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+    position: relative
+}
+
+.dropdownField,
+.dropdownField-focused {
+    align-items: center;
+    display: flex;
+    justify-content: space-between
+}
+
+.dropdownField-focused {
+    border: 1px solid #d0d5dd;
+    border-radius: 12px 12px 0 12px;
+    -webkit-border-radius: 12px 12px 0 12px;
+    -moz-border-radius: 12px 12px 0 12px;
+    -ms-border-radius: 12px 12px 0 12px;
+    -o-border-radius: 12px 12px 0 12px;
+    position: relative
+}
+
+.dropdownField span,
+.dropdownField-focused span {
+    background: #0000;
+    border: none;
+    border-right: 1px solid #d0d5dd;
+    color: #475467;
+    color: var(--Gray-600, #475467);
+    font-family: MyCustomFont;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 24px;
+    padding: 12px 100px 11px 12px;
+    text-align: left;
+    z-index: 1
+}
+
+.dropdownField-focused .dropdown,
+.dropdownField-focused .dropdown button {
+    text-align: left;
+    width: 100%
+}
+
+.dropdownField-focused .dropdown button.btn.show,
+.dropdownField-focused .dropdown button.btn:first-child:active {
+    border-color: #0000 !important
+}
+
+.dropdownField-focused .inputSvg {
+    font-size: 12px;
+    position: absolute;
+    right: 10px;
+    top: 14px
+}
+
+.dropdownField .dropdown,
+.dropdownField .dropdown button {
+    text-align: left;
+    width: 100%
+}
+
+.dropdownField .dropdown button.btn.show,
+.dropdownField .dropdown button.btn:first-child:active {
+    border-color: #0000 !important
+}
+
+.dropdownField .inputSvg {
+    font-size: 12px;
+    position: absolute;
+    right: 10px;
+    top: 14px
+}
+
+.dropdownInput {
+    width: 100%
+}
+
+.companyInput {
+    position: relative;
+}
+
+.add-account-padding span {
+    padding-right: 0;
+    width: 200px;
+}
+
+.companyInput span {
+    background: #0000;
+    border: none;
+    border-right: 1px solid #d0d5dd;
+    bottom: 0;
+    color: #475467;
+    font-family: MyCustomFont;
+    font-size: 16px;
+    font-weight: 400;
+    left: 0;
+    letter-spacing: 0;
+    line-height: 28px;
+    padding: 12px 12px 11px;
+    position: absolute;
+    text-align: left;
+    top: 0;
+    width: 24%;
+    z-index: 1
+}
+
+.tableAction .view {
+    border: 1px solid #6366f1;
+    color: #6366f1;
+    height: 40px;
+    padding: 0;
+    vertical-align: middle;
+    width: 40px;
+}
+
+.tableLink a {
+    color: #101828;
+    font-family: MyCustomFont;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 24px;
+    text-align: left;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.dropdownField-focused .dropdown-toggle:after,
+.dropdownField .dropdown-toggle:after{
+    display: none !important;
+}
+.add-account-padding span {
+    padding-right: 0;
+    width: 200px;
+  }
+  .create-account-subHeading{
+    color: var(--Gray-600, #475467);
+    font-family: 'MyCustomFont';
+font-size: 14px;
+font-style: normal;
+font-weight: 400;
+line-height: 24px; /* 171.429% */
+}
+
+.add-account-wrapper{
+    padding: 24px;
+}
+
+.add-account-heading{
+    color: var(--Typography-SubHeading, #1D2939);
+font-variant-numeric: lining-nums proportional-nums;
+
+/* Text lg/Semibold */
+font-family: 'MyCustomFont';
+font-size: 18px;
+font-style: normal;
+font-weight: 700;
+line-height: 28px; /* 155.556% */
+margin: 0;
+}
+
+.add-account-divider{
+    height: 1px;
+    background: var(--Gray-200, #EAECF0);
+    width: 100%;
+    margin: 24px 0px;
+}
+
+.add-account-title{
+    color: var(--Gray-700, #344054);
+    font-family: 'MyCustomFont';
+    font-size: 14px;
+font-style: normal;
+font-weight: 800;
+line-height: 24px; /* 171.429% */
+width: 50%;
+}
+
+.add-account-section-flex{
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.add-account-input-group{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+}
+
+.add-account-dropdown-flex{
+    display:flex;
+    gap: 16px;
+    width: 100%;
+}
+
+.add-account-padding input{
+    padding-left: 212px !important;
+}
+
+.add-account-padding textArea{
+    padding-left: 212px !important;
+}
+
+.add-account-padding span{
+    width: 200px;
+    padding-right: 0;
+}
+
+.add-account-button-flex{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.account-plan-text{
+    color: var(--Gray-600, #475467);
+    font-family: 'MyCustomFont';
+font-size: 14px;
+font-style: normal;
+font-weight: 800;
+line-height: 24px; /* 171.429% */
+}
+
+.account-row-text{
+    color: var(--Gray-900, #101828);
+    font-family: 'MyCustomFont';
+font-size: 14px;
+font-style: normal;
+font-weight: 400;
+line-height: 24px; /* 171.429% */
+}
+
+.account-row-heading{
+    color: var(--Gray-900, #101828);
+    font-family: 'MyCustomFont';
+font-size: 14px;
+font-style: normal;
+font-weight: 800;
+line-height: 24px; /* 171.429% */
+}
+
+.account-active{
+    color: var(--Success-700, var(--Success-700, #027A48));
+text-align: center;
+font-family: 'MyCustomFont';
+font-size: 14px;
+font-style: normal;
+font-weight: 800;
+line-height: 20px; /* 142.857% */
+display: flex;
+padding: 2px 10px;
+align-items: center;
+border-radius: 16px;
+background: var(--Success-50, #ECFDF3);
+mix-blend-mode: multiply;
+width: fit-content;
+}

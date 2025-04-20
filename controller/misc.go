@@ -30,6 +30,9 @@ func TestStatus(c *gin.Context) {
 	return
 }
 
+fmt.Println(setting)
+
+
 func GetStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,

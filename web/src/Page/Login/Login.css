@@ -1,0 +1,225 @@
+.loginSection {
+    background-color: #1F2937;
+    min-height: 100vh;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    width: 100% !important;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.loginPass{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.loginPass .agreement{
+    margin-top: 0px;
+}
+
+.loginPass a {
+    text-decoration: none;
+    font-family: "MyCustomFont";
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+    text-align: center;
+    color: rgba(99, 102, 241, 1);
+}
+
+.logo {
+    text-align: center;
+}
+
+.logo img {
+    margin-bottom: 40px;
+    max-width: 300px;
+    max-height: 75px;
+}
+
+.loginForm {
+    background-color: #fff;
+    padding: 40px 32px;
+    width: 535px;
+    border-radius: 16px;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    -ms-border-radius: 16px;
+    -o-border-radius: 16px;
+}
+
+.loginForm h6 {
+    font-family: 'MyCustomFont';
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0em;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.loginInput label {
+    font-family: 'MyCustomFont';
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    display: block;
+    margin-bottom: 6px;
+    color: #344054;
+}
+
+.loginInput {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.loginInput input {
+    width: 100%;
+    border: 1px solid #D0D5DD;
+    box-shadow: 0px 1px 2px 0px #1018280D;
+    padding: 10px 12px 10px 12px;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+    font-family: 'MyCustomFont';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 26px;
+    letter-spacing: 0em;
+    text-align: left;
+    position: relative;
+}
+
+.loginInput input::placeholder {
+    color: #98A2B3;
+}
+
+.loginInput .form-control:focus {
+    color: none !important;
+    background-color: none !important;
+    border-color: none !important;
+    outline: 0;
+    box-shadow: none !important;
+}
+
+.loginInput span {
+    position: absolute;
+    right: 13px;
+    bottom: 13px;
+    cursor: pointer;
+    color: #667085;
+}
+
+.loginBtn button {
+    margin-top: 38px;
+    background: #6366F1;
+    width: 100%;
+    border: none;
+    font-family: 'MyCustomFont';
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: 0em;
+    color: #fff;
+    padding: 18px 24px 18px 24px;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+}
+
+.agreement {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.agreement .tableCheckBox {
+    width: 32px;
+    height: 20px;
+}
+
+.agreement span {
+    font-family: 'MyCustomFont';
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #344054;
+    cursor: pointer;
+}
+
+.tableCheckBox {
+    position: relative;
+    cursor: pointer;
+    /*
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border-radius: 5px;
+    margin-bottom: 12px;
+    margin-right: 30px; */
+}
+
+.tableCheckBox input {
+    opacity: 0;
+    width: 20px;
+    /* position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0; */
+}
+
+.tableCheckBox .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0px;
+    height: 20px;
+    width: 20px;
+    background-color: #fff;
+    border: 1px solid #cbcbcb;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -ms-border-radius: 6px;
+    -o-border-radius: 6px;
+}
+
+.tableCheckBox input:checked~.checkmark {
+    background-color: #E0E0FC;
+    border-color: #5052C9;
+}
+
+.tableCheckBox .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.tableCheckBox input:checked~.checkmark:after {
+    display: block;
+}
+
+.tableCheckBox .checkmark:after {
+    left: 6px;
+    top: 3px;
+    width: 6px;
+    height: 11px;
+    border: solid #6366F1;
+    border-top-width: medium;
+    border-right-width: medium;
+    border-bottom-width: medium;
+    border-left-width: medium;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
