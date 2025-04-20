@@ -227,6 +227,12 @@
   -ms-border-radius: 16px;
   -o-border-radius: 16px;
 }
+.semi-input-wrapper-default {
+  width: 100%;
+}
+.dashboardDropdown .semi-input-wrapper-default {
+  margin-bottom: 15px;
+}
 .personalInput .semi-input-wrapper-default input,
 .personalInput .semi-input-wrapper-default {
   margin-bottom: 0px;

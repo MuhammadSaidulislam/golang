@@ -1069,7 +1069,7 @@
 }
 .search-container {
   position: relative;
-  width: 135px;
+  width: 250px;
 }
 .searchOption .semi-datepicker-range-input-wrapper,
 .searchOption .semi-datepicker-range-input {
@@ -1086,7 +1086,9 @@
 .searchOption .semi-datepicker {
   max-width: 450px;
 }
-
+.semi-form-field-main .semi-datepicker {
+  width: 100%;
+}
 .search-input {
   width: 100%;
   padding: 8px 40px;
@@ -2166,6 +2168,7 @@
 }
 .dashboardDropdown .semi-form-horizontal .semi-form-field {
   padding-right: 0px;
+  width: 100%;
 }
 .dashboardDropdown .semi-form-horizontal .semi-form-field:last-child {
   margin-right: 0px;
@@ -2408,6 +2411,7 @@
   .search-container {
     width: 100%;
   }
+
   .userHeadBox {
     flex-direction: column;
   }

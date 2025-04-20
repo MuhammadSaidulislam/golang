@@ -1,9 +1,11 @@
 import React, { useEffect, useState, userRef } from 'react';
-import { API, isMobile, showError, showInfo, showSuccess } from '../../helpers';
+import { API, getTodayStartTimestamp, isAdmin, isMobile, showError, showInfo, showSuccess, timestamp2string } from '../../helpers';
 import {
+  formatDate,
   renderNumber,
   renderQuota,
   renderQuotaWithAmount,
+  stringToColor,
 } from '../../helpers/render';
 import {
   Col,
@@ -16,6 +18,8 @@ import {
   Divider,
   Space,
   Toast,
+  Avatar,
+  Tag
 } from '@douyinfe/semi-ui';
 import Title from '@douyinfe/semi-ui/lib/es/typography/title';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
@@ -39,9 +43,30 @@ import walletLight from "../../assets/wallet-add-white.svg";
 import filterIcon from "../../assets/fi_filter.svg";
 import downloadIcon from "../../assets/fi_download.svg";
 import { SortIconSvg } from '../../components/svgIcon';
-
+import { ITEMS_PER_PAGE } from '../../constants';
+import { getLogOther } from '../../helpers/other';
+import NoData from '../../components/NoData';
+import Paragraph from '@douyinfe/semi-ui/lib/es/typography/paragraph';
+const colors = [
+  'amber',
+  'blue',
+  'cyan',
+  'green',
+  'grey',
+  'indigo',
+  'light-blue',
+  'lime',
+  'orange',
+  'pink',
+  'purple',
+  'red',
+  'teal',
+  'violet',
+  'yellow',
+];
 const TopUp = () => {
   const { t } = useTranslation();
+  let now = new Date();
   const [redemptionCode, setRedemptionCode] = useState('');
   const [topUpCode, setTopUpCode] = useState('');
   const [topUpCount, setTopUpCount] = useState(0);
@@ -59,12 +84,99 @@ const TopUp = () => {
   const [enabledCryptomus, setEnabledCryptomus] = useState(false);
   const [enabledAirwallex, setEnabledAirwallex] = useState(false);
 
-
+  const isAdminUser = isAdmin();
   const [paymentShow, setPaymentShow] = useState(false);
   const handleUpdateClose = () => {
     setPaymentShow(false);
   }
+  const [activePage, setActivePage] = useState(1);
+  const [logCount, setLogCount] = useState(ITEMS_PER_PAGE);
+  const [pageSize, setPageSize] = useState(ITEMS_PER_PAGE);
+  const [logType, setLogType] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageToSize, setPageToSize] = useState(10);
+  const [isLastPage, setIsLastPage] = useState(false);
+  const [totalItems, setTotalItems] = useState(0);
+  const [walletLogs, setWalletLogs] = useState([]);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  console.log('walletLogs', walletLogs);
 
+
+  function renderType(type) {
+    switch (type) {
+      case 1:
+        return <Tag color='cyan' size='large'>{t('充值')}</Tag>;
+      case 2:
+        return <Tag color='lime' size='large'>{t('消费')}</Tag>;
+      case 3:
+        return <Tag color='orange' size='large'>{t('管理')}</Tag>;
+      case 4:
+        return <Tag color='purple' size='large'>{t('系统')}</Tag>;
+      default:
+        return <Tag color='black' size='large'>{t('未知')}</Tag>;
+    }
+  }
+
+  function renderUseTime(type) {
+    const time = parseInt(type);
+    if (time < 101) {
+      return (
+        <Tag color='green' size='large'>
+          {' '}
+          {time} s{' '}
+        </Tag>
+      );
+    } else if (time < 300) {
+      return (
+        <Tag color='orange' size='large'>
+          {' '}
+          {time} s{' '}
+        </Tag>
+      );
+    } else {
+      return (
+        <Tag color='red' size='large'>
+          {' '}
+          {time} s{' '}
+        </Tag>
+      );
+    }
+  }
+
+  function renderIsStream(bool) {
+    if (bool) {
+      return <Tag color='blue' size='large'>{t('流')}</Tag>;
+    } else {
+      return <Tag color='purple' size='large'>{t('非流')}</Tag>;
+    }
+  }
+
+  function renderFirstUseTime(type) {
+    let time = parseFloat(type) / 1000.0;
+    time = time.toFixed(1);
+    if (time < 3) {
+      return (
+        <Tag color='green' size='large'>
+          {' '}
+          {time} s{' '}
+        </Tag>
+      );
+    } else if (time < 10) {
+      return (
+        <Tag color='orange' size='large'>
+          {' '}
+          {time} s{' '}
+        </Tag>
+      );
+    } else {
+      return (
+        <Tag color='red' size='large'>
+          {' '}
+          {time} s{' '}
+        </Tag>
+      );
+    }
+  }
 
   const topUp = async () => {
     if (redemptionCode === '') {
@@ -213,11 +325,98 @@ const TopUp = () => {
     }
   };
 
+  // recharge amount list
+
+  const setLogsFormat = (logs) => {
+    let expandDatesLocal = {};
+    for (let i = 0; i < logs.length; i++) {
+      logs[i].timestamp2string = timestamp2string(logs[i].created_at);
+      logs[i].key = logs[i].id;
+      let other = getLogOther(logs[i].other);
+      let expandDataLocal = [];
+      if (isAdmin()) {
+        // let content = '渠道：' + logs[i].channel;
+        // if (other.admin_info !== undefined) {
+        //   if (
+        //     other.admin_info.use_channel !== null &&
+        //     other.admin_info.use_channel !== undefined &&
+        //     other.admin_info.use_channel !== ''
+        //   ) {
+        //     // channel id array
+        //     let useChannel = other.admin_info.use_channel;
+        //     let useChannelStr = useChannel.join('->');
+        //     content = `渠道：${useChannelStr}`;
+        //   }
+        // }
+        // expandDataLocal.push({
+        //   key: '渠道重试',
+        //   value: content,
+        // })
+      }
+      if (other?.ws || other?.audio) {
+        expandDataLocal.push({
+          key: t('语音输入'),
+          value: other.audio_input,
+        });
+        expandDataLocal.push({
+          key: t('语音输出'),
+          value: other.audio_output,
+        });
+        expandDataLocal.push({
+          key: t('文字输入'),
+          value: other.text_input,
+        });
+        expandDataLocal.push({
+          key: t('文字输出'),
+          value: other.text_output,
+        });
+      }
+      expandDataLocal.push({
+        key: t('日志详情'),
+        value: logs[i].content,
+      });
+      expandDatesLocal[logs[i].key] = expandDataLocal;
+    }
+
+    //  setExpandData(expandDatesLocal);
+
+    setWalletLogs(logs);
+  };
+
+  const loadLogs = async (currentPage = 0, pageToSize = 10, logType = 1) => {
+    //  setLoading(true);
+
+    let url = '';
+    let localStartTimestamp = Date.parse(timestamp2string(getTodayStartTimestamp())) / 1000;
+    let localEndTimestamp = Date.parse(timestamp2string(now.getTime() / 1000 + 3600)) / 1000;
+    if (isAdminUser) {
+      url = `/api/log/?p=${currentPage}&page_size=${pageToSize}&type=${logType}&username=&token_name=${searchKeyword}&model_name=&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&channel=&group=`;
+    } else {
+      url = `/api/log/self/?p=${currentPage}&page_size=${pageToSize}&type=${logType}&token_name=${searchKeyword}&model_name=&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&group=`;
+    }
+    url = encodeURI(url);
+    const res = await API.get(url);
+    const { success, message, data } = res.data;
+    if (success) {
+      const newPageData = data.items;
+      setActivePage(data.page);
+      setPageSize(data.page_size);
+      setLogCount(data.total);
+      setLogsFormat(newPageData);
+      // setIsLastPage(newPageData.length < pageToSize);
+      // setTotalItems((currentPage - 1) * pageToSize + newPageData.length);
+    } else {
+      showError(message);
+    }
+    // setLoading(false);
+  };
+
   useEffect(() => {
-    getOptions();
+    //  getOptions();
     let status = localStorage.getItem('status');
     if (status) {
       status = JSON.parse(status);
+      console.log('status', status.top_up_link, status.min_topup, status.enable_online_topup);
       if (status.top_up_link) {
         setTopUpLink(status.top_up_link);
       }
@@ -229,7 +428,25 @@ const TopUp = () => {
       }
     }
     getUserQuota().then();
+
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      //  await getLogSelfStat();
+      await loadLogs();
+      //  await getLogStat();
+      // if (isAdminUser) {
+      //   await getLogSelfStat();
+      //   await getLogStat();
+      // } else {
+      //   await getLogSelfStat();
+      // }
+    };
+
+    fetchData();
+  }, []);
+
 
   const renderAmount = () => {
     // console.log(amount);
@@ -277,7 +494,7 @@ const TopUp = () => {
   };
 
   const [userDropdown, setUserDropdown] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState('');
+
   const toggleUserDropdown = (e) => {
     e.stopPropagation();
     setUserDropdown(!userDropdown);
@@ -286,7 +503,10 @@ const TopUp = () => {
   const handleKeywordChange = async (value) => {
     setSearchKeyword(value.target.value);
   };
-
+  const refresh = async () => {
+    setActivePage(1);
+    await loadLogs(currentPage, pageToSize, logType);
+  };
   return (
     <div>
       <DashboardLayout>
@@ -366,7 +586,7 @@ const TopUp = () => {
               <i className="search-icon"><IconSearch /></i>
               <input type="text" className="search-input" placeholder={t('令牌名称')} value={searchKeyword} onChange={handleKeywordChange} />
             </div>
-            <button className='searchBtn' style={{ marginLeft: '10px' }}>
+            <button className='searchBtn' onClick={refresh} style={{ marginLeft: '10px' }}>
               {t('查询')}
             </button>
             {/* <div className='filterOption'>
@@ -379,37 +599,175 @@ const TopUp = () => {
         </div>
 
         {/* Table list */}
-        <div className="tableData">
-          <div className="tableBox">
-            <Table borderless hover>
-              <thead>
-                <tr>
-                  <th>Submission Date/Time</th>
-                  <th>Spend time</th>
-                  <th>Type</th>
-                  <th>Task ID</th>
-                  <th>Schedule</th>
-                  <th>Result</th>
-                  <th>Prompt</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[...Array(50)].map((_, index) => (
-                  <tr key={index}>
-                    <td>12 Aug 2022 - 12:25 am</td>
-                    <td>5</td>
-                    <td>My APIs</td>
-                    <td>AA87</td>
-                    <td>A25</td>
-                    <td>12 Aug 2022 - 12:25 am</td>
-                    <td>Action Prompt</td>
+        {walletLogs && walletLogs.length === 0 ? <NoData /> :
+          <div className="tableData">
+            <div className="tableBox">
+              <Table borderless hover>
+                <thead>
+                  <tr>
+                    <th>{t('时间')}as</th>
+                    {isAdmin() ? <th>{t('渠道')}</th> : ""}
+                    {isAdmin() ? <th>{t('用户')}</th> : ""}
+                    <th>{t('令牌')}</th>
+                    <th>{t('分组')}</th>
+                    <th>{t('类型')}</th>
+                    <th>{t('模型')}</th>
+                    <th>{t('用时/首字')}</th>
+                    <th>{t('提示')}</th>
+                    <th>{t('补全')}</th>
+                    <th>{t('花费')}</th>
+                    {isAdmin() ? <th>{t('重试')}</th> : ""}
+                    <th>{t('详情')}</th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-          </div>
-        </div>
-        {/* Table Pagination */}
+                </thead>
+                <tbody>
+                  {walletLogs && walletLogs.map((wallet, index) =>
+                    <tr key={index}>
+                      <td>{formatDate(wallet.created_at)}</td>
+                      {isAdmin() ? <td>
+                        {wallet.type === 0 || wallet.type === 2 ? <Tag color={colors[parseInt(wallet.channel) % colors.length]} size='large'>
+                          {wallet.channel}
+                        </Tag> : "Null"}
+                      </td> : ""}
+                      {isAdmin() ? <td><div>
+                        <Avatar
+                          size='small'
+                          color={stringToColor(wallet.username)}
+                          style={{ marginRight: 4 }}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            showUserInfo(wallet.user_id)
+                          }}
+                        >
+                          {typeof wallet.username === 'string' && wallet.username.slice(0, 1)}
+                        </Avatar>
+                        {wallet.username}
+                      </div></td> : ""}
+                      <td>{wallet.type === 0 || wallet.type === 2 ?
+                        <Tag
+                          color='grey'
+                          size='large'
+                          onClick={(event) => {
+                            copyText(event, wallet.token_name);
+                          }}
+                        >
+                          {t(wallet.token_name)}
+                        </Tag> : "Null"}
+                      </td>
+                      <td>
+                        {(() => {
+                          if (wallet.type === 0 || wallet.type === 2) {
+                            if (wallet.group) {
+                              return renderGroup(wallet.group);
+                            }
+                            const other = wallet.other ? JSON.parse(wallet.other) : null;
+                            if (other?.group !== undefined) {
+                              return renderGroup(other.group);
+                            }
+                          }
+                          return 'Null';
+                        })()}
+                      </td>
+                      <td>{renderType(wallet)}</td>
+                      <td>{wallet.type === 0 || wallet.type === 2 ? <Tag
+                        color={stringToColor(wallet.model_name)}
+                        size='large'
+                        onClick={(event) => {
+                          copyText(event, wallet.model_name);
+                        }}
+                      >
+                        {wallet.model_name}
+                      </Tag> : "Null"}</td>
+                      <td>
+                        {(() => {
+                          const other = getLogOther(wallet.other);
+                          return (
+                            <Space>
+                              {renderUseTime(wallet.use_time)}
+                              {wallet.is_stream && renderFirstUseTime(other.frt)}
+                              {renderIsStream(wallet.is_stream)}
+                            </Space>
+                          );
+                        })()}
+                      </td>
+                      <td>
+                        {wallet.type === 0 || wallet.type === 2 ? <span>{wallet.prompt_tokens}</span> : "Null"}
+                      </td>
+                      <td>
+                        {wallet.type === 0 || wallet.type === 2 ? <span>{wallet.completion_tokens}</span> : "Null"}
+                      </td>
+                      <td>
+                        {wallet.type === 0 || wallet.type === 2 ? renderQuota(wallet.quota, 6) : "Null"}
+                      </td>
+                      {isAdmin() ? <td>
+                        {(() => {
+                          let content = t('渠道') + `：${wallet.channel}`;
+
+                          if (wallet.other !== '') {
+                            try {
+                              const other = JSON.parse(wallet.other);
+
+                              if (other?.admin_info?.use_channel) {
+                                const useChannel = other.admin_info.use_channel;
+                                if (Array.isArray(useChannel) && useChannel.length > 0) {
+                                  const useChannelStr = useChannel.join('->');
+                                  content = t('渠道') + `：${useChannelStr}`;
+                                }
+                              }
+                            } catch (err) {
+                              console.error("Invalid JSON in wallet.other:", err);
+                            }
+                          }
+
+                          return isAdminUser ? <div>{content}</div> : null;
+                        })()}
+                      </td>
+                        : ""}
+                      <td>
+                        {(() => {
+                          const other = getLogOther(wallet.other);
+
+                          if (other == null || wallet.type !== 2) {
+                            return (
+                              <Paragraph
+                                ellipsis={{
+                                  rows: 2,
+                                  showTooltip: {
+                                    type: 'popover',
+                                    opts: { style: { width: 240 } },
+                                  },
+                                }}
+                                style={{ maxWidth: 240 }}
+                              >
+                                {wallet.content}
+                              </Paragraph>
+                            );
+                          }
+
+                          const content = renderModelPriceSimple(
+                            other.model_ratio,
+                            other.model_price,
+                            other.group_ratio
+                          );
+
+                          return (
+                            <Paragraph
+                              ellipsis={{ rows: 2 }}
+                              style={{ maxWidth: 240 }}
+                            >
+                              {content}
+                            </Paragraph>
+                          );
+                        })()}
+                      </td>
+
+                    </tr>
+                  )}
+                </tbody>
+              </Table>
+            </div>
+          </div>}
+        {/* Table Pagination 
         <div className='tablePagination'>
           <div className='leftItems'>
             <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
@@ -444,7 +802,7 @@ const TopUp = () => {
             <button className='pagArrow'> <IconChevronLeft /> </button>
             <button className='pagArrow'> <IconChevronRight /> </button>
           </div>
-        </div>
+        </div> */}
 
 
         <Layout.Content>

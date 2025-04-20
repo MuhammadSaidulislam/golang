@@ -421,6 +421,7 @@ const LogsTable = () => {
 
   const [styleState, styleDispatch] = useContext(StyleContext);
   const [logs, setLogs] = useState([]);
+  console.log("logs", logs);
   const [expandData, setExpandData] = useState({});
   const [showStat, setShowStat] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -782,7 +783,7 @@ const LogsTable = () => {
                 </div>
               </div>
               {chartModel && <div className="dropdown dashboardDropdown">
-                <Form>
+                <Form layout='horizontal'>
                   {/*   <Form.DatePicker
                     initValue={[start_timestamp, end_timestamp]}
                     type="dateTimeRange"
@@ -795,84 +796,58 @@ const LogsTable = () => {
                     }}
                   />  */}
 
-                  <Form.DatePicker field="start_timestamp" label={t('起始时间')} style={{ width: '236px', marginBottom: '10px' }}
+                  <Form.DatePicker field="start_timestamp" label={t('起始时间')}
                     initValue={start_timestamp}
                     value={start_timestamp} type='dateTime'
                     name='start_timestamp'
                     onChange={value => handleInputChange(value, 'start_timestamp')} />
-                  <Form.DatePicker field="end_timestamp" fluid label={t('结束时间')} style={{ width: '236px', marginBottom: '10px' }}
+
+                  <Form.DatePicker field="end_timestamp" fluid label={t('结束时间')}
                     initValue={end_timestamp}
                     value={end_timestamp} type='dateTime'
                     name='end_timestamp'
                     onChange={value => handleInputChange(value, 'end_timestamp')} />
 
-                  <div>
-                    <label>{t('令牌名称')}</label>
-                    <div className="search-container w-100">
-                      <i className="search-icon"><IconSearch /></i>
-                      <Form.Input
-                        value={token_name}
-                        placeholder={t('令牌名称')}
-                        name='token_name'
-                        className="search-input-form"
-                        onChange={(value) => handleInputChange(value, 'token_name')}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label>{t('模型名称')}</label>
-                    <div className="search-container w-100">
-                      <i className="search-icon"><IconSearch /></i>
-                      <Form.Input
-                        value={model_name}
-                        placeholder={t('模型名称')}
-                        name='model_name'
-                        className="search-input-form"
-                        onChange={(value) => handleInputChange(value, 'model_name')}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label>{t('分组')}</label>
-                    <div className="search-container w-100">
-                      <i className="search-icon"><IconSearch /></i>
-                      <Form.Input
-                        value={group}
-                        placeholder={t('分组')}
-                        name='group'
-                        className="search-input-form"
-                        onChange={(value) => handleInputChange(value, 'group')}
-                      />
-                    </div>
-                  </div>
+
+                  <Form.Input label={t('令牌名称')}
+                    value={token_name}
+                    placeholder={t('令牌名称')}
+                    name='token_name'
+                    className="search-input-form"
+                    onChange={(value) => handleInputChange(value, 'token_name')}
+                  />
+
+                  <Form.Input
+                    label={t('模型名称')}
+                    value={model_name}
+                    placeholder={t('模型名称')}
+                    name='model_name'
+                    className="search-input-form"
+                    onChange={(value) => handleInputChange(value, 'model_name')}
+                  />
+                  <Form.Input label={t('分组')}
+                    value={group}
+                    placeholder={t('分组')}
+                    name='group'
+                    className="search-input-form"
+                    onChange={(value) => handleInputChange(value, 'group')}
+                  />
                   {isAdminUser && (
                     <>
-                      <div>
-                        <label>{t('渠道 ID')}</label>
-                        <div className="search-container w-100">
-                          <i className="search-icon"><IconSearch /></i>
-                          <Form.Input
-                            value={channel}
-                            placeholder={t('渠道 ID')}
-                            name='channel'
-                            className="search-input-form"
-                            onChange={(value) => handleInputChange(value, 'channel')}
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label>{t('用户名称')}</label>
-                        <div className="search-container w-100">
-                          <i className="search-icon"><IconSearch /></i>
-                          <Form.Input
-                            value={username}
-                            placeholder={t('用户名称')}
-                            name='username'
-                            className="search-input-form"
-                            onChange={(value) => handleInputChange(value, 'username')}
-                          />
-                        </div>
-                      </div>
+                      <Form.Input label={t('渠道 ID')}
+                        value={channel}
+                        placeholder={t('渠道 ID')}
+                        name='channel'
+                        className="search-input-form"
+                        onChange={(value) => handleInputChange(value, 'channel')}
+                      />
+                      <Form.Input label={t('用户名称')}
+                        value={username}
+                        placeholder={t('用户名称')}
+                        name='username'
+                        className="search-input-form"
+                        onChange={(value) => handleInputChange(value, 'username')}
+                      />
                     </>
                   )}
                   <button type="submit" onClick={refresh} loading={loading} className='searchBtn w-100'>
@@ -924,7 +899,7 @@ const LogsTable = () => {
                       }}
                     >
                       {logs.token_name}
-                    </Tag> : ""}</td>
+                    </Tag> : "Null"}</td>
                     <td>
                       {([0, 2].includes(logs.type)) ? (
                         logs.group ? (
@@ -937,7 +912,7 @@ const LogsTable = () => {
                             return null;
                           }
                         })()
-                      ) : null}
+                      ) : "Null"}
                     </td>
                     <td>{renderType(logs.type)}</td>
                     <td>{logs.type === 0 || logs.type === 2 ? <Tag
@@ -948,9 +923,9 @@ const LogsTable = () => {
                       }}
                     >
                       {logs.model_name}
-                    </Tag> : ""}</td>
+                    </Tag> : "Null"}</td>
                     <td>{logs.type === 0 || logs.type === 2 ?
-                      <>{renderQuota(logs.quota, 6)}</> : ""}</td>
+                      <>{renderQuota(logs.quota, 6)}</> : "Null"}</td>
                     <td>
                       {(() => {
                         const other = getLogOther(logs.other);

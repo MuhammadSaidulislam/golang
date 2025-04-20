@@ -408,7 +408,7 @@ const RedemptionsTable = () => {
               </tr>
             </thead>
             <tbody>
-              {pageData && pageData.map((redemption) => <tr>
+              {pageData && pageData.map((redemption, index) => <tr key={index}>
                 <td>{redemption.id}</td>
                 <td>{redemption.name}</td>
                 <td>{renderStatus(redemption.status)}</td>

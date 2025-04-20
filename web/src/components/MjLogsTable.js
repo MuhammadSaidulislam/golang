@@ -613,7 +613,6 @@ const LogsTable = () => {
                     <Form.DatePicker
                       field='start_timestamp'
                       label={t('起始时间')}
-                      style={{ width: 272 }}
                       initValue={start_timestamp}
                       value={start_timestamp}
                       type='dateTime'
@@ -624,7 +623,6 @@ const LogsTable = () => {
                       field='end_timestamp'
                       fluid
                       label={t('结束时间')}
-                      style={{ width: 272 }}
                       initValue={end_timestamp}
                       value={end_timestamp}
                       type='dateTime'

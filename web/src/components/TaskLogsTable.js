@@ -382,22 +382,23 @@ const LogsTable = () => {
                                 </div>
                             </div>
                             {chartModel && <div className="dropdown dashboardDropdown">
-                                <Form layout='horizontal' labelPosition='inset'>
-                                    {isAdminUser && <Form.Input field="channel_id" label={t('渠道 ID')} style={{ width: '236px', marginBottom: '10px' }} value={channel_id}
+                                <Form layout='horizontal'>
+                                    {isAdminUser && <Form.Input field="channel_id" label={t('渠道 ID')} value={channel_id}
                                         placeholder={t('可选值')} name='channel_id'
                                         onChange={value => handleInputChange(value, 'channel_id')} />
                                     }
-                                    <Form.Input field="task_id" label={t('任务 ID')} style={{ width: '236px', marginBottom: '10px' }} value={task_id}
+                                    <Form.Input field="task_id" label={t('任务 ID')} value={task_id}
                                         placeholder={t('可选值')}
                                         name='task_id'
                                         onChange={value => handleInputChange(value, 'task_id')} />
 
-                                    <Form.DatePicker field="start_timestamp" label={t('起始时间')} style={{ width: '236px', marginBottom: '10px' }}
+
+                                    <Form.DatePicker field="start_timestamp" label={t('起始时间')}
                                         initValue={start_timestamp}
                                         value={start_timestamp} type='dateTime'
                                         name='start_timestamp'
                                         onChange={value => handleInputChange(value, 'start_timestamp')} />
-                                    <Form.DatePicker field="end_timestamp" fluid label={t('结束时间')} style={{ width: '236px', marginBottom: '10px' }}
+                                    <Form.DatePicker field="end_timestamp" fluid label={t('结束时间')}
                                         initValue={end_timestamp}
                                         value={end_timestamp} type='dateTime'
                                         name='end_timestamp'
@@ -521,21 +522,21 @@ const LogsTable = () => {
 
             {/*  <Form layout='horizontal' labelPosition='inset'>
                     <>
-                        {isAdminUser && <Form.Input field="channel_id" label='渠道 ID' style={{ width: '236px', marginBottom: '10px' }} value={channel_id}
+                        {isAdminUser && <Form.Input field="channel_id" label='渠道 ID' value={channel_id}
                             placeholder={'可选值'} name='channel_id'
                             onChange={value => handleInputChange(value, 'channel_id')} />
                         }
-                        <Form.Input field="task_id" label={"任务 ID"} style={{ width: '236px', marginBottom: '10px' }} value={task_id}
+                        <Form.Input field="task_id" label={"任务 ID"} value={task_id}
                             placeholder={"可选值"}
                             name='task_id'
                             onChange={value => handleInputChange(value, 'task_id')} />
 
-                        <Form.DatePicker field="start_timestamp" label={"起始时间"} style={{ width: '236px', marginBottom: '10px' }}
+                        <Form.DatePicker field="start_timestamp" label={"起始时间"}
                             initValue={start_timestamp}
                             value={start_timestamp} type='dateTime'
                             name='start_timestamp'
                             onChange={value => handleInputChange(value, 'start_timestamp')} />
-                        <Form.DatePicker field="end_timestamp" fluid label={"结束时间"} style={{ width: '236px', marginBottom: '10px' }}
+                        <Form.DatePicker field="end_timestamp" fluid label={"结束时间"}
                             initValue={end_timestamp}
                             value={end_timestamp} type='dateTime'
                             name='end_timestamp'
