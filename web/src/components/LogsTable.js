@@ -668,6 +668,7 @@ const LogsTable = () => {
     setActivePage(1);
     handleEyeClick();
     await loadLogs(currentPage, pageToSize, logType);
+    setChartModel(false);
   };
 
   const copyText = async (e, text) => {

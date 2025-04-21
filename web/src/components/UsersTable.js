@@ -15,7 +15,12 @@ import EditUser from '../pages/User/EditUser';
 import { useTranslation } from 'react-i18next';
 import { Table } from "react-bootstrap";
 import { SortIconSvg } from './svgIcon';
-import { IconPlus, IconSearch } from '@douyinfe/semi-icons';
+import { IconArrowUpLeft, IconAscend, IconChevronDown, IconDoubleChevronLeft, IconFilledArrowDown, IconFilledArrowUp, IconPlus, IconSearch } from '@douyinfe/semi-icons';
+import deleteIcon from "../assets/Delete.svg";
+import disableIcon from "../assets/fi_disable.svg";
+import editIcon from "../assets/fi_edit-2.svg";
+import chatIcon from "../assets/fi_chat_2.svg";
+import copyIcon from "../assets/u_copy-alt.svg";
 
 const UsersTable = () => {
   const { t } = useTranslation();
@@ -550,6 +555,7 @@ const UsersTable = () => {
                     ""
                   ) : (
                     <>
+                      { /* */}
                       <Popconfirm
                         title={t('确定？')}
                         okType={'warning'}
@@ -558,47 +564,26 @@ const UsersTable = () => {
                         }}
                       >
                         {user?.role === 1 ? <Button theme='light' type='warning' style={{ marginRight: '2px' }}>
-                          {t('提升')}
+                          <IconFilledArrowUp />
                         </Button> : <Button theme='light' type='secondary' style={{ marginRight: '2px' }}>
-                          {t('降级')}
+                          <IconFilledArrowDown />
                         </Button>}
                       </Popconfirm>
 
                       {user.status === 1 ? (
-                        <Button
-                          theme='light'
-                          type='warning'
-                          style={{ marginRight: '2px' }}
-                          onClick={async () => {
-                            manageUser(user.id, 'disable', user);
-                          }}
-                        >
-                          {t('禁用')}
-                        </Button>
+                        <button style={{ marginRight: '2px' }} onClick={async () => { manageUser(user.id, 'disable', user); }}  >
+                          <img src={disableIcon} alt="tableAction" />
+                        </button>
                       ) : (
-                        <Button
-                          theme='light'
-                          type='secondary'
-                          style={{ marginRight: '2px' }}
-                          onClick={async () => {
-                            manageUser(user.id, 'enable', user);
-                          }}
-                          disabled={user.status === 3}
-                        >
-                          {t('启用')}
-                        </Button>
+                        <button style={{ marginRight: '2px' }} onClick={async () => {
+                          manageUser(user.id, 'enable', user);
+                        }} disabled={user.status === 3} >
+                          <img src={enableIcon} alt="tableAction" />
+                        </button>
                       )}
-                      <Button
-                        theme='light'
-                        type='tertiary'
-                        style={{ marginRight: '2px' }}
-                        onClick={() => {
-                          setEditingUser(user);
-                          setUpdateShow(true);
-                        }}
-                      >
-                        {t('编辑')}
-                      </Button>
+                      <button style={{ marginRight: '2px' }} onClick={() => { setEditingUser(user); setUpdateShow(true); }}   >
+                        <img src={editIcon} alt="tableAction" />
+                      </button>
                       <Popconfirm
                         title={t('确定是否要注销此用户？')}
                         content={t('相当于删除用户，此修改将不可逆')}
@@ -610,9 +595,9 @@ const UsersTable = () => {
                           });
                         }}
                       >
-                        <Button theme='light' type='danger' style={{ marginRight: '2px' }}>
-                          {t('注销')}
-                        </Button>
+                        <button style={{ marginRight: '2px' }}>
+                          <img src={deleteIcon} alt="tableAction" />
+                        </button>
                       </Popconfirm>
                     </>
                   )}

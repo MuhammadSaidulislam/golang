@@ -343,6 +343,7 @@ const Detail = (props) => {
 
   const refresh = async () => {
     await loadQuotaData();
+    setGraphModel(false)
   };
 
   const initChart = async () => {

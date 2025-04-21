@@ -99,7 +99,6 @@ const TopUp = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [walletLogs, setWalletLogs] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
-  console.log('walletLogs', walletLogs);
 
 
   function renderType(type) {
@@ -219,6 +218,7 @@ const TopUp = () => {
   };
 
   const preTopUp = async (payment) => {
+
     if (!enableOnlineTopUp) {
       showError(t('管理员未开启在线充值！'));
       return;
@@ -230,7 +230,9 @@ const TopUp = () => {
     }
     setPayWay(payment);
     setOpen(true);
+    setPaymentShow(false);
   };
+
   const topUpCrypto = async () => {
     setOpenCrypto(true);
   };
@@ -416,7 +418,6 @@ const TopUp = () => {
     let status = localStorage.getItem('status');
     if (status) {
       status = JSON.parse(status);
-      console.log('status', status.top_up_link, status.min_topup, status.enable_online_topup);
       if (status.top_up_link) {
         setTopUpLink(status.top_up_link);
       }
@@ -881,10 +882,11 @@ const TopUp = () => {
 
 
 
+
         {/* payment modal  */}
         <Modal show={paymentShow} onHide={handleUpdateClose} centered size="md">
           <div className='modalHeading'>
-            <h1>Create New Token</h1>
+            <h1>{t('在线充值')}</h1>
             <button onClick={handleUpdateClose}><IconClose /></button>
           </div>
           <div className='modalContent walletModal'>
@@ -973,6 +975,24 @@ const TopUp = () => {
             </div>
           </div>
         </Modal>
+
+        {/* payment options modal   */}
+        <Modal show={open} onHide={handleCancel} centered size="md">
+          <div className='modalHeading'>
+            <h1>{t('在线充值')}</h1>
+            <button onClick={handleCancel}><IconClose /></button>
+          </div>
+          <div className='modalContent walletModal'>
+            <p>{t('充值数量')}：{topUpCount}</p>
+            <p>{t('实付金额')}：{renderAmount()}</p>
+            <p>{t('是否确认充值？')}</p>
+            <div className="button-group">
+              <div className="btn btn-cancel" onClick={handleCancel}>Cancel</div>
+              <div onClick={onlineTopUp} className="btn btn-redeem">{t('确定')}</div>
+            </div>
+          </div>
+        </Modal>
+
       </DashboardLayout>
     </div>
   );

@@ -928,9 +928,7 @@ const PersonalSetting = () => {
                             <input
                                 placeholder={t('新密码')}
                                 value={inputs.set_new_password}
-                                onChange={(value) =>
-                                    handleInputChange('set_new_password', value.target.value)
-                                }
+                                onChange={(value) => handleInputChange('set_new_password', value.target.value)}
                             />
                         </div>
 

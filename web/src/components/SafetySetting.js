@@ -787,4 +787,4 @@ const SafetySetting = () => {
   );
 };
 
-export default SystemSetting;
+export default SafetySetting;

@@ -21,9 +21,14 @@ import EditRedemption from '../pages/Redemption/EditRedemption';
 import { useTranslation } from 'react-i18next';
 import { IconSearch, IconPlus } from '@douyinfe/semi-icons';
 import { Table } from "react-bootstrap";
+import deleteIcon from "../assets/Delete.svg";
+import disableIcon from "../assets/fi_disable.svg";
+import editIcon from "../assets/fi_edit-2.svg";
+import chatIcon from "../assets/fi_chat_2.svg";
+import copyIcon from "../assets/u_copy-alt.svg";
 
 function renderTimestamp(timestamp) {
-  return <>{timestamp2string(timestamp)}</>;
+  return timestamp2string(timestamp);
 }
 
 const RedemptionsTable = () => {
@@ -416,22 +421,15 @@ const RedemptionsTable = () => {
                 <td>{renderTimestamp(redemption.created_time)}</td>
                 <td>{redemption.used_user_id === 0 ? t('无') : redemption.used_user_id}</td>
                 <td className="tableActions">
-                  <Popover content={redemption.key} position="top" style={{ padding: 20 }}>
+                  {/*  <Popover content={redemption.key} position="top" style={{ padding: 20 }}>
                     <Button theme="light" type="tertiary" style={{ marginRight: 8 }}>
                       {t('查看')}
                     </Button>
-                  </Popover>
+                  </Popover> */}
 
-                  <Button
-                    theme="light"
-                    type="secondary"
-                    style={{ marginRight: 8 }}
-                    onClick={async () => {
-                      await copyText(redemption.key);
-                    }}
-                  >
-                    {t('复制')}
-                  </Button>
+                  <button style={{ marginRight: 8 }} onClick={async () => { await copyText(redemption.key); }}  >
+                    <img src={copyIcon} alt="tableAction" />
+                  </button>
 
                   <Popconfirm
                     title={t('确定是否要删除此兑换码？')}
@@ -443,9 +441,9 @@ const RedemptionsTable = () => {
                       removeRecord(redemption.key);
                     }}
                   >
-                    <Button theme="light" type="danger" style={{ marginRight: 8 }}>
-                      {t('删除')}
-                    </Button>
+                    <button style={{ marginRight: 8 }}>
+                      <img src={deleteIcon} alt="tableAction" />
+                    </button>
                   </Popconfirm>
 
                   {redemption.status === 1 ? (
@@ -457,7 +455,7 @@ const RedemptionsTable = () => {
                         await manageRedemption(redemption.id, 'disable', redemption);
                       }}
                     >
-                      {t('禁用')}
+                      <img src={disableIcon} alt="tableAction" />
                     </Button>
                   ) : (
                     <Button
@@ -469,20 +467,12 @@ const RedemptionsTable = () => {
                       }}
                       disabled={redemption.status === 3}
                     >
-                      {t('启用')}
+                      <img src={enableIcon} alt="tableAction" />
                     </Button>
                   )}
 
-                  <Button
-                    theme="light"
-                    type="tertiary"
-                    onClick={() => {
-                      setEditingRedemption(redemption);
-                      setModalShow(true);
-                    }}
-                    disabled={redemption.status !== 1}
-                  >
-                    {t('编辑')}
+                  <Button onClick={() => { setEditingRedemption(redemption); setModalShow(true); }} disabled={redemption.status !== 1}  >
+                    <img src={editIcon} alt="tableAction" />
                   </Button>
                 </td>
 
