@@ -307,7 +307,7 @@ const DashboardLayout = ({ children, ...props }) => {
                         <ul>
                             <li><Link to="/detail" className={urlParams === "detail" ? "nav-link activeMenu" : "nav-link"}><DashboardIconSvg color="--semi-table-thead-0" /> {t('数据看板')}</Link></li>
                             <li><Link to="/playground" className={urlParams === "playground" ? "nav-link activeMenu" : "nav-link"}><DashboardIconSvg color="--semi-table-thead-0" /> {t('操场')}</Link></li>
-                            <li><Link to="/chat/0" className={urlParams === "chat/0" ? "nav-link activeMenu" : "nav-link"}><ChatIconSvg color="--semi-table-thead-0" /> {t('聊天')}</Link></li>
+                            <li><Link to="/chat/0" className={urlParams === "0" ? "nav-link activeMenu" : "nav-link"}><ChatIconSvg color="--semi-table-thead-0" /> {t('聊天')}</Link></li>
                             <li><Link to="/token" className={urlParams === "token" ? "nav-link activeMenu" : "nav-link"}><TokenIconSvg color="--semi-table-thead-0" /> {t('令牌')}</Link></li>
                             {isAdmin() ?
                                 <>  <li><Link to="/channel" className={urlParams === "channel" ? "nav-link activeMenu" : "nav-link"}><IconLayers /> {t('渠道')}</Link></li>

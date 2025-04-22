@@ -1198,7 +1198,7 @@
   justify-content: space-between;
   align-items: center;
   background-color: var(--semi-dashboard-bg-0);
-  padding: 9px 0px;
+  padding: 9px 10px;
   border-bottom-right-radius: 12px;
   border-bottom-left-radius: 12px;
 }
@@ -1221,6 +1221,10 @@
   -moz-border-radius: 4px;
   -ms-border-radius: 4px;
   -o-border-radius: 4px;
+}
+.leftItems button.activePagination {
+  background-color: #6175de !important;
+  color: #ffffff !important;
 }
 .leftItems .bulkDropdown,
 .leftItems .bulkDropdown:hover,

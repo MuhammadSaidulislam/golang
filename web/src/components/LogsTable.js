@@ -617,19 +617,20 @@ const LogsTable = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageToSize, setPageToSize] = useState(10);
-  const [isLastPage, setIsLastPage] = useState(false);
-  const [totalItems, setTotalItems] = useState(0);
+  const [sizeArray, setSizeArray] = useState([]);
+  const [sizeList, setSizeList] = useState([]);
+  const [itemRange, setItemRange] = useState('');
 
-  const loadLogs = async (currentPage, pageToSize, logType = 0) => {
+  const loadLogs = async (startIdx, pageSize, logType = 0) => {
     setLoading(true);
 
     let url = '';
     let localStartTimestamp = Date.parse(start_timestamp) / 1000;
     let localEndTimestamp = Date.parse(end_timestamp) / 1000;
     if (isAdminUser) {
-      url = `/api/log/?p=${currentPage}&page_size=${pageToSize}&type=${logType}&username=${username}&token_name=${token_name}&model_name=${model_name}&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&channel=${channel}&group=${group}`;
+      url = `/api/log/?p=${startIdx}&page_size=${pageSize}&type=${logType}&username=${username}&token_name=${token_name}&model_name=${model_name}&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&channel=${channel}&group=${group}`;
     } else {
-      url = `/api/log/self/?p=${currentPage}&page_size=${pageToSize}&type=${logType}&token_name=${token_name}&model_name=${model_name}&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&group=${group}`;
+      url = `/api/log/self/?p=${startIdx}&page_size=${pageSize}&type=${logType}&token_name=${token_name}&model_name=${model_name}&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&group=${group}`;
     }
     url = encodeURI(url);
     const res = await API.get(url);
@@ -640,8 +641,22 @@ const LogsTable = () => {
       setPageSize(data.page_size);
       setLogCount(data.total);
       setLogsFormat(newPageData);
-      setIsLastPage(newPageData.length < pageToSize);
-      setTotalItems((currentPage - 1) * pageToSize + newPageData.length);
+      // data range 
+      const startItem = (startIdx - 1) * pageSize + 1;
+      const endItem = Math.min(startIdx * pageSize, data.total);
+      const itemRange = `<b>${startItem}</b> - <b>${endItem}</b> of <b>${data.total}</b> items`;
+      setItemRange(itemRange);
+      // data dropdown
+      const sizeArray = [];
+      for (let i = 10; i < data.total; i += 10) {
+        sizeArray.push(i);
+      }
+      sizeArray.push(data.total);
+      setSizeArray(sizeArray);
+      // pagination list
+      const totalPages = Math.ceil(data.total / pageSize);
+      const paginationArray = Array.from({ length: totalPages }, (_, i) => i + 1);
+      setSizeList(paginationArray);
     } else {
       showError(message);
     }
@@ -650,14 +665,14 @@ const LogsTable = () => {
 
   const handlePageChange = (page) => {
     setActivePage(page);
-    loadLogs(currentPage, pageToSize, logType).then((r) => { });
+    loadLogs(activePage, pageSize, logType).then((r) => { });
   };
 
   const handlePageSizeChange = async (size) => {
     localStorage.setItem('page-size', size + '');
     setPageSize(size);
     setActivePage(1);
-    loadLogs(currentPage, pageToSize)
+    loadLogs(activePage, pageSize)
       .then()
       .catch((reason) => {
         showError(reason);
@@ -667,8 +682,8 @@ const LogsTable = () => {
   const refresh = async () => {
     setActivePage(1);
     handleEyeClick();
-    await loadLogs(currentPage, pageToSize, logType);
-    setChartModel(false);
+    await loadLogs(activePage, pageSize, logType);
+ setChartModel(false);
   };
 
   const copyText = async (e, text) => {
@@ -682,13 +697,13 @@ const LogsTable = () => {
 
   useEffect(() => {
 
-    loadLogs(currentPage, pageToSize)
+    loadLogs(activePage, pageSize)
       .then()
       .catch((reason) => {
         showError(reason);
       });
     handleEyeClick();
-  }, [currentPage, pageToSize]);
+  }, [activePage, pageSize]);
 
   const expandRowRender = (record, index) => {
     return <Descriptions data={expandData[record.key]} />;
@@ -699,26 +714,6 @@ const LogsTable = () => {
     setSearchKeyword(value.target.value);
   };
 
-
-  const startItem = (currentPage - 1) * pageToSize + 1;
-  const endItem = startItem + logs.length - 1;
-
-  const totalPages = Math.ceil(totalItems / pageToSize);
-
-  const maxPageButtons = 50; // Max visible page buttons
-  let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
-  let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
-
-  // Ensure 5 pages are shown when possible
-  if (endPage - startPage + 1 < maxPageButtons) {
-    startPage = Math.max(1, endPage - maxPageButtons + 1);
-  }
-
-  // Create an array of visible page numbers
-  const pageNumbers = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i);
-  }
 
 
 
@@ -970,8 +965,42 @@ const LogsTable = () => {
             </Table>
           </div>
         </div>
-        {/* Table Pagination */}
-        <TablePagination pageToSize={pageToSize} setPageToSize={setPageToSize} setCurrentPage={setCurrentPage} startItem={startItem} endItem={endItem} currentPage={currentPage} pageNumbers={pageNumbers} isLastPage={isLastPage} />
+        <div className="tablePagination">
+          <div className="leftItems">
+            <Dropdown className="bulkDropdown">
+              <Dropdown.Toggle id="dropdown-basic">{pageSize}</Dropdown.Toggle>
+              <Dropdown.Menu>
+                {sizeArray && sizeArray.map((size) => (
+                  <Dropdown.Item onClick={() => { setPageSize(size); setActivePage(1); }}>
+                    {size}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+            <p className="itemNumber" dangerouslySetInnerHTML={{ __html: itemRange }}></p>
+          </div>
+
+          <div className="leftItems">
+            <button className="pagArrow" onClick={() => setActivePage((prev) => prev - 1)} disabled={activePage === 1}>
+              <IconChevronLeft />
+            </button>
+            <div>
+              {sizeList && sizeList.map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setActivePage(page)}
+                  disabled={activePage === page}
+                  className={activePage === page ? 'activePagination' : ""}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+            <button className="pagArrow" onClick={() => setActivePage((prev) => prev + 1)} disabled={sizeList[sizeList.length - 1] === activePage}>
+              <IconChevronRight />
+            </button>
+          </div>
+        </div>
       </>
       }
 

@@ -13,14 +13,16 @@ import { renderGroup, renderNumber, renderQuota } from '../helpers/render';
 import AddUser from '../pages/User/AddUser';
 import EditUser from '../pages/User/EditUser';
 import { useTranslation } from 'react-i18next';
-import { Table } from "react-bootstrap";
+import { Table, Dropdown } from "react-bootstrap";
 import { SortIconSvg } from './svgIcon';
-import { IconArrowUpLeft, IconAscend, IconChevronDown, IconDoubleChevronLeft, IconFilledArrowDown, IconFilledArrowUp, IconPlus, IconSearch } from '@douyinfe/semi-icons';
+
+import { IconArrowUpLeft, IconAscend, IconChevronDown, IconDoubleChevronLeft, IconFilledArrowDown, IconFilledArrowUp, IconPlus, IconSearch,IconChevronRight, IconChevronLeft } from '@douyinfe/semi-icons';
 import deleteIcon from "../assets/Delete.svg";
 import disableIcon from "../assets/fi_disable.svg";
 import editIcon from "../assets/fi_edit-2.svg";
 import chatIcon from "../assets/fi_chat_2.svg";
 import copyIcon from "../assets/u_copy-alt.svg";
+
 
 const UsersTable = () => {
   const { t } = useTranslation();
@@ -257,12 +259,9 @@ const UsersTable = () => {
   const handleUpdateClose = () => {
     setUpdateShow(false);
   }
-
-  const [currentPage, setCurrentPage] = useState(0);
-  const [pageToSize, setPageToSize] = useState(10);
-  const [isLastPage, setIsLastPage] = useState(false);
-  const [totalItems, setTotalItems] = useState(0);
-
+  const [sizeArray, setSizeArray] = useState([]);
+  const [sizeList, setSizeList] = useState([]);
+  const [itemRange, setItemRange] = useState('');
 
 
   const removeRecord = (key) => {
@@ -293,6 +292,22 @@ const UsersTable = () => {
       setActivePage(data.page);
       setUserCount(data.total);
       setUserFormat(newPageData);
+      // data range 
+      const startItem = (startIdx - 1) * pageSize + 1;
+      const endItem = Math.min(startIdx * pageSize, data.total);
+      const itemRange = `<b>${startItem}</b> - <b>${endItem}</b> of <b>${data.total}</b> items`;
+      setItemRange(itemRange);
+      // data dropdown
+      const sizeArray = [];
+      for (let i = 10; i < data.total; i += 10) {
+        sizeArray.push(i);
+      }
+      sizeArray.push(data.total);
+      setSizeArray(sizeArray);
+      // pagination list
+      const totalPages = Math.ceil(data.total / pageSize);
+      const paginationArray = Array.from({ length: totalPages }, (_, i) => i + 1);
+      setSizeList(paginationArray);
     } else {
       showError(message);
     }
@@ -301,13 +316,13 @@ const UsersTable = () => {
 
 
   useEffect(() => {
-    loadUsers(0, pageSize)
+    loadUsers(activePage, pageSize)
       .then()
       .catch((reason) => {
         showError(reason);
       });
     fetchGroups().then();
-  }, []);
+  }, [activePage, pageSize]);
 
   const manageUser = async (userId, action, record) => {
     const res = await API.post('/api/user/manage', {
@@ -479,7 +494,7 @@ const UsersTable = () => {
             </button>
           </div>
 
-          <button className='searchBtn' style={{ marginRight: 8 }} onClick={() => setUserShow(true)} >
+          <button className='searchBtn' style={{ marginRight: 8, textWrap: 'nowrap' }} onClick={() => setUserShow(true)} >
             <IconPlus /> {t('添加用户')}
           </button>
         </div>
@@ -607,9 +622,45 @@ const UsersTable = () => {
           </Table>
         </div>
       </div>
-      { /* 
-      <TablePagination pageToSize={pageToSize} setPageToSize={setPageToSize} setCurrentPage={setCurrentPage} startItem={startItem} endItem={endItem} currentPage={currentPage} pageNumbers={pageNumbers} isLastPage={isLastPage} />
-*/}
+
+      <div className="tablePagination">
+        <div className="leftItems">
+          <Dropdown className="bulkDropdown">
+            <Dropdown.Toggle id="dropdown-basic">{pageSize}</Dropdown.Toggle>
+            <Dropdown.Menu>
+              {sizeArray && sizeArray.map((size) => (
+                <Dropdown.Item onClick={() => { setPageSize(size); setActivePage(1); }}>
+                  {size}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
+          <p className="itemNumber" dangerouslySetInnerHTML={{ __html: itemRange }}></p>
+        </div>
+
+        <div className="leftItems">
+          <button className="pagArrow" onClick={() => setActivePage((prev) => prev - 1)} disabled={activePage === 1}>
+            <IconChevronLeft />
+          </button>
+          <div>
+            {sizeList && sizeList.map((page) => (
+              <button
+                key={page}
+                onClick={() => setActivePage(page)}
+                disabled={activePage === page}
+                className={activePage === page ? 'activePagination' : ""}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+          <button className="pagArrow" onClick={() => setActivePage((prev) => prev + 1)} disabled={sizeList[sizeList.length - 1] === activePage}>
+            <IconChevronRight />
+          </button>
+        </div>
+      </div>
+
+
       { /*  <Table
         columns={columns}
         dataSource={users}

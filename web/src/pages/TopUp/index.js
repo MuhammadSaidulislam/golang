@@ -92,11 +92,13 @@ const TopUp = () => {
   const [activePage, setActivePage] = useState(1);
   const [logCount, setLogCount] = useState(ITEMS_PER_PAGE);
   const [pageSize, setPageSize] = useState(ITEMS_PER_PAGE);
+  console.log('pageSize', pageSize);
   const [logType, setLogType] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageToSize, setPageToSize] = useState(10);
-  const [isLastPage, setIsLastPage] = useState(false);
-  const [totalItems, setTotalItems] = useState(0);
+  const [sizeArray, setSizeArray] = useState([]);
+  const [sizeList, setSizeList] = useState([]);
+  const [itemRange, setItemRange] = useState('');
   const [walletLogs, setWalletLogs] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
 
@@ -190,11 +192,11 @@ const TopUp = () => {
       const { success, message, data } = res.data;
       if (success) {
         showSuccess(t('兑换成功！'));
-        Modal.success({
-          title: t('兑换成功！'),
-          content: t('成功兑换额度：') + renderQuota(data),
-          centered: true,
-        });
+        // Modal.success({
+        //   title: t('兑换成功！'),
+        //   content: t('成功兑换额度：') + renderQuota(data),
+        //   centered: true,
+        // });
         setUserQuota((quota) => {
           return quota + data;
         });
@@ -206,6 +208,7 @@ const TopUp = () => {
       showError(t('请求失败'));
     } finally {
       setIsSubmitting(false);
+      setPaymentShow(false);
     }
   };
 
@@ -385,16 +388,16 @@ const TopUp = () => {
     setWalletLogs(logs);
   };
 
-  const loadLogs = async (currentPage = 0, pageToSize = 10, logType = 1) => {
+  const loadLogs = async (startIdx, pageSize, logType = 1) => {
     //  setLoading(true);
 
     let url = '';
     let localStartTimestamp = Date.parse(timestamp2string(getTodayStartTimestamp())) / 1000;
     let localEndTimestamp = Date.parse(timestamp2string(now.getTime() / 1000 + 3600)) / 1000;
     if (isAdminUser) {
-      url = `/api/log/?p=${currentPage}&page_size=${pageToSize}&type=${logType}&username=&token_name=${searchKeyword}&model_name=&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&channel=&group=`;
+      url = `/api/log/?p=${startIdx}&page_size=${pageSize}&type=${logType}&username=&token_name=${searchKeyword}&model_name=&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&channel=&group=`;
     } else {
-      url = `/api/log/self/?p=${currentPage}&page_size=${pageToSize}&type=${logType}&token_name=${searchKeyword}&model_name=&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&group=`;
+      url = `/api/log/self/?p=${startIdx}&page_size=${pageSize}&type=${logType}&token_name=${searchKeyword}&model_name=&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&group=`;
     }
     url = encodeURI(url);
     const res = await API.get(url);
@@ -405,8 +408,22 @@ const TopUp = () => {
       setPageSize(data.page_size);
       setLogCount(data.total);
       setLogsFormat(newPageData);
-      // setIsLastPage(newPageData.length < pageToSize);
-      // setTotalItems((currentPage - 1) * pageToSize + newPageData.length);
+      // data range 
+      const startItem = (startIdx - 1) * pageSize + 1;
+      const endItem = Math.min(startIdx * pageSize, data.total);
+      const itemRange = `<b>${startItem}</b> - <b>${endItem}</b> of <b>${data.total}</b> items`;
+      setItemRange(itemRange);
+      // data dropdown
+      const sizeArray = [];
+      for (let i = 10; i < data.total; i += 10) {
+        sizeArray.push(i);
+      }
+      sizeArray.push(data.total);
+      setSizeArray(sizeArray);
+      // pagination list
+      const totalPages = Math.ceil(data.total / pageSize);
+      const paginationArray = Array.from({ length: totalPages }, (_, i) => i + 1);
+      setSizeList(paginationArray);
     } else {
       showError(message);
     }
@@ -435,7 +452,7 @@ const TopUp = () => {
   useEffect(() => {
     const fetchData = async () => {
       //  await getLogSelfStat();
-      await loadLogs();
+      await loadLogs(activePage, pageSize, logType);
       //  await getLogStat();
       // if (isAdminUser) {
       //   await getLogSelfStat();
@@ -506,7 +523,7 @@ const TopUp = () => {
   };
   const refresh = async () => {
     setActivePage(1);
-    await loadLogs(currentPage, pageToSize, logType);
+    await loadLogs(activePage, pageSize, logType);
   };
   return (
     <div>
@@ -601,209 +618,212 @@ const TopUp = () => {
 
         {/* Table list */}
         {walletLogs && walletLogs.length === 0 ? <NoData /> :
-          <div className="tableData">
-            <div className="tableBox">
-              <Table borderless hover>
-                <thead>
-                  <tr>
-                    <th>{t('时间')}as</th>
-                    {isAdmin() ? <th>{t('渠道')}</th> : ""}
-                    {isAdmin() ? <th>{t('用户')}</th> : ""}
-                    <th>{t('令牌')}</th>
-                    <th>{t('分组')}</th>
-                    <th>{t('类型')}</th>
-                    <th>{t('模型')}</th>
-                    <th>{t('用时/首字')}</th>
-                    <th>{t('提示')}</th>
-                    <th>{t('补全')}</th>
-                    <th>{t('花费')}</th>
-                    {isAdmin() ? <th>{t('重试')}</th> : ""}
-                    <th>{t('详情')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {walletLogs && walletLogs.map((wallet, index) =>
-                    <tr key={index}>
-                      <td>{formatDate(wallet.created_at)}</td>
-                      {isAdmin() ? <td>
-                        {wallet.type === 0 || wallet.type === 2 ? <Tag color={colors[parseInt(wallet.channel) % colors.length]} size='large'>
-                          {wallet.channel}
-                        </Tag> : "Null"}
-                      </td> : ""}
-                      {isAdmin() ? <td><div>
-                        <Avatar
-                          size='small'
-                          color={stringToColor(wallet.username)}
-                          style={{ marginRight: 4 }}
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            showUserInfo(wallet.user_id)
-                          }}
-                        >
-                          {typeof wallet.username === 'string' && wallet.username.slice(0, 1)}
-                        </Avatar>
-                        {wallet.username}
-                      </div></td> : ""}
-                      <td>{wallet.type === 0 || wallet.type === 2 ?
-                        <Tag
-                          color='grey'
+          <>
+            <div className="tableData">
+              <div className="tableBox">
+                <Table borderless hover>
+                  <thead>
+                    <tr>
+                      <th>{t('时间')}as</th>
+                      {isAdmin() ? <th>{t('渠道')}</th> : ""}
+                      {isAdmin() ? <th>{t('用户')}</th> : ""}
+                      <th>{t('令牌')}</th>
+                      <th>{t('分组')}</th>
+                      <th>{t('类型')}</th>
+                      <th>{t('模型')}</th>
+                      <th>{t('用时/首字')}</th>
+                      <th>{t('提示')}</th>
+                      <th>{t('补全')}</th>
+                      <th>{t('花费')}</th>
+                      {isAdmin() ? <th>{t('重试')}</th> : ""}
+                      <th>{t('详情')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {walletLogs && walletLogs.map((wallet, index) =>
+                      <tr key={index}>
+                        <td>{formatDate(wallet.created_at)}</td>
+                        {isAdmin() ? <td>
+                          {wallet.type === 0 || wallet.type === 2 ? <Tag color={colors[parseInt(wallet.channel) % colors.length]} size='large'>
+                            {wallet.channel}
+                          </Tag> : "Null"}
+                        </td> : ""}
+                        {isAdmin() ? <td><div>
+                          <Avatar
+                            size='small'
+                            color={stringToColor(wallet.username)}
+                            style={{ marginRight: 4 }}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              showUserInfo(wallet.user_id)
+                            }}
+                          >
+                            {typeof wallet.username === 'string' && wallet.username.slice(0, 1)}
+                          </Avatar>
+                          {wallet.username}
+                        </div></td> : ""}
+                        <td>{wallet.type === 0 || wallet.type === 2 ?
+                          <Tag
+                            color='grey'
+                            size='large'
+                            onClick={(event) => {
+                              copyText(event, wallet.token_name);
+                            }}
+                          >
+                            {t(wallet.token_name)}
+                          </Tag> : "Null"}
+                        </td>
+                        <td>
+                          {(() => {
+                            if (wallet.type === 0 || wallet.type === 2) {
+                              if (wallet.group) {
+                                return renderGroup(wallet.group);
+                              }
+                              const other = wallet.other ? JSON.parse(wallet.other) : null;
+                              if (other?.group !== undefined) {
+                                return renderGroup(other.group);
+                              }
+                            }
+                            return 'Null';
+                          })()}
+                        </td>
+                        <td>{renderType(wallet)}</td>
+                        <td>{wallet.type === 0 || wallet.type === 2 ? <Tag
+                          color={stringToColor(wallet.model_name)}
                           size='large'
                           onClick={(event) => {
-                            copyText(event, wallet.token_name);
+                            copyText(event, wallet.model_name);
                           }}
                         >
-                          {t(wallet.token_name)}
-                        </Tag> : "Null"}
-                      </td>
-                      <td>
-                        {(() => {
-                          if (wallet.type === 0 || wallet.type === 2) {
-                            if (wallet.group) {
-                              return renderGroup(wallet.group);
-                            }
-                            const other = wallet.other ? JSON.parse(wallet.other) : null;
-                            if (other?.group !== undefined) {
-                              return renderGroup(other.group);
-                            }
-                          }
-                          return 'Null';
-                        })()}
-                      </td>
-                      <td>{renderType(wallet)}</td>
-                      <td>{wallet.type === 0 || wallet.type === 2 ? <Tag
-                        color={stringToColor(wallet.model_name)}
-                        size='large'
-                        onClick={(event) => {
-                          copyText(event, wallet.model_name);
-                        }}
-                      >
-                        {wallet.model_name}
-                      </Tag> : "Null"}</td>
-                      <td>
-                        {(() => {
-                          const other = getLogOther(wallet.other);
-                          return (
-                            <Space>
-                              {renderUseTime(wallet.use_time)}
-                              {wallet.is_stream && renderFirstUseTime(other.frt)}
-                              {renderIsStream(wallet.is_stream)}
-                            </Space>
-                          );
-                        })()}
-                      </td>
-                      <td>
-                        {wallet.type === 0 || wallet.type === 2 ? <span>{wallet.prompt_tokens}</span> : "Null"}
-                      </td>
-                      <td>
-                        {wallet.type === 0 || wallet.type === 2 ? <span>{wallet.completion_tokens}</span> : "Null"}
-                      </td>
-                      <td>
-                        {wallet.type === 0 || wallet.type === 2 ? renderQuota(wallet.quota, 6) : "Null"}
-                      </td>
-                      {isAdmin() ? <td>
-                        {(() => {
-                          let content = t('渠道') + `：${wallet.channel}`;
+                          {wallet.model_name}
+                        </Tag> : "Null"}</td>
+                        <td>
+                          {(() => {
+                            const other = getLogOther(wallet.other);
+                            return (
+                              <Space>
+                                {renderUseTime(wallet.use_time)}
+                                {wallet.is_stream && renderFirstUseTime(other.frt)}
+                                {renderIsStream(wallet.is_stream)}
+                              </Space>
+                            );
+                          })()}
+                        </td>
+                        <td>
+                          {wallet.type === 0 || wallet.type === 2 ? <span>{wallet.prompt_tokens}</span> : "Null"}
+                        </td>
+                        <td>
+                          {wallet.type === 0 || wallet.type === 2 ? <span>{wallet.completion_tokens}</span> : "Null"}
+                        </td>
+                        <td>
+                          {wallet.type === 0 || wallet.type === 2 ? renderQuota(wallet.quota, 6) : "Null"}
+                        </td>
+                        {isAdmin() ? <td>
+                          {(() => {
+                            let content = t('渠道') + `：${wallet.channel}`;
 
-                          if (wallet.other !== '') {
-                            try {
-                              const other = JSON.parse(wallet.other);
+                            if (wallet.other !== '') {
+                              try {
+                                const other = JSON.parse(wallet.other);
 
-                              if (other?.admin_info?.use_channel) {
-                                const useChannel = other.admin_info.use_channel;
-                                if (Array.isArray(useChannel) && useChannel.length > 0) {
-                                  const useChannelStr = useChannel.join('->');
-                                  content = t('渠道') + `：${useChannelStr}`;
+                                if (other?.admin_info?.use_channel) {
+                                  const useChannel = other.admin_info.use_channel;
+                                  if (Array.isArray(useChannel) && useChannel.length > 0) {
+                                    const useChannelStr = useChannel.join('->');
+                                    content = t('渠道') + `：${useChannelStr}`;
+                                  }
                                 }
+                              } catch (err) {
+                                console.error("Invalid JSON in wallet.other:", err);
                               }
-                            } catch (err) {
-                              console.error("Invalid JSON in wallet.other:", err);
                             }
-                          }
 
-                          return isAdminUser ? <div>{content}</div> : null;
-                        })()}
-                      </td>
-                        : ""}
-                      <td>
-                        {(() => {
-                          const other = getLogOther(wallet.other);
+                            return isAdminUser ? <div>{content}</div> : null;
+                          })()}
+                        </td>
+                          : ""}
+                        <td>
+                          {(() => {
+                            const other = getLogOther(wallet.other);
 
-                          if (other == null || wallet.type !== 2) {
+                            if (other == null || wallet.type !== 2) {
+                              return (
+                                <Paragraph
+                                  ellipsis={{
+                                    rows: 2,
+                                    showTooltip: {
+                                      type: 'popover',
+                                      opts: { style: { width: 240 } },
+                                    },
+                                  }}
+                                  style={{ maxWidth: 240 }}
+                                >
+                                  {wallet.content}
+                                </Paragraph>
+                              );
+                            }
+
+                            const content = renderModelPriceSimple(
+                              other.model_ratio,
+                              other.model_price,
+                              other.group_ratio
+                            );
+
                             return (
                               <Paragraph
-                                ellipsis={{
-                                  rows: 2,
-                                  showTooltip: {
-                                    type: 'popover',
-                                    opts: { style: { width: 240 } },
-                                  },
-                                }}
+                                ellipsis={{ rows: 2 }}
                                 style={{ maxWidth: 240 }}
                               >
-                                {wallet.content}
+                                {content}
                               </Paragraph>
                             );
-                          }
+                          })()}
+                        </td>
 
-                          const content = renderModelPriceSimple(
-                            other.model_ratio,
-                            other.model_price,
-                            other.group_ratio
-                          );
-
-                          return (
-                            <Paragraph
-                              ellipsis={{ rows: 2 }}
-                              style={{ maxWidth: 240 }}
-                            >
-                              {content}
-                            </Paragraph>
-                          );
-                        })()}
-                      </td>
-
-                    </tr>
-                  )}
-                </tbody>
-              </Table>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </div>
             </div>
-          </div>}
-        {/* Table Pagination 
-        <div className='tablePagination'>
-          <div className='leftItems'>
-            <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
-              <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
-                1
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item>1</Dropdown.Item>
-                <Dropdown.Item>2</Dropdown.Item>
-                <Dropdown.Item>3</Dropdown.Item>
-                <Dropdown.Item>4</Dropdown.Item>
-                <Dropdown.Item>5</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-            <p className='item'>Items per page</p>
-            <p className='itemNumber'>1-10 of 200 items</p>
-          </div>
-          <div className='leftItems'>
-            <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
-              <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
-                1
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item>1</Dropdown.Item>
-                <Dropdown.Item>2</Dropdown.Item>
-                <Dropdown.Item>3</Dropdown.Item>
-                <Dropdown.Item>4</Dropdown.Item>
-                <Dropdown.Item>5</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-            <p className='itemNumber'>1-10 of 200 items</p>
-            <button className='pagArrow'> <IconChevronLeft /> </button>
-            <button className='pagArrow'> <IconChevronRight /> </button>
-          </div>
-        </div> */}
+            <div className="tablePagination">
+              <div className="leftItems">
+                <Dropdown className="bulkDropdown">
+                  <Dropdown.Toggle id="dropdown-basic">{pageSize}</Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    {sizeArray && sizeArray.map((size) => (
+                      <Dropdown.Item onClick={() => { setPageSize(size); setActivePage(1); }}>
+                        {size}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+                <p className="itemNumber" dangerouslySetInnerHTML={{ __html: itemRange }}></p>
+              </div>
+
+              <div className="leftItems">
+                <button className="pagArrow" onClick={() => setActivePage((prev) => prev - 1)} disabled={activePage === 1}>
+                  <IconChevronLeft />
+                </button>
+                <div>
+                  {sizeList && sizeList.map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setActivePage(page)}
+                      disabled={activePage === page}
+                      className={activePage === page ? 'activePagination' : ""}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+                <button className="pagArrow" onClick={() => setActivePage((prev) => prev + 1)} disabled={sizeList[sizeList.length - 1] === activePage}>
+                  <IconChevronRight />
+                </button>
+              </div>
+            </div>
+          </>
+        }
 
 
         <Layout.Content>

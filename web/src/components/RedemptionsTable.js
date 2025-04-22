@@ -19,13 +19,14 @@ import {
 } from '@douyinfe/semi-ui';
 import EditRedemption from '../pages/Redemption/EditRedemption';
 import { useTranslation } from 'react-i18next';
-import { IconSearch, IconPlus } from '@douyinfe/semi-icons';
-import { Table } from "react-bootstrap";
+import { IconSearch, IconPlus, IconChevronRight, IconChevronLeft } from '@douyinfe/semi-icons';
+import { Dropdown, Table } from "react-bootstrap";
 import deleteIcon from "../assets/Delete.svg";
 import disableIcon from "../assets/fi_disable.svg";
 import editIcon from "../assets/fi_edit-2.svg";
 import chatIcon from "../assets/fi_chat_2.svg";
 import copyIcon from "../assets/u_copy-alt.svg";
+
 
 function renderTimestamp(timestamp) {
   return timestamp2string(timestamp);
@@ -195,6 +196,10 @@ const RedemptionsTable = () => {
   };
 
   const [modalShow, setModalShow] = useState(false);
+  const [sizeArray, setSizeArray] = useState([]);
+  const [sizeList, setSizeList] = useState([]);
+  const [itemRange, setItemRange] = useState('');
+
   const handleModalClose = () => {
     setModalShow(false);
   }
@@ -212,6 +217,22 @@ const RedemptionsTable = () => {
       setActivePage(data.page);
       setTokenCount(data.total);
       setRedemptionFormat(newPageData);
+      // data range 
+      const startItem = (startIdx - 1) * pageSize + 1;
+      const endItem = Math.min(startIdx * pageSize, data.total);
+      const itemRange = `<b>${startItem}</b> - <b>${endItem}</b> of <b>${data.total}</b> items`;
+      setItemRange(itemRange);
+      // data dropdown
+      const sizeArray = [];
+      for (let i = 10; i < data.total; i += 10) {
+        sizeArray.push(i);
+      }
+      sizeArray.push(data.total);
+      setSizeArray(sizeArray);
+      // pagination list
+      const totalPages = Math.ceil(data.total / pageSize);
+      const paginationArray = Array.from({ length: totalPages }, (_, i) => i + 1);
+      setSizeList(paginationArray);
     } else {
       showError(message);
     }
@@ -249,12 +270,12 @@ const RedemptionsTable = () => {
   };
 
   useEffect(() => {
-    loadRedemptions(0, pageSize)
+    loadRedemptions(activePage, pageSize)
       .then()
       .catch((reason) => {
         showError(reason);
       });
-  }, []);
+  }, [pageSize, activePage]);
 
   const refresh = async () => {
     await loadRedemptions(activePage - 1, pageSize);
@@ -479,6 +500,43 @@ const RedemptionsTable = () => {
               </tr>)}
             </tbody>
           </Table>
+        </div>
+      </div>
+
+      <div className="tablePagination">
+        <div className="leftItems">
+          <Dropdown className="bulkDropdown">
+            <Dropdown.Toggle id="dropdown-basic">{pageSize}</Dropdown.Toggle>
+            <Dropdown.Menu>
+              {sizeArray && sizeArray.map((size) => (
+                <Dropdown.Item onClick={() => { setPageSize(size); setActivePage(1); }}>
+                  {size}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
+          <p className="itemNumber" dangerouslySetInnerHTML={{ __html: itemRange }}></p>
+        </div>
+
+        <div className="leftItems">
+          <button className="pagArrow" onClick={() => setActivePage((prev) => prev - 1)} disabled={activePage === 1}>
+            <IconChevronLeft />
+          </button>
+          <div>
+            {sizeList && sizeList.map((page) => (
+              <button
+                key={page}
+                onClick={() => setActivePage(page)}
+                disabled={activePage === page}
+                className={activePage === page ? 'activePagination' : ""}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+          <button className="pagArrow" onClick={() => setActivePage((prev) => prev + 1)} disabled={sizeList[sizeList.length - 1] === activePage}>
+            <IconChevronRight />
+          </button>
         </div>
       </div>
       {/* <Table
