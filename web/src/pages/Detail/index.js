@@ -157,6 +157,7 @@ const Detail = (props) => {
   });
 
   const { username, model_name, start_timestamp, end_timestamp, channel } = inputs;
+
   const isAdminUser = isAdmin();
   const initialized = useRef(false);
   const [loading, setLoading] = useState(false);
@@ -169,7 +170,7 @@ const Detail = (props) => {
   );
   const [pieData, setPieData] = useState([{ type: 'null', value: '0' }]);
   const [lineData, setLineData] = useState([]);
-
+  const containerRef = useRef(null);
   const [spec_pie, setSpecPie] = useState({
     type: 'pie',
     data: [{
@@ -299,12 +300,63 @@ const Detail = (props) => {
   // 添加一个新的状态来存储模型-颜色映射
   const [modelColors, setModelColors] = useState({});
 
+  const formatDateTime = (date) => {
+    const pad = (n) => n.toString().padStart(2, '0');
+
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1); // Month is 0-indexed
+    const day = pad(date.getDate());
+
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+
   const handleInputChange = (value, name) => {
     if (name === 'data_export_default_time') {
       setDataExportDefaultTime(value);
       return;
     }
     setInputs((inputs) => ({ ...inputs, [name]: value }));
+  };
+
+  const handleDateChange = async (value) => {
+    if (['week', 'month', 'year'].includes(value)) {
+      let now = new Date();
+      let start, end;
+
+      switch (value) {
+        case 'week':
+          // Get the start (Sunday) and end (Saturday) of the current week
+          start = new Date(now);
+          start.setDate(now.getDate() - now.getDay());
+          start.setHours(0, 0, 0, 0);
+
+          end = new Date(start);
+          end.setDate(start.getDate() + 6);
+          end.setHours(23, 59, 59, 999);
+          break;
+
+        case 'month':
+          start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+          end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+          break;
+
+        case 'year':
+          start = new Date(now.getFullYear(), 0, 1, 0, 0, 0, 0);
+          end = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+          break;
+      }
+
+      setInputs((inputs) => ({
+        ...inputs,
+        start_timestamp: formatDateTime(start),
+        end_timestamp: formatDateTime(end)
+      }));
+    }
+    await loadQuotaData();
   };
 
   const loadQuotaData = async () => {
@@ -537,11 +589,32 @@ const Detail = (props) => {
   const [graphModel, setGraphModel] = useState(false);
   const [chartModel, setChartModel] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [userDropdown, setUserDropdown] = useState(false);
-  const toggleUserDropdown = (e) => {
+  const [staticDropdown, setStaticDropdown] = useState(false);
+  const [averageDropdown, setAverageDropdown] = useState(false);
+  const toggleStaticDropdown = (e) => {
     e.stopPropagation();
-    setUserDropdown(!userDropdown);
+    setAverageDropdown(false);
+    setStaticDropdown(!staticDropdown);
   };
+  const toggleAverageDropdown = (e) => {
+    e.stopPropagation();
+    setStaticDropdown(false);
+    setAverageDropdown(!averageDropdown);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setStaticDropdown(false);
+        setAverageDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
 
   const onPieEnter = useCallback(
@@ -592,16 +665,16 @@ const Detail = (props) => {
                 <div
                   className="icon-container"
                   ref={userRef}
-                  onClick={toggleUserDropdown}
+                  onClick={toggleStaticDropdown}
                 >
                   <div className="user-icon">
                     This Week <IconChevronDown />
                   </div>
-                  {userDropdown && (
+                  {staticDropdown && (
                     <div className="dropdown active">
-                      <div className="dropdown-item">This Week</div>
-                      <div className="dropdown-item">This Month</div>
-                      <div className="dropdown-item">This Year</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("week")}>This Week</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("month")}>This Month</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("year")}>This Year</div>
                     </div>)}
                 </div>
               </div>
@@ -632,20 +705,19 @@ const Detail = (props) => {
                       60000)).toFixed(3)}</p>
                 </div>
               </div>
-              <div className='cardTime'>
+              <div className='cardTime' ref={containerRef}>
                 <div
                   className="icon-container"
-                  ref={userRef}
-                  onClick={toggleUserDropdown}
+                  onClick={toggleAverageDropdown}
                 >
                   <div className="user-icon">
                     This Week <IconChevronDown />
                   </div>
-                  {userDropdown && (
+                  {averageDropdown && (
                     <div className="dropdown active">
-                      <div className="dropdown-item">This Week</div>
-                      <div className="dropdown-item">This Month</div>
-                      <div className="dropdown-item">This Year</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("week")}>This Week</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("month")}>This Month</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("year")}>This Year</div>
                     </div>)}
                 </div>
               </div>

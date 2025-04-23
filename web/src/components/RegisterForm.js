@@ -109,9 +109,10 @@ const RegisterForm = () => {
         inputs
       );
       const { success, message } = res.data;
+
       if (success) {
-        navigate('/login');
         showSuccess('注册成功！');
+        navigate('/login');
       } else {
         showError(message);
       }

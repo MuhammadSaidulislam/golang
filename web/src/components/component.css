@@ -261,7 +261,7 @@
 .loginSubmit button,
 .loginSubmit .ui.button {
   background: linear-gradient(88.49deg, #b26ce8 -2.57%, #6175de 103.46%);
-  color: var(--semi-color-text-1);
+  color: white;
   padding: 17px 28px;
   min-width: 250px;
   min-height: 58px;
@@ -325,6 +325,9 @@
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */
+.sticky-top {
+  z-index: 1 !important;
+}
 .sidebar {
   min-width: 296px;
   max-width: 296px;
@@ -360,6 +363,7 @@
 .sidebar .middleNav ul li {
   background-color: transparent;
   padding: 12px 20px;
+  margin-bottom: 3px;
   list-style: none;
   border-radius: 12px;
   -webkit-border-radius: 12px;
@@ -475,6 +479,16 @@
   text-align: center;
   color: var(--semi-color-text-0);
   margin: 0px 8px;
+}
+.dashboardNav .logoNav .toggleIcon {
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.dashboardNav .logoNav .toggleIcon:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.1);
 }
 .dashboardNav .navbar {
   display: flex;
@@ -602,7 +616,7 @@
 .dashboardNav .dropdown,
 .cardTime .dropdown {
   position: absolute;
-  top: 45px;
+  top: 23px;
   right: 0;
   background-color: var(--semi-dashboard-bg-0);
   border: 1px solid rgb(255, 255, 255);
@@ -629,7 +643,7 @@
 }
 .cardTime .dropdown {
   position: absolute;
-  top: 45px;
+  top: 22px;
   right: 0;
   background-color: var(--semi-dashboard-bg-0);
   border: 1px solid rgb(255, 255, 255);

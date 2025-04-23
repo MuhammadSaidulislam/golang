@@ -56,9 +56,7 @@ const AirwallexModel = () => {
             ],
           },
         });
-
         const { id, client_secret, currency } = intent;
-
         const element = await createElement('dropIn', {
           intent_id: id,
           client_secret,
@@ -90,36 +88,17 @@ const AirwallexModel = () => {
   }, [isConfirmed, amount, navigate, liveAirwallex]); // Depend on liveAirwallex
 
   return (
-    <div>
-      <div style={{ marginBottom: '24px', textAlign: 'center' }}>
-        <label>
-          Enter Amount (USD):{' '}
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="Enter amount"
-            style={{ padding: '8px', fontSize: '16px' }}
-          />
-        </label>
+    <div className='w-100'>
+
+      <div className="personalInput w-100">
+        <label>Enter Amount (USD):</label>
+        <input type="number" className="search-input" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Enter amount" />
       </div>
 
-      <div style={{ textAlign: 'center' }}>
-        <button
-          onClick={() => setIsConfirmed(true)}
-          style={{
-            padding: '10px 20px',
-            fontSize: '16px',
-            cursor: 'pointer',
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-          }}
-        >
-          Confirm Payment
-        </button>
+      <div className="button-group mt-3">
+        <div onClick={() => setIsConfirmed(true)} className="btn btn-redeem">Confirm Payment</div>
       </div>
+
 
       <div id="dropIn" style={{ width: '540px', margin: '48px auto' }} />
     </div>

@@ -347,7 +347,6 @@ const PersonalSetting = () => {
 
     return (
         <div className='settingPage'>
-
             {/* Tab Navigation */}
             <ul className="nav nav-tabs settingTab">
                 <li className="nav-item">
@@ -428,7 +427,7 @@ const PersonalSetting = () => {
                                 <div className='cardText'>
                                     Statistical Summary
                                 </div>
-                                <div className='cardTime'>
+                                {/*  <div className='cardTime'>
                                     <div
                                         className="icon-container"
                                         ref={userRef}
@@ -444,7 +443,7 @@ const PersonalSetting = () => {
                                                 <div className="dropdown-item">This Year</div>
                                             </div>)}
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                             <div className='cardContent'>
                                 <div style={{ width: '100%' }}>
@@ -972,21 +971,16 @@ const PersonalSetting = () => {
                     <h1>{t('绑定邮箱地址')}</h1>
                     <button onClick={() => setShowEmailBindModal(false)}><IconClose /></button>
                 </div>
-                <div className='personalInput'>
-                    <label>{t('输入邮箱地址')}</label>
-                    <div className='d-flex align-items-center'>
-                        <input style={{ marginBottom: '0px' }}
-                            placeholder={t('输入邮箱地址')} name='email' type='email'
-                            onChange={(value) =>
-                                handleInputChange('email', value.target.value)
-                            }
-                        />
-                        <button className='verificationBtn'
-                            onClick={sendVerificationCode}
-                            disabled={disableButton || loading}
-                        >
-                            {disableButton ? `${t('重新发送')} (${countdown})` : `${t('获取验证码')}`}
-                        </button>
+                <div className="d-flex justify-content-between align-items-center gap-2">
+                    <div className='personalInput w-100'>
+                        <label>{t('输入邮箱地址')}</label>
+                        <div className='d-flex align-items-center'>
+                            <input style={{ marginBottom: '0px' }} placeholder={t('输入邮箱地址')} name='email' type='email'
+                                onChange={(value) => handleInputChange('email', value.target.value)} />
+                        </div>
+                    </div>
+                    <div className="button-group mt-4 w-100">
+                        <div onClick={sendVerificationCode} disabled={disableButton || loading} className="searchBtn">{disableButton ? `${t('重新发送')} (${countdown})` : `${t('获取验证码')}`}</div>
                     </div>
                 </div>
 

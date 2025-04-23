@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { API, showError, showInfo } from '../../helpers';
 import copy from 'clipboard-copy';
 import { useNavigate } from 'react-router-dom';
+import { Select } from '@douyinfe/semi-ui';
 
 const CryptoModel = () => {
     const [selectedItem, setSelectedItem] = useState("");
@@ -138,60 +139,36 @@ const CryptoModel = () => {
                 <div className="border-0">
                     <div className="px-4 py-4">
                         <div className="w-full text-sm">
-                            <div className="flex justify-between px-0 py-0 my-2">
-                                <p>Crypto currencies</p>
-                                <p>Input Amount (USD)</p>
-                            </div>
-                            <div className="flex">
-                                <div className="w-1/2">
-                                    <select
+                            <div className="w-100 d-flex justify-content-between gap-2">
+                                <div className="">
+                                    <label className='mb-2'>Crypto currencies</label>
+                                    <Select className='w-100'
+                                        placeholder="Choose"
+                                        onChange={(value) => {
+                                            setSelectedItem(value.target.value);
+                                        }}
                                         value={selectedItem}
-                                        onChange={(e) => setSelectedItem(e.target.value)}
-                                        className="w-full border border-gray-300 rounded text-sm p-2 bg-white text-black"
-                                    >
-                                        <option value="" disabled>
-                                            Select
-                                        </option>
-                                        {items.map((item) => (
-                                            <option key={item} value={item}>
-                                                {item}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="w-1/2 ml-5">
-                                    <input
-                                        type="number"
-                                        value={input}
-                                        onChange={inputChangeHandler}
-                                        className="w-full border border-gray-300 rounded text-sm p-2 bg-white text-black"
+                                        optionList={items}
+                                        getPopupContainer={() => document.querySelector('.modal-content')}
                                     />
+                                </div>
+                                <div className="">
+                                    <div className="personalInput w-100">
+                                        <label>Input Amount (USD)</label>
+                                        <input type="number" className="search-input" value={input} onChange={inputChangeHandler} />
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="w-full text-sm mt-4">
-                            <div className="flex justify-between px-0 py-0 my-2">
-                                <p>Min Amount (Coin)</p>
-                                <p>Estimated Amount (Coin)</p>
+                        <div className="w-100 d-flex justify-content-between gap-2">
+                            <div className="personalInput w-100">
+                                <label>Min Amount (Coin)</label>
+                                <input type="number" className="search-input" value={min} readOnly />
                             </div>
-                            <div className="flex">
-                                <div className="w-1/2">
-                                    <input
-                                        type="number"
-                                        value={min}
-                                        readOnly
-                                        className="w-full border border-gray-300 rounded text-sm p-2 bg-gray-100 text-black"
-                                    />
-                                </div>
-                                <div className="w-1/2 ml-5">
-                                    <input
-                                        type="number"
-                                        value={est}
-                                        readOnly
-                                        className="w-full border border-gray-300 rounded text-sm p-2 bg-gray-100 text-black"
-                                    />
-                                </div>
+                            <div className="personalInput w-100">
+                                <label>Estimated Amount (Coin)</label>
+                                <input type="number" className="search-input" value={est} readOnly />
                             </div>
                         </div>
                         <div className="mt-10 px-4 py-4">
@@ -203,15 +180,9 @@ const CryptoModel = () => {
                                 <i className="mdi mdi-check"></i> After sends coins, system will processes and exchanges them, and settles the payment to your balance.
                             </p>
                         </div>
-                        <div className="flex mt-4">
-
-                            <div className="w-1/2 flex justify-center items-end">
-                                <button
-                                    onClick={createTransactionHandle}
-                                    className="bg-black text-white mt-2 text-xs shadow-lg px-4 py-2 rounded"
-                                >
-                                    Create Transaction
-                                </button>
+                        <div className="d-flex mt-4 w-100 align-items-center justify-content-center">
+                            <div className="button-group mt-3">
+                                <div onClick={createTransactionHandle} className="btn btn-redeem">Create Transaction</div>
                             </div>
                         </div>
                     </div>
@@ -255,7 +226,7 @@ const CryptoModel = () => {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 };
 

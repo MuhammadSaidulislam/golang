@@ -92,7 +92,6 @@ const TopUp = () => {
   const [activePage, setActivePage] = useState(1);
   const [logCount, setLogCount] = useState(ITEMS_PER_PAGE);
   const [pageSize, setPageSize] = useState(ITEMS_PER_PAGE);
-  console.log('pageSize', pageSize);
   const [logType, setLogType] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageToSize, setPageToSize] = useState(10);
@@ -102,6 +101,19 @@ const TopUp = () => {
   const [walletLogs, setWalletLogs] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
 
+  const formatDateTime = (date) => {
+    const pad = (n) => n.toString().padStart(2, '0');
+
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1); // Month is 0-indexed
+    const day = pad(date.getDate());
+
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
 
   function renderType(type) {
     switch (type) {
@@ -238,11 +250,14 @@ const TopUp = () => {
 
   const topUpCrypto = async () => {
     setOpenCrypto(true);
+    setPaymentShow(false);
   };
 
   const topUpAirwallex = async () => {
     setOpenAirwallex(true);
+    setPaymentShow(false);
   };
+
   const getOptions = async () => {
     try {
       const res = await API.get('/api/option/');
@@ -265,6 +280,7 @@ const TopUp = () => {
       showError('Error fetching options');
     }
   };
+
   const onlineTopUp = async () => {
     if (amount === 0) {
       await getAmount();
@@ -386,6 +402,73 @@ const TopUp = () => {
     //  setExpandData(expandDatesLocal);
 
     setWalletLogs(logs);
+  };
+
+  const handleDateChange = async (value) => {
+    if (['week', 'month', 'year'].includes(value)) {
+      let now = new Date();
+      let start, end;
+
+      switch (value) {
+        case 'week':
+          // Get the start (Sunday) and end (Saturday) of the current week
+          start = new Date(now);
+          start.setDate(now.getDate() - now.getDay());
+          start.setHours(0, 0, 0, 0);
+
+          end = new Date(start);
+          end.setDate(start.getDate() + 6);
+          end.setHours(23, 59, 59, 999);
+          break;
+
+        case 'month':
+          start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+          end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+          break;
+
+        case 'year':
+          start = new Date(now.getFullYear(), 0, 1, 0, 0, 0, 0);
+          end = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+          break;
+      }
+
+      let url = '';
+      let localStartTimestamp = Date.parse(formatDateTime(start)) / 1000;
+      let localEndTimestamp = Date.parse(formatDateTime(end)) / 1000;
+      if (isAdminUser) {
+        url = `/api/log/?p=${activePage}&page_size=${pageSize}&type=${logType}&username=&token_name=${searchKeyword}&model_name=&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&channel=&group=`;
+      } else {
+        url = `/api/log/self/?p=${activePage}&page_size=${pageSize}&type=${logType}&token_name=${searchKeyword}&model_name=&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}&group=`;
+      }
+      url = encodeURI(url);
+      const res = await API.get(url);
+      const { success, message, data } = res.data;
+      if (success) {
+        const newPageData = data.items;
+        setActivePage(data.page);
+        setPageSize(data.page_size);
+        setLogCount(data.total);
+        setLogsFormat(newPageData);
+        // data range 
+        const startItem = (activePage - 1) * pageSize + 1;
+        const endItem = Math.min(activePage * pageSize, data.total);
+        const itemRange = `<b>${startItem}</b> - <b>${endItem}</b> of <b>${data.total}</b> items`;
+        setItemRange(itemRange);
+        // data dropdown
+        const sizeArray = [];
+        for (let i = 10; i < data.total; i += 10) {
+          sizeArray.push(i);
+        }
+        sizeArray.push(data.total);
+        setSizeArray(sizeArray);
+        // pagination list
+        const totalPages = Math.ceil(data.total / pageSize);
+        const paginationArray = Array.from({ length: totalPages }, (_, i) => i + 1);
+        setSizeList(paginationArray);
+      } else {
+        showError(message);
+      }
+    }
   };
 
   const loadLogs = async (startIdx, pageSize, logType = 1) => {
@@ -576,9 +659,9 @@ const TopUp = () => {
                         </div>
                         {userDropdown && (
                           <div className="dropdown active">
-                            <div className="dropdown-item">This Week</div>
-                            <div className="dropdown-item">This Month</div>
-                            <div className="dropdown-item">This Year</div>
+                            <div className="dropdown-item" onClick={() => handleDateChange("week")}>This Week</div>
+                            <div className="dropdown-item" onClick={() => handleDateChange("month")}>This Month</div>
+                            <div className="dropdown-item" onClick={() => handleDateChange("year")}>This Year</div>
                           </div>)}
                       </div>
                     </div>
@@ -947,7 +1030,7 @@ const TopUp = () => {
                   <div className="right-arrow"><IconChevronRight /></div>
                 </div>
 
-                <div className="payment-option">
+                <div className="payment-option" onClick={topUpCrypto}>
                   <div className="payment-left">
                     <span>Pay</span>
                     <strong>¥100.00</strong>
@@ -957,7 +1040,7 @@ const TopUp = () => {
                   <div className="right-arrow"><IconChevronRight /></div>
                 </div>
 
-                <div className="payment-option">
+                <div className="payment-option" onClick={topUpAirwallex}>
                   <div className="payment-left">
                     <span>Pay</span>
                     <strong>¥100.00</strong>
@@ -1012,6 +1095,28 @@ const TopUp = () => {
             </div>
           </div>
         </Modal>
+        {/* crypto   */}
+        <Modal show={openCrypto} onHide={handleCrytoCancel} centered size="md">
+          <div className='modalHeading'>
+            <h1>Cryptomus Payment</h1>
+            <button onClick={handleCrytoCancel}><IconClose /></button>
+          </div>
+          <div className='modalContent walletModal'>
+            <CryptoModel />
+          </div>
+        </Modal>
+
+        {/* Airwallex   */}
+        <Modal show={openAirwallex} onHide={handleAirwallexCancel} centered size="md">
+          <div className='modalHeading'>
+            <h1>Airwallex Payment</h1>
+            <button onClick={handleAirwallexCancel}><IconClose /></button>
+          </div>
+          <div className='modalContent walletModal'>
+            <AirwallexModel />
+          </div>
+        </Modal>
+
 
       </DashboardLayout>
     </div>

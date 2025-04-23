@@ -191,7 +191,8 @@ const CommonHeader = () => {
                                     <div className={`toggle-thumb ${isDark ? 'dark' : 'light'}`} />
                                 </button>
                             </div>
-                            <Link to="/register" className="registerBtn">{t('注册')}</Link>
+                            <Link to="/login" className="registerBtn">{t('登入')}</Link>
+                            {/*      <Link to="/login" className="registerBtn">{t('登录')}</Link> */}
                         </div>
                     </div>
                     {/* Navigation Links */}

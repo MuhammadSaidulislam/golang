@@ -24,7 +24,7 @@ import toggleNav from "../assets/fi_columns.svg";
 import ukLogo from "../assets/uk.svg";
 import chinaLogo from "../assets/china.png";
 import notificationIcon from "../assets/Notification.svg";
-import { IconUser, IconGift, IconLayers } from '@douyinfe/semi-icons';
+import { IconUser, IconGift, IconLayers, IconMail } from '@douyinfe/semi-icons';
 import { renderQuota, stringToColor } from '../helpers/render';
 import { API } from './../helpers';
 import { LogoIconSvg, DashboardIconSvg, ChatIconSvg, TokenIconSvg, WalletIconSvg, LogsIconSvg, DrawingIconSvg, TasksIconSvg, PriceIconSvg, SettingIconSvg } from './svgIcon.js';
@@ -179,7 +179,7 @@ const DashboardLayout = ({ children, ...props }) => {
                 <div className='logoNav'>
                     <img src={logo} alt='logo' className="logoNavbar" />
                     <span className="title">DuckLLM</span>
-                    <span onClick={toggle} style={{ cursor: 'pointer' }}> <LogoIconSvg color="--semi-text-white-black-0" /></span>
+                    <span onClick={toggle} className='toggleIcon'> <LogoIconSvg color="--semi-text-white-black-0" /></span>
                 </div>
                 <div className='dashboardOption navbarLink d-flex'>
                     <span className='walletAmount'>{userQuota && userQuota}  <WalletIconSvg color="--semi-text-white-black-0" /> </span>
@@ -306,7 +306,7 @@ const DashboardLayout = ({ children, ...props }) => {
                     <nav className="flex-column middleNav">
                         <ul>
                             <li><Link to="/detail" className={urlParams === "detail" ? "nav-link activeMenu" : "nav-link"}><DashboardIconSvg color="--semi-table-thead-0" /> {t('数据看板')}</Link></li>
-                            <li><Link to="/playground" className={urlParams === "playground" ? "nav-link activeMenu" : "nav-link"}><DashboardIconSvg color="--semi-table-thead-0" /> {t('操场')}</Link></li>
+                            <li><Link to="/playground" className={urlParams === "playground" ? "nav-link activeMenu" : "nav-link"}><IconMail /> {t('操场')}</Link></li>
                             <li><Link to="/chat/0" className={urlParams === "0" ? "nav-link activeMenu" : "nav-link"}><ChatIconSvg color="--semi-table-thead-0" /> {t('聊天')}</Link></li>
                             <li><Link to="/token" className={urlParams === "token" ? "nav-link activeMenu" : "nav-link"}><TokenIconSvg color="--semi-table-thead-0" /> {t('令牌')}</Link></li>
                             {isAdmin() ?
