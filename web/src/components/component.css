@@ -2199,11 +2199,25 @@
   }
 
   .sidebar.is-open {
-    min-width: 100%;
-    max-width: 100%;
+    position: fixed;
+    z-index: 999;
+    min-width: 58%;
+    max-width: 58%;
     margin-left: 0;
     transition:
-      all 0.5s,
+      all 0.2s,
+      height 0s;
+    -webkit-transition:
+      all 0.2s,
+      height 0s;
+    -moz-transition:
+      all 0.2s,
+      height 0s;
+    -ms-transition:
+      all 0.2s,
+      height 0s;
+    -o-transition:
+      all 0.2s,
       height 0s;
   }
 
@@ -2221,9 +2235,12 @@
 @media (max-width: 800px) {
   .sidebar {
     max-height: calc(100vh - 58px);
+    position: absolute;
+    z-index: 99;
   }
   .sidebar ul {
     padding-left: 14px;
+    padding-right: 14px;
   }
   .dashboardNav {
     display: none;
@@ -2357,9 +2374,9 @@
   .mainBoard {
     height: 100%;
   }
-  .mainBoard.is-open {
+  /* .mainBoard.is-open {
     padding: 0px;
-  }
+  } */
   .App:has(.is-open) {
     max-height: calc(100vh - 58px);
   }

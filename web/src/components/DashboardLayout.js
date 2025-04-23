@@ -37,16 +37,17 @@ const DashboardLayout = ({ children, ...props }) => {
     const [userState, userDispatch] = useContext(UserContext);
     const [userQuota, setUserQuota] = useState(0);
     let navigate = useNavigate();
-    const [isOpen, setIsOpen] = useState(window.innerWidth > 768);
+    const [isOpen, setIsOpen] = useState(true);
 
-    useEffect(() => {
-        const handleResize = () => {
-            setIsOpen(window.innerWidth > 768);
-        };
 
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
+    /*  useEffect(() => {
+         const handleResize = () => {
+             setIsOpen(window.innerWidth > 768);
+         };
+ 
+         window.addEventListener("resize", handleResize);
+         return () => window.removeEventListener("resize", handleResize);
+     }, []); */
 
     const toggle = () => {
         setIsOpen((prev) => !prev);

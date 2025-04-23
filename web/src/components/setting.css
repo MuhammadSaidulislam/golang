@@ -374,17 +374,18 @@
   color: #c5c5c5;
   font-size: 21px;
 }
+
 .accountText {
+  display: none;
   font-family: 'Inter', sans-serif;
   font-weight: 700;
   font-size: 16px;
   line-height: 100%;
   letter-spacing: 0%;
   color: var(--semi-text-white-black-1);
-  display: flex;
   align-items: center;
   margin: 0px;
-  padding: 20px 0px 10px 20px;
+  padding: 20px 0px 14px 0px;
 }
 .accountText span {
   margin-right: 8px;
@@ -408,6 +409,9 @@
   gap: 20px;
 }
 @media (max-width: 800px) {
+  .accountText {
+    display: flex;
+  }
   .channelWrap .search-container {
     width: 100% !important;
   }
