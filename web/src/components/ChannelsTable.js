@@ -46,7 +46,7 @@ import copyIcon from "../assets/u_copy-alt.svg";
 import enableIcon from "../assets/fi_check.svg";
 
 function renderTimestamp(timestamp) {
-  return <>{timestamp2string(timestamp)}</>;
+  return timestamp2string(timestamp);
 }
 
 const ChannelsTable = () => {

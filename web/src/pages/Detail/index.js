@@ -668,13 +668,13 @@ const Detail = (props) => {
                   onClick={toggleStaticDropdown}
                 >
                   <div className="user-icon">
-                    This Week <IconChevronDown />
+                    {t('选择标签')} <IconChevronDown />
                   </div>
                   {staticDropdown && (
                     <div className="dropdown active">
-                      <div className="dropdown-item" onClick={() => handleDateChange("week")}>This Week</div>
-                      <div className="dropdown-item" onClick={() => handleDateChange("month")}>This Month</div>
-                      <div className="dropdown-item" onClick={() => handleDateChange("year")}>This Year</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("week")}>{t('本星期')}</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("month")}>{t('本月')}</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("year")}>{t('今年')}</div>
                     </div>)}
                 </div>
               </div>
@@ -711,13 +711,13 @@ const Detail = (props) => {
                   onClick={toggleAverageDropdown}
                 >
                   <div className="user-icon">
-                    This Week <IconChevronDown />
+                    {t('选择标签')} <IconChevronDown />
                   </div>
                   {averageDropdown && (
                     <div className="dropdown active">
-                      <div className="dropdown-item" onClick={() => handleDateChange("week")}>This Week</div>
-                      <div className="dropdown-item" onClick={() => handleDateChange("month")}>This Month</div>
-                      <div className="dropdown-item" onClick={() => handleDateChange("year")}>This Year</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("week")}>{t('本星期')}</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("month")}>{t('本月')}</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("year")}>{t('今年')}</div>
                     </div>)}
                 </div>
               </div>

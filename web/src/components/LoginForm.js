@@ -17,19 +17,21 @@ import {
   Divider,
   Form,
   Icon,
-  Layout,
-  Modal,
+  Layout
 } from '@douyinfe/semi-ui';
 import Title from '@douyinfe/semi-ui/lib/es/typography/title';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import TelegramLoginButton from 'react-telegram-login';
 
-import { IconGithubLogo, IconAlarm } from '@douyinfe/semi-icons';
+import { IconGithubLogo, IconAlarm, IconClose } from '@douyinfe/semi-icons';
 import WeChatIcon from './WeChatIcon';
 import { setUserData } from '../helpers/data.js';
 import LinuxDoIcon from './LinuxDoIcon.js';
 import { useTranslation } from 'react-i18next';
 import CommonHeader from './CommonHeader.js';
+import { Modal } from 'react-bootstrap';
+
+
 
 const LoginForm = () => {
   const [inputs, setInputs] = useState({
@@ -42,12 +44,16 @@ const LoginForm = () => {
   const { username, password } = inputs;
   const [userState, userDispatch] = useContext(UserContext);
   const [turnstileEnabled, setTurnstileEnabled] = useState(false);
+  const [openWarning, setOpenWarning] = useState(false);
   const [turnstileSiteKey, setTurnstileSiteKey] = useState('');
   const [turnstileToken, setTurnstileToken] = useState('');
   let navigate = useNavigate();
   const [status, setStatus] = useState({});
   const [showWeChatLoginModal, setShowWeChatLoginModal] = useState(false);
   const { t } = useTranslation();
+  const openModalClose = () => {
+    setOpenWarning(false);
+  };
 
   const logo = getLogo();
 
@@ -122,14 +128,11 @@ const LoginForm = () => {
         setUserData(data);
         updateAPI();
         showSuccess('登录成功！');
-        if (username === 'root' && password === '123456') {
-          Modal.error({
-            title: '您正在使用默认密码！',
-            content: '请立刻修改默认密码！',
-            centered: true,
-          });
-        }
-        navigate('/token');
+        navigate('/token', {
+          state: {
+            showDefaultPasswordWarning: username === 'root' && password === '123456',
+          },
+        });
       } else {
         showError(message);
       }
@@ -336,6 +339,16 @@ const LoginForm = () => {
           )}
         </div>
       </div>
+
+      <Modal show={openWarning} onHide={openModalClose} centered size="md">
+        <div className='modalHeading'>
+          <h1>Cryptomus Payment</h1>
+          <button onClick={openModalClose}><IconClose /></button>
+        </div>
+        <div className='modalContent walletModal'>
+          <p>Modal</p>
+        </div>
+      </Modal>
     </div>
   );
 };

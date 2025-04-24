@@ -11,14 +11,13 @@ import { formatDate, renderGroup, renderQuota } from '../helpers/render';
 import {
   Button, Divider,
   Form,
-  Modal,
   Popconfirm,
   Popover, Space,
   SplitButtonGroup,
   Tag,
 } from '@douyinfe/semi-ui';
-import { Dropdown, Table } from "react-bootstrap";
-import Icon, { IconArrowDown, IconChevronDown, IconChevronLeft, IconChevronRight, IconCode, IconCodeStroked, IconLanguage, IconPlus, IconSearch, IconTreeTriangleDown } from '@douyinfe/semi-icons';
+import { Modal, Dropdown, Table } from "react-bootstrap";
+import Icon, { IconArrowDown, IconChevronDown, IconChevronLeft, IconChevronRight, IconClose, IconCode, IconCodeStroked, IconLanguage, IconPlus, IconSearch, IconTreeTriangleDown } from '@douyinfe/semi-icons';
 import EditToken from '../pages/Token/EditToken';
 import { useTranslation } from 'react-i18next';
 import NoData from './NoData';
@@ -35,10 +34,9 @@ import copyIcon from "../assets/u_copy-alt.svg";
 import TablePagination from './TablePagination';
 import { SortIconSvg } from './svgIcon';
 import enableIcon from "../assets/fi_check.svg";
+import { useLocation } from 'react-router-dom';
 
-function renderTimestamp(timestamp) {
-  return <>{timestamp2string(timestamp)}</>;
-}
+
 
 const TokensTable = () => {
 
@@ -189,7 +187,9 @@ const TokensTable = () => {
       },
     },
   ];
-
+  const location = useLocation();
+  const [openWarning, setOpenWarning] = useState(false);
+  const openModalClose = () => { setOpenWarning(false); };
   const [pageSize, setPageSize] = useState(ITEMS_PER_PAGE);
   const [showEdit, setShowEdit] = useState(false);
   const [tokens, setTokens] = useState([]);
@@ -217,6 +217,12 @@ const TokensTable = () => {
       });
     }, 500);
   };
+
+  useEffect(() => {
+    if (location.state?.showDefaultPasswordWarning) {
+      setOpenWarning(true);
+    }
+  }, [location.state]);
 
   const setTokensFormat = (tokens) => {
     setTokens(tokens);
@@ -543,6 +549,20 @@ const TokensTable = () => {
         modalShow={modalShow}
         handleModalClose={handleModalClose}
       ></EditToken>
+
+      <Modal show={openWarning} onHide={openModalClose} centered size="md">
+        <div className='modalHeading'>
+          <h1>{t('您正在使用默认密码！')}</h1>
+          <button onClick={openModalClose}><IconClose /></button>
+        </div>
+        <div className='modalContent walletModal'>
+          <p>{t('请立刻修改默认密码！')}</p>
+          <div className="button-group mt-3">
+            <div className="btn btn-cancel" onClick={openModalClose}>{t('取消')}</div>
+            <div onClick={openModalClose} className="btn btn-redeem">{t('确定')}</div>
+          </div>
+        </div>
+      </Modal>
 
       {/* <ModalToken refresh={refresh} visiable={showEdit} editingToken={editingToken} updateShow={updateShow} handleUpdateClose={handleUpdateClose} /> */}
 

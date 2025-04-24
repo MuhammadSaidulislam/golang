@@ -40,15 +40,6 @@ const DashboardLayout = ({ children, ...props }) => {
     const [isOpen, setIsOpen] = useState(true);
 
 
-    /*  useEffect(() => {
-         const handleResize = () => {
-             setIsOpen(window.innerWidth > 768);
-         };
- 
-         window.addEventListener("resize", handleResize);
-         return () => window.removeEventListener("resize", handleResize);
-     }, []); */
-
     const toggle = () => {
         setIsOpen((prev) => !prev);
     };
@@ -131,33 +122,6 @@ const DashboardLayout = ({ children, ...props }) => {
         };
     }, []);
 
-    const sunIcon = (
-        <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g clip-path="url(#clip0_468_13760)">
-                <path d="M6.30005 10.5V11.5" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M9.47998 9.17969L10.19 9.88969" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M2.41016 9.88969L3.12016 9.17969" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M10.8 6H11.8" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M0.800049 6H1.80005" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M6.30005 8.5C7.68076 8.5 8.80005 7.38071 8.80005 6C8.80005 4.61929 7.68076 3.5 6.30005 3.5C4.91934 3.5 3.80005 4.61929 3.80005 6C3.80005 7.38071 4.91934 8.5 6.30005 8.5Z" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M9.47998 2.81938L10.19 2.10938" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M2.41016 2.10938L3.12016 2.81938" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M6.30005 0.5V1.5" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-            </g>
-            <defs>
-                <clipPath id="clip0_468_13760">
-                    <rect width="12" height="12" fill="white" transform="translate(0.300049)" />
-                </clipPath>
-            </defs>
-        </svg>
-    );
-
-    const moonIcon = (
-        <svg width="20" height="20" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10.8 6.395C10.7213 7.2461 10.4019 8.0572 9.87912 8.73339C9.35632 9.40958 8.65175 9.9229 7.84785 10.2133C7.04396 10.5036 6.17399 10.5591 5.33975 10.373C4.50551 10.187 3.7415 9.76727 3.13711 9.16289C2.53273 8.5585 2.11297 7.79449 1.92695 6.96025C1.74094 6.12601 1.79636 5.25604 2.08673 4.45215C2.3771 3.64825 2.89041 2.94368 3.56661 2.42088C4.2428 1.89807 5.0539 1.57865 5.905 1.5C5.40671 2.17413 5.16692 3.00472 5.22927 3.84071C5.29161 4.67669 5.65193 5.46253 6.2447 6.0553C6.83747 6.64807 7.62331 7.00839 8.45929 7.07073C9.29528 7.13308 10.1259 6.89329 10.8 6.395V6.395Z" stroke="black" strokeOpacity="0.3" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-
-    );
 
     const [isDark, setIsDark] = useState(false);
 
