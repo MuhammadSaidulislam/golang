@@ -1169,17 +1169,13 @@
   overflow-y: auto;
   position: relative;
 }
-/* .tableBox table {
-  height: calc(100vh - 224px);
-  background-color: rgb(240, 11, 11);
-  overflow-y: auto;
-  position: relative;
-} */
+
 .tableBox thead {
   position: sticky;
   top: 0;
-  background: white; /* Ensure the header has a background */
+  background: white;
   z-index: 2;
+  box-shadow: 0 1px 0 #e1e2e9;
 }
 .tableBox thead tr th img {
   margin-left: 6px;
@@ -2024,6 +2020,7 @@
   line-height: 100%;
   letter-spacing: 0%;
   color: #45464e;
+  margin-bottom: 0px;
 }
 .modelGraph .graphHeading {
   display: flex;

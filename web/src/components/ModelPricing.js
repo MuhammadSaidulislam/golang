@@ -356,8 +356,8 @@ const ModelPricing = () => {
           <div className='container'>
             <div className='row'>
               <div className='col-md-12 priceHeading mb-5'>
-                <h1>Pricing</h1>
-                <p>One API to solve all your problems.  - DuckLLM</p>
+                <h1>{t('价格')}</h1>
+                <p>{t('一个 API 解决您的所有问题。 - DuckLLM')}</p>
               </div>
               <div className='col-md-12 priceTableList'>
                 <NoData />
@@ -371,8 +371,8 @@ const ModelPricing = () => {
             <div className='container'>
               <div className='row'>
                 <div className='col-md-12 priceHeading mb-5'>
-                  <h1>Pricing</h1>
-                  <p>One API to solve all your problems.  - DuckLLM</p>
+                  <h1>{t('价格')}</h1>
+                  <p>{t('一个 API 解决您的所有问题。 - DuckLLM')}</p>
                 </div>
                 <div className='col-md-12 priceTableList'>
                   <div className='tablePrice priceListTable'>
@@ -380,9 +380,9 @@ const ModelPricing = () => {
                       <thead>
                         <tr>
                           <th></th>
-                          <th>Model</th>
-                          <th>Billing Type</th>
-                          <th>Available groups</th>
+                          <th>{t('模型')}</th>
+                          <th>{t('计费类型')}</th>
+                          <th>{t('可用分组')}</th>
                         </tr>
                       </thead>
                       <tbody>

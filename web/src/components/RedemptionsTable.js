@@ -430,7 +430,7 @@ const RedemptionsTable = () => {
                 <th>{t('额度')}</th>
                 <th>{t('创建时间')}</th>
                 <th>{t('兑换人ID')}</th>
-                <th>Actions</th>
+                <th>{t('操作')}</th>
               </tr>
             </thead>
             <tbody>

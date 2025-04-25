@@ -715,13 +715,13 @@ const TokensTable = () => {
           <Table borderless hover>
             <thead>
               <tr>
-                <th>Token name</th>
-                <th>Status</th>
-                <th>Quota used</th>
-                <th>Quota Bal</th>
-                <th>Created</th>
-                <th>Expiration</th>
-                <th>Actions</th>
+                <th>{t('代币名称')}</th>
+                <th>{t('任务状态')}</th>
+                <th>{t('已用额度')}</th>
+                <th>{t('配额余额')}</th>
+                <th>{t('已创建')}</th>
+                <th>{t('到期日')}</th>
+                <th>{t('操作')}</th>
               </tr>
             </thead>
             <tbody>

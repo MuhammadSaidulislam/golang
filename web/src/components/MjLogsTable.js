@@ -586,7 +586,7 @@ const LogsTable = () => {
               <div className='cardTime'>
                 <div className="icon-container" onClick={() => setChartModel(!chartModel)}>
                   <div className="user-icon">
-                    <button className="d-flex align-items-center"><img src={filterIcon} alt="filter" style={{ marginRight: '5px' }} /> <span>Filter</span></button>
+                    <button className="d-flex align-items-center"><img src={filterIcon} alt="filter" style={{ marginRight: '5px' }} /> <span>{t('筛选')}</span></button>
                   </div>
                 </div>
                 {chartModel && <div className="dropdown dashboardDropdown">
@@ -635,7 +635,7 @@ const LogsTable = () => {
                 </div>}
               </div>
 
-              { /*  <button><img src={filterIcon} alt="filter" /> Filter</button> 
+              { /*  <button><img src={filterIcon} alt="filter" /> {t('筛选')}</button> 
                 <button><img src={downloadIcon} alt="download" /></button>
               <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
                 <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>

@@ -683,7 +683,7 @@ const LogsTable = () => {
     setActivePage(1);
     handleEyeClick();
     await loadLogs(activePage, pageSize, logType);
- setChartModel(false);
+    setChartModel(false);
   };
 
   const copyText = async (e, text) => {
@@ -775,7 +775,7 @@ const LogsTable = () => {
             <div className='cardTime'>
               <div className="icon-container" onClick={() => setChartModel(!chartModel)}>
                 <div className="user-icon">
-                  <button className="d-flex align-items-center"><img src={filterIcon} alt="filter" style={{ marginRight: '5px' }} /> <span>Filter</span></button>
+                  <button className="d-flex align-items-center"><img src={filterIcon} alt="filter" style={{ marginRight: '5px' }} /> <span>{t('筛选')}</span></button>
                 </div>
               </div>
               {chartModel && <div className="dropdown dashboardDropdown">
@@ -854,11 +854,11 @@ const LogsTable = () => {
             </div>
           </div>
           {/* <div className='filterOption'>
-              <button><img src={filterIcon} alt="filter" /> Filter</button>
+              <button><img src={filterIcon} alt="filter" /> {t('筛选')}</button>
               <button><img src={downloadIcon} alt="download" /></button>
               <Dropdown className='bulkDropdown filterDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
                 <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
-                  Filter
+                  {t('筛选')}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <p>askjaksj kads klasd jklasjd klasjdklasdj alsdj kjsad</p>

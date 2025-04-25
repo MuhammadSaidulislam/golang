@@ -624,19 +624,19 @@ const TopUp = () => {
                   </div>
                   <div className='cardHeader'>
                     <div className='cardHeading'>
-                      Recharge Summary
+                      {t('充值总结')}
                     </div>
                     <div className='cardTime'>
-                      <button className='rechargeBtn' onClick={() => setPaymentShow(true)}> <img src={walletLight} alt="walletLight" /> Recharge</button>
+                      <button className='rechargeBtn' onClick={() => setPaymentShow(true)}> <img src={walletLight} alt="walletLight" /> {t('充值')}</button>
                     </div>
                   </div>
                   <div className='cardContent'>
                     <div style={{ width: '50%' }}>
-                      <h6>Current Bal</h6>
+                      <h6>{t('当前余额')}</h6>
                       <p>$12,030.00</p>
                     </div>
                     <div style={{ width: '50%' }}>
-                      <h6>Spent</h6>
+                      <h6>{t('花费')}</h6>
                       <p>$20,390.00</p>
                     </div>
                   </div>
@@ -646,7 +646,7 @@ const TopUp = () => {
                 <div className='firstBox' style={{ minHeight: '145px' }}>
                   <div className='cardHeader'>
                     <div className='cardText'>
-                      Recharge Summary
+                      {t('充值总结')}
                     </div>
                     <div className='cardTime'>
                       <div
@@ -668,11 +668,11 @@ const TopUp = () => {
                   </div>
                   <div className='cardContent'>
                     <div style={{ width: '50%' }}>
-                      <h6>Exchange Bal</h6>
+                      <h6>{t('兑换余额')}</h6>
                       <p>$42,090.50</p>
                     </div>
                     <div style={{ width: '50%' }}>
-                      <h6>Total Recharge</h6>
+                      <h6>{t('总充值')}</h6>
                       <p>$42,090.50</p>
                     </div>
                   </div>
@@ -695,7 +695,7 @@ const TopUp = () => {
             </div> */}
           </div>
           <div className='cardTime'>
-            <button className='rechargeBtn' onClick={() => setPaymentShow(true)}> <img src={walletLight} alt="walletLight" /> Recharge</button>
+            <button className='rechargeBtn' onClick={() => setPaymentShow(true)}> <img src={walletLight} alt="walletLight" /> {t('充值')}</button>
           </div>
         </div>
 

@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useEffect, useRef, useState, userRef } from 'react';
 import { initVChartSemiTheme } from '@visactor/vchart-semi-theme';
-
-import { Button, Card, Col, Descriptions, Form, Layout, Row, Spin, Tabs, Switch } from '@douyinfe/semi-ui';
+import { Form, Layout } from '@douyinfe/semi-ui';
 import { VChart } from "@visactor/react-vchart";
 import {
   API,
@@ -40,6 +39,7 @@ import DashboardLayout from './../../components/DashboardLayout';
 import { IconChevronDown } from '@douyinfe/semi-icons';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { PieChart, Pie, Cell, Sector } from 'recharts';
+import NoData from './../../components/NoData';
 
 
 const areaData = [
@@ -170,6 +170,8 @@ const Detail = (props) => {
   );
   const [pieData, setPieData] = useState([{ type: 'null', value: '0' }]);
   const [lineData, setLineData] = useState([]);
+
+
   const containerRef = useRef(null);
   const [spec_pie, setSpecPie] = useState({
     type: 'pie',
@@ -624,6 +626,8 @@ const Detail = (props) => {
     [setActiveIndex]
   );
 
+  const description = "Add Tokens to start tracking Calls <br /> Distribution Metrics.";
+
   return (
     <>
       <DashboardLayout>
@@ -638,7 +642,7 @@ const Detail = (props) => {
             </div>
             <div className='cardHeader'>
               <div className='cardHeading'>
-                Balance Summary
+                {t('余额总结')}
               </div>
             </div>
             <div className='cardContent'>
@@ -659,7 +663,7 @@ const Detail = (props) => {
           <div className='firstBox' style={{ minHeight: '145px', width: '100%' }}>
             <div className='cardHeader'>
               <div className='cardText'>
-                Statistical Summary
+                {t('统计摘要')}
               </div>
               <div className='cardTime'>
                 <div
@@ -736,11 +740,11 @@ const Detail = (props) => {
         { /* graph */}
         <div className='modelGraph'>
           <div className="graphHeading mb-2">
-            <h2>Model Consumption distribution</h2>
+            <h2>{t('型号 消费分布')}</h2>
             <div className='cardTime'>
               <div className="icon-container" onClick={() => setGraphModel(!graphModel)}>
                 <div className="user-icon">
-                  Filter <IconChevronDown />
+                  {t('筛选')} <IconChevronDown />
                 </div>
               </div>
               {graphModel && (
@@ -814,6 +818,7 @@ const Detail = (props) => {
             </div>
           </div>
           <div className="h-48" style={{ height: '280px' }}>
+            {/* <NoData description={description} /> */}
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={lineData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
@@ -840,11 +845,11 @@ const Detail = (props) => {
 
         <div className="modelGraph">
           <div className="graphHeading mb-2">
-            <h2>Model Consumption distribution</h2>
+            <h2>{t('型号 消费分布')}</h2>
             <div className='cardTime'>
               <div className="icon-container" onClick={() => setChartModel(!chartModel)}>
                 <div className="user-icon">
-                  Filter <IconChevronDown />
+                  {t('筛选')} <IconChevronDown />
                 </div>
               </div>
               {chartModel && (

@@ -378,7 +378,7 @@ const LogsTable = () => {
                         <div className='cardTime'>
                             <div className="icon-container" onClick={() => setChartModel(!chartModel)}>
                                 <div className="user-icon">
-                                    <button className="d-flex align-items-center"><img src={filterIcon} alt="filter" style={{ marginRight: '5px' }} /> <span>Filter</span></button>
+                                    <button className="d-flex align-items-center"><img src={filterIcon} alt="filter" style={{ marginRight: '5px' }} /> <span>{t('筛选')}</span></button>
                                 </div>
                             </div>
                             {chartModel && <div className="dropdown dashboardDropdown">

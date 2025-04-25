@@ -343,7 +343,7 @@ const Playground = () => {
         {/* <SettingsToggle /> */}
         <div className='chatMessage'>
           <div className='mobileChat'>
-            <p>Filter</p>
+            <p>{t('筛选')}</p>
             {showFilters ? <button className='filterClose' onClick={() => setShowFilters(!showFilters)}> <IconClose /> </button> : <button className='filterBtn' onClick={() => setShowFilters(!showFilters)}><img src={filterIcon} alt="filterIcon" /></button>}
 
           </div>
@@ -436,7 +436,7 @@ const Playground = () => {
 
             <Card style={commonOuterStyle}>
               <div style={{ marginTop: 10 }}>
-                <Typography.Text strong>Filter</Typography.Text>
+                <Typography.Text strong>{t('筛选')}</Typography.Text>
               </div>
               <div style={{ marginTop: 30 }}>
                 <Typography.Text strong>{t('分组')}：</Typography.Text>
