@@ -97,9 +97,6 @@ const HeaderBar = () => {
       iframe.contentWindow.postMessage({ themeMode: theme }, '*');
     }
 
-    if (isNewYear) {
-      console.log('Happy New Year!');
-    }
   }, [theme]);
 
   useEffect(() => {

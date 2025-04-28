@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Button, Col, Form, Row, Spin, DatePicker } from '@douyinfe/semi-ui';
+import { Button, Col, Form, Row, Spin, DatePicker, Switch } from '@douyinfe/semi-ui';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import {
@@ -100,21 +100,33 @@ export default function SettingsLog(props) {
         >
           <Form.Section text={t('日志设置')}>
             <Row gutter={16}>
-              <Col span={8}>
-                <Form.Switch
+              <div className="personalInput">
+                <label>{t('启用额度消费日志记录')}</label>
+                <Switch
                   field={'LogConsumeEnabled'}
-                  label={t('启用额度消费日志记录')}
-                  size='default'
+                  checked={inputs.LogConsumeEnabled}
+                  onChange={(value) => {
+                    setInputs((prev) => ({
+                      ...prev,
+                      LogConsumeEnabled: value,
+                    }))
+                  }}
+                  size="default"
                   checkedText='｜'
                   uncheckedText='〇'
-                  onChange={(value) => {
-                    setInputs({
-                      ...inputs,
-                      LogConsumeEnabled: value,
-                    });
+                  style={{
+                    backgroundColor: inputs.LogConsumeEnabled ? '#dbeafe' : '#f1f5f9',
+                    border: 'none',
+                  }}
+                  innerStyle={{
+                    backgroundColor: '#cbd5e1',
+                    width: 20,
+                    height: 20,
+                    marginTop: 2,
+                    marginLeft: 2,
                   }}
                 />
-              </Col>
+              </div>
               <Col span={8}>
                 <Spin spinning={loadingCleanHistoryLog}>
                   <Form.DatePicker

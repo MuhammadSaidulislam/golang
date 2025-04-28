@@ -77,140 +77,128 @@ export default function GeneralSettings(props) {
   }, [props.options]);
 
   return (
-    <>
-      <Spin spinning={loading}>
-        <Banner
-          type='warning'
-          description={t('聊天链接功能已经弃用，请使用下方聊天设置功能')}
-        />
-        <Form
-          values={inputs}
-          getFormApi={(formAPI) => (refForm.current = formAPI)}
-          style={{ marginBottom: 15 }}
-        >
-          <Form.Section text={t('通用设置')}>
-            <Row gutter={16}>
-              <Col span={8}>
-                <div className="personalInput w-100">
-                  <label>{t('充值链接')}</label>
-                  <input type="text" id="TopUpLink" name="TopUpLink" className="search-input" placeholder={t('例如发卡网站的购买链接')} value={inputs.TopUpLink} onChange={(e) => onChange(e.target.value, e)} />
-                </div>
-              </Col>
-              <Col span={8}>
-                <div className="personalInput w-100">
-                  <label>{t('默认聊天页面链接')}</label>
-                  <input type="text" id="ChatLink" name="ChatLink" className="search-input" placeholder={t('例如 ChatGPT Next Web 的部署地址')} value={inputs.ChatLink} onChange={(e) => onChange(e.target.value, e)} />
-                </div>
-              </Col>
-              <Col span={8}>
-                <div className="personalInput w-100">
-                  <label>{t('聊天页面 2 链接')}</label>
-                  <input type="text" id="ChatLink2" name="ChatLink2" className="search-input" placeholder={t('例如 ChatGPT Next Web 的部署地址')} value={inputs.ChatLink2} onChange={(e) => onChange(e.target.value, e)} />
-                </div>
-              </Col>
-              <Col span={8}>
-                <div className="personalInput w-100">
-                  <label>{t('单位美元额度')}</label>
-                  <input type="text" id="QuotaPerUnit" name="QuotaPerUnit" className="search-input" placeholder={t('一单位货币能兑换的额度')} value={inputs.QuotaPerUnit} onChange={(e) => onChange(e.target.value, e)} />
-                </div>
-              </Col>
-              <Col span={8}>
-                <div className="personalInput w-100">
-                  <label>{t('失败重试次数')}</label>
-                  <input type="text" id="RetryTimes" name="RetryTimes" className="search-input" placeholder={t('失败重试次数')} value={inputs.RetryTimes} onChange={(e) => onChange(e.target.value, e)} />
-                </div>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={8}>
-                <div className="personalInput w-100">
-                  <label>{t('以货币形式显示额度')}</label>
-                  <Switch
-                    field={'DisplayInCurrencyEnabled'}
-                    onChange={(value) => {
-                      setInputs({
-                        ...inputs,
-                        DisplayInCurrencyEnabled: value,
-                      });
-                    }}
-                    size="default"
-                    checkedText='｜'
-                    uncheckedText='〇'
-                    style={{
-                      backgroundColor: inputs.DisplayInCurrencyEnabled ? '#dbeafe' : '#f1f5f9',
-                      border: 'none',
-                    }}
-                    innerStyle={{
-                      backgroundColor: '#cbd5e1',
-                      width: 20,
-                      height: 20,
-                      marginTop: 2,
-                      marginLeft: 2,
-                    }}
-                  />
-                </div>
-              </Col>
-              <Col span={8}>
-                <label>{t('额度查询接口返回令牌额度而非用户额度')}</label>
-                <Switch
-                  field={'DisplayTokenStatEnabled'}
-                  onChange={(value) => {
-                    setInputs({
-                      ...inputs,
-                      DisplayTokenStatEnabled: value,
-                    });
-                  }}
-                  size="default"
-                  checkedText='｜'
-                  uncheckedText='〇'
-                  style={{
-                    backgroundColor: inputs.DisplayTokenStatEnabled ? '#dbeafe' : '#f1f5f9',
-                    border: 'none',
-                  }}
-                  innerStyle={{
-                    backgroundColor: '#cbd5e1',
-                    width: 20,
-                    height: 20,
-                    marginTop: 2,
-                    marginLeft: 2,
-                  }}
-                />
-              </Col>
-              <Col span={8}>
-                <label>{t('默认折叠侧边栏')}</label>
-                <Switch
-                  field={'DefaultCollapseSidebar'}
-                  onChange={(value) => {
-                    setInputs({
-                      ...inputs,
-                      DefaultCollapseSidebar: value,
-                    });
-                  }}
-                  size="default"
-                  checkedText='｜'
-                  uncheckedText='〇'
-                  style={{
-                    backgroundColor: inputs.DefaultCollapseSidebar ? '#dbeafe' : '#f1f5f9',
-                    border: 'none',
-                  }}
-                  innerStyle={{
-                    backgroundColor: '#cbd5e1',
-                    width: 20,
-                    height: 20,
-                    marginTop: 2,
-                    marginLeft: 2,
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <button className='searchBtn mt-4' onClick={onSubmit}>
-                {t('保存通用设置')}
-              </button>
-            </Row>
-          </Form.Section>
-        </Form>
-      </Spin>
-    </>
+    <Spin spinning={loading}>
+      <Banner
+        type='warning'
+        description={t('聊天链接功能已经弃用，请使用下方聊天设置功能')}
+      />
+      <Form
+        values={inputs}
+        getFormApi={(formAPI) => (refForm.current = formAPI)}
+        style={{ marginBottom: 15 }}
+      >
+        <Form.Section text={t('通用设置')}>
+          <div className='settingInputBox gap-3'>
+            <div className="personalInput">
+              <label>{t('充值链接')}</label>
+              <input type="text" id="TopUpLink" name="TopUpLink" className="search-input" placeholder={t('例如发卡网站的购买链接')} value={inputs.TopUpLink} onChange={(e) => onChange(e.target.value, e)} />
+            </div>
+            <div className="personalInput">
+              <label>{t('默认聊天页面链接')}</label>
+              <input type="text" id="ChatLink" name="ChatLink" className="search-input" placeholder={t('例如 ChatGPT Next Web 的部署地址')} value={inputs.ChatLink} onChange={(e) => onChange(e.target.value, e)} />
+            </div>
+            <div className="personalInput">
+              <label>{t('聊天页面 2 链接')}</label>
+              <input type="text" id="ChatLink2" name="ChatLink2" className="search-input" placeholder={t('例如 ChatGPT Next Web 的部署地址')} value={inputs.ChatLink2} onChange={(e) => onChange(e.target.value, e)} />
+            </div>
+          </div>
+          <div className='settingInputBox gap-3'>
+            <div className="personalInput">
+              <label>{t('单位美元额度')}</label>
+              <input type="text" id="QuotaPerUnit" name="QuotaPerUnit" className="search-input" placeholder={t('一单位货币能兑换的额度')} value={inputs.QuotaPerUnit} onChange={(e) => onChange(e.target.value, e)} />
+            </div>
+            <div className="personalInput">
+              <label>{t('失败重试次数')}</label>
+              <input type="text" id="RetryTimes" name="RetryTimes" className="search-input" placeholder={t('失败重试次数')} value={inputs.RetryTimes} onChange={(e) => onChange(e.target.value, e)} />
+            </div>
+          </div>
+          <div className='settingInputBox gap-3'>
+            <div className="personalInput">
+              <label>{t('以货币形式显示额度')}</label>
+              <Switch
+                field={'DisplayInCurrencyEnabled'}
+                onChange={(value) => {
+                  setInputs({
+                    ...inputs,
+                    DisplayInCurrencyEnabled: value,
+                  });
+                }}
+                size="default"
+                checkedText='｜'
+                uncheckedText='〇'
+                style={{
+                  backgroundColor: inputs.DisplayInCurrencyEnabled ? '#dbeafe' : '#f1f5f9',
+                  border: 'none',
+                }}
+                innerStyle={{
+                  backgroundColor: '#cbd5e1',
+                  width: 20,
+                  height: 20,
+                  marginTop: 2,
+                  marginLeft: 2,
+                }}
+              />
+            </div>
+            <div className="personalInput">
+              <label>{t('额度查询接口返回令牌额度而非用户额度')}</label>
+              <Switch
+                field={'DisplayTokenStatEnabled'}
+                onChange={(value) => {
+                  setInputs({
+                    ...inputs,
+                    DisplayTokenStatEnabled: value,
+                  });
+                }}
+                size="default"
+                checkedText='｜'
+                uncheckedText='〇'
+                style={{
+                  backgroundColor: inputs.DisplayTokenStatEnabled ? '#dbeafe' : '#f1f5f9',
+                  border: 'none',
+                }}
+                innerStyle={{
+                  backgroundColor: '#cbd5e1',
+                  width: 20,
+                  height: 20,
+                  marginTop: 2,
+                  marginLeft: 2,
+                }}
+              />
+            </div>
+            <div className="personalInput">
+              <label>{t('默认折叠侧边栏')}</label>
+              <Switch
+                field={'DefaultCollapseSidebar'}
+                onChange={(value) => {
+                  setInputs({
+                    ...inputs,
+                    DefaultCollapseSidebar: value,
+                  });
+                }}
+                size="default"
+                checkedText='｜'
+                uncheckedText='〇'
+                style={{
+                  backgroundColor: inputs.DefaultCollapseSidebar ? '#dbeafe' : '#f1f5f9',
+                  border: 'none',
+                }}
+                innerStyle={{
+                  backgroundColor: '#cbd5e1',
+                  width: 20,
+                  height: 20,
+                  marginTop: 2,
+                  marginLeft: 2,
+                }}
+              />
+            </div>
+          </div>
+          <Row>
+            <button className='searchBtn mt-4' onClick={onSubmit}>
+              {t('保存通用设置')}
+            </button>
+          </Row>
+        </Form.Section>
+      </Form>
+    </Spin>
   );
 }

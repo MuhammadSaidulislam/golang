@@ -40,16 +40,16 @@ const Home = () => {
       <section className='home-page'>
         <div className="hero-section">
           <h1 dangerouslySetInnerHTML={{ __html: displayedText.replace(/\n/g, "<br/>") }} />
-          <p>One API to solve all your problems. - DuckLLM</p>
-          <Link to="/register" className="rgbBtn mr-2">Create an account</Link>
-          <Link to="/pricing" className="transparentBtn">See Pricing</Link>
+          <p>{t('一个 API 解决您的所有问题。 - DuckLLM')}</p>
+          <Link to="/register" className="rgbBtn mr-2">{t('创建一个帐户')}</Link>
+          <Link to="/pricing" className="transparentBtn">{t('查看定价')}</Link>
         </div>
         <div className='heroBanner'>
           <img src={heroBanner} alt="heroBanner" />
         </div>
         <div className='largeModel'>
-          <p className='big'>Big</p>
-          <p className='model'>Model</p>
+          <p className='big'>{t('大的')}</p>
+          <p className='model'>{t('查看定价')}</p>
         </div>
       </section>
 
@@ -59,18 +59,23 @@ const Home = () => {
           <img className='apiImg' src={apiImg} alt="apiImg" />
         </div>
         <div className='apiContent'>
-          <h6>API Aggregation Brand</h6>
-          <p>We are committed to the achievement of providing a highly stable enterprise-level 2000Mbps bandwidth service. It exclusively utilizes official high-speed enterprise channels, avoiding low-cost alternatives. </p>
-          <Link to="/register" className="rgbBtn mr-2">Create an account</Link>
-          <Link to="/pricing" className="transparentBtn">See Pricing</Link>
+          <h6>{t('API聚合品牌')}</h6>
+          <p>{t('我们致力于提供高稳定的企业级2000Mbps带宽服务，独家采用官方高速企业渠道，避免低成本替代方案。')}</p>
+          <Link to="/register" className="rgbBtn mr-2">{t('创建一个帐户')}</Link>
+          <Link to="/pricing" className="transparentBtn">{t('查看定价')}</Link>
         </div>
       </section>
 
       <section className="api-section">
         <img className='tokenImg' src={tokenImg} alt="tokenImg" />
-        <h2>Get API and start your journey</h2>
-        <p>After logging in, visit and click <u>Token</u> - Add a new token. The token limit is set to $1 <br /> for every 500,000. After adding successfully, you can click Copy APIKEY</p>
-        <Link to="/register" className="rgbBtn mt-5">Create an account</Link>
+        <h2>{t('获取 API 并开始您的旅程')}</h2>
+        <p>
+          {t('登录后，访问并点击')} <u>{t('Token')}</u> - {t('添加新 Token。')}
+          {t('每 500,000 次调用，Token 限额设为 1 美元。')}
+          <br />
+          {t('添加成功后，可以点击复制 APIKEY。')}
+        </p>
+        <Link to="/register" className="rgbBtn mt-5">{t('创建一个帐户')}</Link>
       </section>
       <section className='tableHomeBox'>
         <img className='tableImg' src={tableImg} alt="tableImg" />
@@ -78,53 +83,52 @@ const Home = () => {
       </section>
       <section className="tutorial-section">
         <div className="left-section">
-          <h6>Access Tutorial</h6>
-          <p>
-            CC and DDOS protection are enabled by default. For high
-            concurrent users (more than 1,000 times per second), please
-            contact us in advance to add them to the whitelist, otherwise
-            you may not be able to access or request
-          </p>
+          <h6>{t('访问教程')}</h6>
+          <p>{t('默认启用 CC 和 DDOS 保护。对于高并发用户（每秒超过 1,000 次请求），请提前联系我们，将其加入白名单，否则您可能无法正常访问或请求。')}</p>
 
           <div className="info-box">
-            <h2>Main station interface address</h2>
+            <h2>{t('主站接口地址')}</h2>
             <Link to="https://api.duckagi.com" className="api-link">https://api.duckagi.com</Link>
-
-            <h2>Different clients need to fill in different BASE_URL, please try the following address</h2>
+            <h2>{t('不同客户端需要填写不同的 BASE_URL，请尝试以下地址')}</h2>
             <Link to="https://api.duckagi.com" className="api-link">https://api.duckagi.com</Link>
             <Link to="https://api.duckagi.com/v1" className="api-link">https://api.duckagi.com/v1</Link>
             <Link to="https://api.duckagi.com/chat/completions" className="api-link">https://api.duckagi.com/chat/completions</Link>
           </div>
 
-          <button className="transparentBtn">Mid journey Access</button>
+          <button className="transparentBtn">{t('中途访问')}</button>
         </div>
+
         <div className="right-section">
           <div className="python-card">
-            <h2>Python Call</h2>
+            <h2>{t('Python 调用')}</h2>
             <span className="expand-icon">^</span>
 
             <div className="method">
-              <div className="method-title">Method 1</div>
+              <div className="method-title">{t('方法一')}</div>
               <div className="code-snippet">
                 import openai<br />
-                import SimpleFooter from './../../components/SimpleFooter';
-                openai.api_base = "<Link to="https://api.duckagi.com/v1">https://api.duckagi.com/v1</Link>"
+                import SimpleFooter from './../../components/SimpleFooter';<br />
+                openai.api_base = "https://api.duckagi.com/v1"
               </div>
             </div>
 
             <div className="method">
-              <div className="method-title">Method 2</div>
-              <div className="method-desc">(use this if method 1 doesn't work)</div>
+              <div className="method-title">{t('方法二')}</div>
+              <div className="method-desc">{t('(如果方法一不起作用，请使用此方法)')}</div>
               <div>
-                Modify the environment variable OPENAI_API_BASE. Please search for how to change the environment variables for each system. If the modification of the environment variables does not work, please restart the system.
+                {t('修改环境变量 OPENAI_API_BASE。请根据每个系统搜索如何更改环境变量。如果修改后仍无效，请重启系统。')}
               </div>
               <div className="code-snippet">
-                OPENAI_API_BASE = "<Link to="https://api.duckagi.com/v1">https://api.duckagi.com/v1</Link>"
+                OPENAI_API_BASE = "https://api.duckagi.com/v1"
               </div>
             </div>
 
-            <Link to="#" className="click-link">Click to view </Link> access documentation
+            <Link to="#" className="click-link">
+              {t('点击查看')}
+            </Link>
+            {t('访问文档')}
           </div>
+
         </div>
       </section>
       <SimpleFooter />

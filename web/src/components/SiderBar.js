@@ -179,7 +179,7 @@ const SiderBar = () => {
     if (!chatLink) {
       let chats = localStorage.getItem('chats');
       if (chats) {
-        // console.log(chats);
+
         try {
           chats = JSON.parse(chats);
           if (Array.isArray(chats)) {

@@ -92,7 +92,6 @@ const PersonalSetting = () => {
         // if (user) {
         //   userDispatch({ type: 'login', payload: user });
         // }
-        // console.log(localStorage.getItem('user'))
 
         let status = localStorage.getItem('status');
         if (status) {
@@ -103,9 +102,7 @@ const PersonalSetting = () => {
                 setTurnstileSiteKey(status.turnstile_site_key);
             }
         }
-        getUserData().then((res) => {
-            console.log(userState);
-        });
+
         loadModels().then();
         getAffLink().then();
         setTransferAmount(getQuotaPerUnit());

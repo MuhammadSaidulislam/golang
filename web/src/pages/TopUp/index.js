@@ -550,7 +550,6 @@ const TopUp = () => {
 
 
   const renderAmount = () => {
-    // console.log(amount);
     return amount + ' ' + t('元');
   };
 

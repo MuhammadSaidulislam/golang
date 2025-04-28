@@ -187,7 +187,6 @@ const EditChannel = (props) => {
         setAutoBan(true);
       }
       setBasicModels(getChannelModels(data.type));
-      // console.log(data);
     } else {
       showError(message);
     }

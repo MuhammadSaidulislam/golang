@@ -162,7 +162,6 @@ const Playground = () => {
     source.addEventListener("message", (e) => {
       if (e.data !== "[DONE]") {
         let payload = JSON.parse(e.data);
-        // console.log("Payload: ", payload);
         if (payload.choices.length === 0) {
           source.close();
           completeMessage();
@@ -194,7 +193,6 @@ const Playground = () => {
   }
 
   const onMessageSend = useCallback((content, attachment) => {
-    console.log("attachment: ", attachment);
     setMessage((prevMessage) => {
       const newMessage = [
         ...prevMessage,
@@ -242,7 +240,6 @@ const Playground = () => {
   }, [getSystemMessage]);
 
   const completeMessage = useCallback((status = 'complete') => {
-    // console.log("Complete Message: ", status)
     setMessage((prevMessage) => {
       const lastMessage = prevMessage[prevMessage.length - 1];
       // only change the status if the last message is not complete and not error
@@ -257,7 +254,6 @@ const Playground = () => {
   }, [])
 
   const generateMockResponse = useCallback((content) => {
-    // console.log("Generate Mock Response: ", content);
     setMessage((message) => {
       const lastMessage = message[message.length - 1];
       let newMessage = { ...lastMessage };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Button, Col, Form, Row, Spin } from '@douyinfe/semi-ui';
+import { Button, Col, Form, Row, Spin, Switch } from '@douyinfe/semi-ui';
 import {
   compareObjects,
   API,
@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function DataDashboard(props) {
   const { t } = useTranslation();
-  
+
   const optionsDataExportDefaultTime = [
     { key: 'hour', label: t('小时'), value: 'hour' },
     { key: 'day', label: t('天'), value: 'day' },
@@ -86,21 +86,33 @@ export default function DataDashboard(props) {
         >
           <Form.Section text={t('数据看板设置')}>
             <Row gutter={16}>
-              <Col span={8}>
-                <Form.Switch
+              <div className="personalInput">
+                <label>{t('启用数据看板（实验性）')}</label>
+                <Switch
                   field={'DataExportEnabled'}
-                  label={t('启用数据看板（实验性）')}
-                  size='default'
+                  checked={inputs.DataExportEnabled}
+                  onChange={(value) => {
+                    setInputs((prev) => ({
+                      ...prev,
+                      DataExportEnabled: value,
+                    }))
+                  }}
+                  size="default"
                   checkedText='｜'
                   uncheckedText='〇'
-                  onChange={(value) => {
-                    setInputs({
-                      ...inputs,
-                      DataExportEnabled: value,
-                    });
+                  style={{
+                    backgroundColor: inputs.DataExportEnabled ? '#dbeafe' : '#f1f5f9',
+                    border: 'none',
+                  }}
+                  innerStyle={{
+                    backgroundColor: '#cbd5e1',
+                    width: 20,
+                    height: 20,
+                    marginTop: 2,
+                    marginLeft: 2,
                   }}
                 />
-              </Col>
+              </div>
             </Row>
             <Row>
               <Col span={8}>

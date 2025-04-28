@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Banner, Button, Col, Form, Row } from '@douyinfe/semi-ui';
+import { Banner, Button, Col, Form, Row, Switch } from '@douyinfe/semi-ui';
 import { API, showError, showSuccess, showInfo } from '../helpers';
 import { marked } from 'marked';
 import { useTranslation } from 'react-i18next';
@@ -322,56 +322,92 @@ const OtherSetting = ({ setMobileTab }) => {
         >
           <Form.Section text={t('Payment Settings')}>
 
-            <Row gutter={16}>
-              <Col span={8}>
-                <Form.Switch
+            <div className='settingInputBox gap-3 mt-3'>
+              <div className="personalInput">
+                <label>Cryptomus Enable</label>
+                <Switch
                   field={'EnabledCryptomus'}
-                  label={t('Cryptomus Enable')}
-                  size='default'
-                  checkedText='｜'
-                  uncheckedText='〇'
+                  checked={inputs.EnabledCryptomus}
                   onChange={(value) => {
-                    setInputs({
-                      ...inputs,
+                    setInputs((prev) => ({
+                      ...prev,
                       EnabledCryptomus: value,
-                    });
+                    }))
                     submitEnabledStatus('EnabledCryptomus', value);
                   }}
-                />
-              </Col>
-              <Col span={8}>
-                <Form.Switch
-                  field={'EnabledAirwallex'}
-                  label={t('Airwallex Enable')}
-                  size='default'
+                  size="default"
                   checkedText='｜'
                   uncheckedText='〇'
+                  style={{
+                    backgroundColor: inputs.EnabledCryptomus ? '#dbeafe' : '#f1f5f9',
+                    border: 'none',
+                  }}
+                  innerStyle={{
+                    backgroundColor: '#cbd5e1',
+                    width: 20,
+                    height: 20,
+                    marginTop: 2,
+                    marginLeft: 2,
+                  }}
+                />
+              </div>
+              <div className="personalInput">
+                <label>Airwallex Enable</label>
+                <Switch
+                  field={'EnabledAirwallex'}
+                  checked={inputs.EnabledAirwallex}
                   onChange={(value) => {
-                    setInputs({
-                      ...inputs,
+                    setInputs((prev) => ({
+                      ...prev,
                       EnabledAirwallex: value,
-                    });
+                    }))
                     submitEnabledStatus('EnabledAirwallex', value);
                   }}
-                />
-              </Col>
-              <Col span={8}>
-                <Form.Switch
-                  field={'LiveAirwallex'}
-                  label={t('Test | Live Airwallex')}
-                  size='default'
+                  size="default"
                   checkedText='｜'
                   uncheckedText='〇'
-                  onChange={(value) => {
-                    setInputs({
-                      ...inputs,
-                      LiveAirwallex: value,
-                    });
-                    submitEnabledStatus('LiveAirwallex', value);
+                  style={{
+                    backgroundColor: inputs.EnabledAirwallex ? '#dbeafe' : '#f1f5f9',
+                    border: 'none',
+                  }}
+                  innerStyle={{
+                    backgroundColor: '#cbd5e1',
+                    width: 20,
+                    height: 20,
+                    marginTop: 2,
+                    marginLeft: 2,
                   }}
                 />
-              </Col>
-            </Row>
+              </div>
+              <div className="personalInput">
+                <label>Test | Live Airwallex</label>
+                <Switch
+                  field={'LiveAirwallex'}
+                  checked={inputs.LiveAirwallex}
+                  onChange={(value) => {
+                    setInputs((prev) => ({
+                      ...prev,
+                      LiveAirwallex: value,
+                    }))
+                    submitEnabledStatus('LiveAirwallex', value);
+                  }}
+                  size="default"
+                  checkedText='｜'
+                  uncheckedText='〇'
+                  style={{
+                    backgroundColor: inputs.LiveAirwallex ? '#dbeafe' : '#f1f5f9',
+                    border: 'none',
+                  }}
+                  innerStyle={{
+                    backgroundColor: '#cbd5e1',
+                    width: 20,
+                    height: 20,
+                    marginTop: 2,
+                    marginLeft: 2,
+                  }}
+                />
+              </div>
+            </div>
             {inputs.EnabledCryptomus && (
               <Row gutter={16}>
                 <Col span={8}>

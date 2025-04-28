@@ -408,7 +408,14 @@
   justify-content: space-between;
   gap: 20px;
 }
+.settingInputBox {
+  display: flex;
+  align-items: center;
+}
 @media (max-width: 800px) {
+  .settingInputBox {
+    flex-wrap: wrap;
+  }
   .accountText {
     display: flex;
   }

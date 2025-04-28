@@ -46,7 +46,7 @@ import TablePagination from './TablePagination.js';
 const { Header } = Layout;
 
 function renderTimestamp(timestamp) {
-  return <>{timestamp2string(timestamp)}</>;
+  return timestamp2string(timestamp)
 }
 
 const MODE_OPTIONS = [
@@ -421,7 +421,6 @@ const LogsTable = () => {
 
   const [styleState, styleDispatch] = useContext(StyleContext);
   const [logs, setLogs] = useState([]);
-  console.log("logs", logs);
   const [expandData, setExpandData] = useState({});
   const [showStat, setShowStat] = useState(false);
   const [loading, setLoading] = useState(false);

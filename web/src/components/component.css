@@ -1920,6 +1920,15 @@
   justify-content: space-between;
   align-items: center;
 }
+.mobileChat p {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-align: left;
+  color: var(--semi-color-text-0);
+}
 .chatDropdown {
   position: absolute;
   top: 40px;
@@ -2453,5 +2462,9 @@
   .tableBox tbody tr td,
   .tableBox thead tr th {
     padding: 12px 10px;
+  }
+  .chatBox .chatMessage .semi-chat {
+    margin: 0px !important;
+    padding: 10px !important;
   }
 }

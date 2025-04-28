@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Button, Col, Form, Row, Spin } from '@douyinfe/semi-ui';
+import { Button, Col, Form, Row, Spin, Switch } from '@douyinfe/semi-ui';
 import {
   compareObjects,
   API,
@@ -66,7 +66,7 @@ export default function SettingsMonitoring(props) {
     setInputsRow(structuredClone(currentInputs));
     refForm.current.setValues(currentInputs);
   }, [props.options]);
-  
+
   return (
     <>
       <Spin spinning={loading}>
@@ -112,38 +112,62 @@ export default function SettingsMonitoring(props) {
                 />
               </Col>
             </Row>
-            <Row gutter={16}>
-              <Col span={8}>
-                <Form.Switch
+            <div className='settingInputBox gap-3 mt-3'>
+              <div className="personalInput">
+                <label>{t('失败时自动禁用通道')}</label>
+                <Switch
                   field={'AutomaticDisableChannelEnabled'}
-                  label={t('失败时自动禁用通道')}
-                  size='default'
+                  checked={inputs.AutomaticDisableChannelEnabled}
+                  onChange={(value) => {
+                    setInputs((prev) => ({
+                      ...prev,
+                      AutomaticDisableChannelEnabled: value,
+                    }))
+                  }}
+                  size="default"
                   checkedText='｜'
                   uncheckedText='〇'
-                  onChange={(value) => {
-                    setInputs({
-                      ...inputs,
-                      AutomaticDisableChannelEnabled: value,
-                    });
+                  style={{
+                    backgroundColor: inputs.AutomaticDisableChannelEnabled ? '#dbeafe' : '#f1f5f9',
+                    border: 'none',
+                  }}
+                  innerStyle={{
+                    backgroundColor: '#cbd5e1',
+                    width: 20,
+                    height: 20,
+                    marginTop: 2,
+                    marginLeft: 2,
                   }}
                 />
-              </Col>
-              <Col span={8}>
-                <Form.Switch
+              </div>
+              <div className="personalInput">
+                <label>{t('成功时自动启用通道')}</label>
+                <Switch
                   field={'AutomaticEnableChannelEnabled'}
-                  label={t('成功时自动启用通道')}
-                  size='default'
+                  checked={inputs.AutomaticEnableChannelEnabled}
+                  onChange={(value) => {
+                    setInputs((prev) => ({
+                      ...prev,
+                      AutomaticEnableChannelEnabled: value,
+                    }))
+                  }}
+                  size="default"
                   checkedText='｜'
                   uncheckedText='〇'
-                  onChange={(value) =>
-                    setInputs({
-                      ...inputs,
-                      AutomaticEnableChannelEnabled: value,
-                    })
-                  }
+                  style={{
+                    backgroundColor: inputs.AutomaticEnableChannelEnabled ? '#dbeafe' : '#f1f5f9',
+                    border: 'none',
+                  }}
+                  innerStyle={{
+                    backgroundColor: '#cbd5e1',
+                    width: 20,
+                    height: 20,
+                    marginTop: 2,
+                    marginLeft: 2,
+                  }}
                 />
-              </Col>
-            </Row>
+              </div>
+            </div>
             <Row>
               <Button size='default' onClick={onSubmit}>
                 {t('保存监控设置')}
