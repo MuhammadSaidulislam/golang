@@ -22,8 +22,7 @@ const Home = () => {
       const timeout = setTimeout(() => {
         setDisplayedText((prev) => prev + text[index]);
         setIndex(index + 1);
-      }, 100); // Speed of typing
-
+      }, 100);
       return () => clearTimeout(timeout);
     }
   }, [index, text]);

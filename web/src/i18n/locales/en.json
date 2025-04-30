@@ -513,6 +513,7 @@
   "每 500,000 次调用，Token 限额设为 1 美元。": "The token limit is set to $1 for every 500,000.",
   "添加成功后，可以点击复制 APIKEY。": "After adding successfully, you can click Copy APIKEY.",
   "系统配置": "System Configuration",
+  "准备尝试最好的 \n 最便宜的API？" : "Ready to try the best and \n cheapest API?",
   "系统配置总览": "System Configuration Overview",
   "邮箱验证": "Email Verification",
   "未启用": "Not Enabled",

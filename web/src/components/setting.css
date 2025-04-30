@@ -358,8 +358,10 @@
   display: flex;
   align-items: center;
 }
-.tabSetting .tabProfile img {
+.tabSetting .tabProfile img,
+.tabSetting .tabProfile svg {
   margin-right: 15px;
+  font-size: 18px;
 }
 .tabSetting .tabProfile p {
   margin-bottom: 0px;

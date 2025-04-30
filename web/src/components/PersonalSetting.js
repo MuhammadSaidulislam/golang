@@ -43,12 +43,13 @@ import mailIcon from "../assets/fi_mail.svg";
 import telegramTwoIcon from "../assets/fi_telegram_2.svg";
 import downloadIcon from "../assets/fi_upload-cloud.svg";
 import deleteIcon from "../assets/fi_delete.svg";
-import { IconArrowLeft, IconChevronDown, IconChevronRight, IconClose } from '@douyinfe/semi-icons';
+import { IconArrowLeft, IconChevronDown, IconChevronRight, IconClose, IconSetting } from '@douyinfe/semi-icons';
 import { Modal } from 'react-bootstrap';
 
 import phoneIcon from "../assets/fi_check-circle.svg";
 import profileIcon from "../assets/fi_smartphone.svg";
 import checkIcon from "../assets/fi_profile.svg";
+import gearIcon from "../assets/fi_gear.svg";
 import OperationSetting from './OperationSetting';
 import SystemSetting from './SystemSetting';
 import OtherSetting from './OtherSetting';
@@ -896,7 +897,7 @@ const PersonalSetting = () => {
                                 </div>
                                 <div className='tabSetting' onClick={() => setMobileTab('other')}>
                                     <div className='tabProfile'>
-                                        <img src={profileIcon} alt="setting" />
+                                        <img src={gearIcon} alt="setting" />
                                         <p>Other Settings</p>
                                     </div>
                                     <div className='tabArrow'>
