@@ -146,9 +146,9 @@ export default function SettingsCreditLimit(props) {
             </Row>
 
             <Row>
-              <Button size='default' onClick={onSubmit}>
+              <button className='searchBtn mt-4' onClick={onSubmit}>
                 {t('保存额度设置')}
-              </Button>
+              </button>
             </Row>
           </Form.Section>
         </Form>

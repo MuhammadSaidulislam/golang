@@ -382,8 +382,8 @@ const ModelPricing = () => {
                           <th></th>
                           <th>{t('模型')}</th>
                           <th>{t('计费类型')}</th>
-                          <th>{t('模型价格')}</th>
                           <th>{t('可用分组')}</th>
+                          <th>{t('模型价格')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -391,10 +391,29 @@ const ModelPricing = () => {
                           <td><img src={checkMark} alt="check" /></td>
                           <td><span className='greenMark'>{data.model_name}</span></td>
                           <td><span className='redMark'>pay-as-you-go</span></td>
-                          <td><span className='greenMark'>{data.model_price}</span></td>
                           <td>{data.enable_groups.map((group, index) => (
                             <span key={index} className='blueMark'>{group}</span>
                           ))}</td>
+                          <td> {(() => {
+                            const ratio = groupRatio[selectedGroup];
+                            const isQuotaTypeZero = data.quota_type === 0;
+
+                            if (isQuotaTypeZero) {
+                              const inputRatioPrice = data.model_ratio * 2 * ratio;
+                              const completionRatioPrice = data.model_ratio * data.completion_ratio * 2 * ratio;
+
+                              return (
+                                <>
+                                  <Text>{t('提示')} ${inputRatioPrice.toFixed(4)} / 1M tokens</Text>
+                                  <br />
+                                  <Text>{t('补全')} ${completionRatioPrice.toFixed(4)} / 1M tokens</Text>
+                                </>
+                              );
+                            } else {
+                              const price = parseFloat(data.price || 0) * ratio;
+                              return <Text>{t('模型价格')} ${price.toFixed(4)}</Text>;
+                            }
+                          })()}</td>
                         </tr>)}
                       </tbody>
                     </Table>

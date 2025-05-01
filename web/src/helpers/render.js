@@ -2,6 +2,9 @@ import i18next from 'i18next';
 import { Modal, Tag, Typography } from '@douyinfe/semi-ui';
 import { copy, showSuccess } from './utils.js';
 
+export function truncateText(text, maxWidth = 200) {
+}
+
 export const formatDate = (timestamp) => {
   const date = new Date(timestamp * 1000); // Convert seconds to milliseconds
   return date.toLocaleString("en-GB", {

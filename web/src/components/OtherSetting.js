@@ -309,9 +309,9 @@ const OtherSetting = ({ setMobileTab }) => {
               style={{ fontFamily: 'JetBrains Mono, Consolas' }}
               autosize={{ minRows: 6, maxRows: 12 }}
             />
-            <Button onClick={submitNotice} loading={loadingInput['Notice']}>
+            <button className='searchBtn mt-2' onClick={submitNotice} loading={loadingInput['Notice']}>
               {t('设置公告')}
-            </Button>
+            </button>
           </Form.Section>
         </Form>
 
@@ -498,9 +498,9 @@ const OtherSetting = ({ setMobileTab }) => {
             )}
 
             {/* Submit Button */}
-            <Button onClick={submitSettings} loading={loadingInput['settings']}>
+            <button className='searchBtn mt-2' onClick={submitSettings} loading={loadingInput['settings']}>
               {t('Save Settings')}
-            </Button>
+            </button>
           </Form.Section>
         </Form>
         {/* 个性化设置 */}
@@ -516,21 +516,18 @@ const OtherSetting = ({ setMobileTab }) => {
               field={'SystemName'}
               onChange={handleInputChange}
             />
-            <Button
-              onClick={submitSystemName}
-              loading={loadingInput['SystemName']}
-            >
+            <button className='searchBtn mt-2' onClick={submitSystemName} loading={loadingInput['SystemName']}>
               {t('设置系统名称')}
-            </Button>
+            </button>
             <Form.Input
               label={t('Logo 图片地址')}
               placeholder={t('在此输入 Logo 图片地址')}
               field={'Logo'}
               onChange={handleInputChange}
             />
-            <Button onClick={submitLogo} loading={loadingInput['Logo']}>
+            <button className='searchBtn mt-2' onClick={submitLogo} loading={loadingInput['Logo']}>
               {t('设置 Logo')}
-            </Button>
+            </button>
             <Form.TextArea
               label={t('首页内容')}
               placeholder={t('在此输入首页内容，支持 Markdown & HTML 代码，设置后首页的状态信息将不再显示。如果输入的是一个链接，则会使用该链接作为 iframe 的 src 属性，这允许你设置任意网页作为首页')}
@@ -539,12 +536,9 @@ const OtherSetting = ({ setMobileTab }) => {
               style={{ fontFamily: 'JetBrains Mono, Consolas' }}
               autosize={{ minRows: 6, maxRows: 12 }}
             />
-            <Button
-              onClick={() => submitOption('HomePageContent')}
-              loading={loadingInput['HomePageContent']}
-            >
+            <button className='searchBtn mt-2' onClick={() => submitOption('HomePageContent')} loading={loadingInput['HomePageContent']}>
               {t('设置首页内容')}
-            </Button>
+            </button>
             <Form.TextArea
               label={t('关于')}
               placeholder={t('在此输入新的关于内容，支持 Markdown & HTML 代码。如果输入的是一个链接，则会使用该链接作为 iframe 的 src 属性，这允许你设置任意网页作为关于页面')}
@@ -553,9 +547,9 @@ const OtherSetting = ({ setMobileTab }) => {
               style={{ fontFamily: 'JetBrains Mono, Consolas' }}
               autosize={{ minRows: 6, maxRows: 12 }}
             />
-            <Button onClick={submitAbout} loading={loadingInput['About']}>
+            <button className='searchBtn mt-2' onClick={submitAbout} loading={loadingInput['About']}>
               {t('设置关于')}
-            </Button>
+            </button>
             {/*  */}
             <Banner
               fullMode={false}
@@ -570,9 +564,9 @@ const OtherSetting = ({ setMobileTab }) => {
               field={'Footer'}
               onChange={handleInputChange}
             />
-            <Button onClick={submitFooter} loading={loadingInput['Footer']}>
+            <button className='searchBtn mt-2' onClick={submitFooter} loading={loadingInput['Footer']}>
               {t('设置页脚')}
-            </Button>
+            </button>
           </Form.Section>
         </Form>
       </Col>

@@ -169,9 +169,9 @@ export default function SettingsMonitoring(props) {
               </div>
             </div>
             <Row>
-              <Button size='default' onClick={onSubmit}>
+              <button className='searchBtn mt-4' onClick={onSubmit}>
                 {t('保存监控设置')}
-              </Button>
+              </button>
             </Row>
           </Form.Section>
         </Form>

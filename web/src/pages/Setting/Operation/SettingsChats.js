@@ -138,9 +138,9 @@ export default function SettingsChats(props) {
         </Form.Section>
       </Form>
       <Space>
-        <Button onClick={onSubmit}>
+        <button className='searchBtn mt-4' onClick={onSubmit}>
           {t('保存聊天设置')}
-        </Button>
+        </button>
       </Space>
     </Spin>
   );

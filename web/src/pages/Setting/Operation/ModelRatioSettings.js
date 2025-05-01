@@ -161,7 +161,9 @@ export default function ModelRatioSettings(props) {
         </Form.Section>
       </Form>
       <Space>
-        <Button onClick={onSubmit}>{t('保存模型倍率设置')}</Button>
+        <button className='searchBtn mt-2' onClick={onSubmit}>
+          {t('保存模型倍率设置')}
+        </button>
         <Popconfirm
           title={t('确定重置模型倍率吗？')}
           content={t('此修改将不可逆')}

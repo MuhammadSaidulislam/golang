@@ -253,10 +253,11 @@ export default function SettingsDrawing(props) {
             </div>
           </div>
           <Row>
-            <Button size='default' onClick={onSubmit}>
+            <button className='searchBtn mt-4' onClick={onSubmit}>
               {t('保存绘图设置')}
-            </Button>
+            </button>
           </Row>
+
         </Form.Section>
       </Form>
     </Spin>

@@ -149,9 +149,9 @@ export default function SettingsLog(props) {
             </Row>
 
             <Row>
-              <Button size='default' onClick={onSubmit}>
+              <button className='searchBtn mt-4' onClick={onSubmit}>
                 {t('保存日志设置')}
-              </Button>
+              </button>
             </Row>
           </Form.Section>
         </Form>

@@ -124,7 +124,9 @@ export default function GroupRatioSettings(props) {
           </Row>
         </Form.Section>
       </Form>
-      <Button onClick={onSubmit}>{t('保存分组倍率设置')}</Button>
+      <button className='searchBtn mt-2' onClick={onSubmit}>
+        {t('保存分组倍率设置')}
+      </button>
     </Spin>
   );
 } 

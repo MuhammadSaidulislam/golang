@@ -150,9 +150,9 @@ export default function DataDashboard(props) {
               </Col>
             </Row>
             <Row>
-              <Button size='default' onClick={onSubmit}>
+              <button className='searchBtn mt-4' onClick={onSubmit}>
                 {t('保存数据看板设置')}
-              </Button>
+              </button>
             </Row>
           </Form.Section>
         </Form>

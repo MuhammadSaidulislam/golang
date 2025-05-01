@@ -117,6 +117,7 @@ export default function GeneralSettings(props) {
               <label>{t('以货币形式显示额度')}</label>
               <Switch
                 field={'DisplayInCurrencyEnabled'}
+                checked={inputs.DisplayInCurrencyEnabled}
                 onChange={(value) => {
                   setInputs({
                     ...inputs,
@@ -143,6 +144,7 @@ export default function GeneralSettings(props) {
               <label>{t('额度查询接口返回令牌额度而非用户额度')}</label>
               <Switch
                 field={'DisplayTokenStatEnabled'}
+                checked={inputs.DisplayTokenStatEnabled}
                 onChange={(value) => {
                   setInputs({
                     ...inputs,
@@ -169,6 +171,7 @@ export default function GeneralSettings(props) {
               <label>{t('默认折叠侧边栏')}</label>
               <Switch
                 field={'DefaultCollapseSidebar'}
+                checked={inputs.DefaultCollapseSidebar}
                 onChange={(value) => {
                   setInputs({
                     ...inputs,

@@ -361,9 +361,9 @@ const SystemSetting = ({ setMobileTab }) => {
                 onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
               />
             </Form.Group>
-            <Form.Button onClick={submitServerAddress}>
+            <button className='searchBtn mt-2' onClick={submitServerAddress}>
               {t('更新服务器地址')}
-            </Form.Button>
+            </button>
             <Header as='h3' inverted={isDark}>
               {t('代理设置（支持 ')}
               <a
@@ -391,7 +391,9 @@ const SystemSetting = ({ setMobileTab }) => {
                 onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
               />
             </Form.Group>
-            <Form.Button onClick={submitWorker}>{t('更新Worker设置')}</Form.Button>
+            <button className='searchBtn mt-2' onClick={submitWorker}>
+              {t('更新Worker设置')}
+            </button>
             <Divider />
             <Header as='h3' inverted={isDark}>
               {t('支付设置（当前仅支持易支付接口，默认使用上方服务器地址作为回调地址！）')}
@@ -455,7 +457,9 @@ const SystemSetting = ({ setMobileTab }) => {
                 placeholder={t('为一个 JSON 文本，键为组名称，值为倍率')}
               />
             </Form.Group>
-            <Form.Button onClick={submitPayAddress}>{t('更新支付设置')}</Form.Button>
+            <button className='searchBtn mt-2' onClick={submitPayAddress}>
+              {t('更新支付设置')}
+            </button>
             <Divider />
             <Header as='h3' inverted={isDark}>
               {t('配置登录注册')}
@@ -609,9 +613,9 @@ const SystemSetting = ({ setMobileTab }) => {
                 }}
               />
             </Form.Group>
-            <Form.Button onClick={submitEmailDomainWhitelist}>
+            <button className='searchBtn mt-2' onClick={submitEmailDomainWhitelist}>
               {t('保存邮箱域名白名单设置')}
-            </Form.Button>
+            </button>
             <Divider />
             <Header as='h3' inverted={isDark}>
               {t('配置 SMTP')}
@@ -670,7 +674,9 @@ const SystemSetting = ({ setMobileTab }) => {
                 checked={inputs.SMTPSSLEnabled === 'true'}
               />
             </Form.Group>
-            <Form.Button onClick={submitSMTP}>{t('保存 SMTP 设置')}</Form.Button>
+            <button className='searchBtn mt-2' onClick={submitSMTP}>
+              {t('保存 SMTP 设置')}
+            </button>
             <Divider />
             <Header as='h3' inverted={isDark}>
               {t('配置 GitHub OAuth App')}
@@ -711,9 +717,9 @@ const SystemSetting = ({ setMobileTab }) => {
                 placeholder={t('敏感信息不会发送到前端显示')}
               />
             </Form.Group>
-            <Form.Button onClick={submitGitHubOAuth}>
+            <button className='searchBtn mt-2' onClick={submitGitHubOAuth}>
               {t('保存 GitHub OAuth 设置')}
-            </Form.Button>
+            </button>
 
             <Divider />
             <Header as='h3' inverted={isDark}>
@@ -757,9 +763,9 @@ const SystemSetting = ({ setMobileTab }) => {
                 placeholder={t('输入一个图片链接')}
               />
             </Form.Group>
-            <Form.Button onClick={submitWeChat}>
+            <button className='searchBtn mt-2' onClick={submitWeChat}>
               {t('保存 WeChat Server 设置')}
-            </Form.Button>
+            </button>
 
             <Divider />
             <Header as='h3' inverted={isDark}>
@@ -781,9 +787,9 @@ const SystemSetting = ({ setMobileTab }) => {
                 placeholder={t('输入你的 Telegram Bot 名称')}
               />
             </Form.Group>
-            <Form.Button onClick={submitTelegramSettings}>
+            <button className='searchBtn mt-2' onClick={submitTelegramSettings}>
               {t('保存 Telegram 登录设置')}
-            </Form.Button>
+            </button>
             <Divider />
             <Header as='h3' inverted={isDark}>
               {t('配置 Turnstile')}
@@ -818,10 +824,9 @@ const SystemSetting = ({ setMobileTab }) => {
                 placeholder={t('敏感信息不会发送到前端显示')}
               />
             </Form.Group>
-            <Form.Button onClick={submitTurnstile}>
+            <button className='searchBtn mt-2' onClick={submitTurnstile}>
               {t('保存 Turnstile 设置')}
-            </Form.Button>
-
+            </button>
             <Divider />
             <Header as='h3' inverted={isDark}>
               {t('配置 LinuxDO OAuth App')}
@@ -860,10 +865,9 @@ const SystemSetting = ({ setMobileTab }) => {
                 placeholder={t('敏感信息不会发送到前端显示')}
               />
             </Form.Group>
-            <Form.Button onClick={submitLinuxDOOAuth}>
+            <button className='searchBtn mt-2' onClick={submitLinuxDOOAuth}>
               {t('保存 LinuxDO OAuth 设置')}
-            </Form.Button>
-
+            </button>
           </Form>
         </Grid.Column>
       </Grid>

@@ -149,9 +149,9 @@ export default function SettingsSensitiveWords(props) {
               </div>
             </Row>
             <Row>
-              <Button size='default' onClick={onSubmit}>
+              <button className='searchBtn mt-4' onClick={onSubmit}>
                 {t('保存屏蔽词过滤设置')}
-              </Button>
+              </button>
             </Row>
           </Form.Section>
         </Form>
