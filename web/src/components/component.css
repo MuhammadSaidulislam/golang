@@ -630,6 +630,9 @@
   -ms-border-radius: 6px;
   -o-border-radius: 6px;
 }
+.channelCart .cardTime .dropdown {
+  top: 47px;
+}
 .mobileDashNav .dropdown {
   position: absolute;
 

@@ -1075,7 +1075,7 @@ const ChannelsTable = () => {
               </div>
             </Form>
           </div>
-          <div className=''>
+          <div className='channelCart'>
             <div className='cardTime channel-dropdown'>
               <div className="icon-container-channel">
                 <button className="d-flex align-items-center createChannel" onClick={() => { setEditingChannel({ id: undefined }); setChannelModal(true); }}>{t('添加渠道')}</button>
@@ -1324,7 +1324,7 @@ const ChannelsTable = () => {
                                 </button>
                               )}
 
-                              <button onClick={() => { setEditingChannel(channel); setShowEdit(true); }}  ><img src={editIcon} alt="tableAction" />  </button>
+                              <button onClick={() => { setEditingChannel(channel); setShowEdit(true); setChannelModal(true) }}  ><img src={editIcon} alt="tableAction" />  </button>
 
                               <Popconfirm
                                 title={t('确定是否要复制此渠道？')}

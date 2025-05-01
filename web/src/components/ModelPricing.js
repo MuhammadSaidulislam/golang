@@ -382,6 +382,7 @@ const ModelPricing = () => {
                           <th></th>
                           <th>{t('模型')}</th>
                           <th>{t('计费类型')}</th>
+                          <th>{t('模型价格')}</th>
                           <th>{t('可用分组')}</th>
                         </tr>
                       </thead>
@@ -390,6 +391,7 @@ const ModelPricing = () => {
                           <td><img src={checkMark} alt="check" /></td>
                           <td><span className='greenMark'>{data.model_name}</span></td>
                           <td><span className='redMark'>pay-as-you-go</span></td>
+                          <td><span className='greenMark'>{data.model_price}</span></td>
                           <td>{data.enable_groups.map((group, index) => (
                             <span key={index} className='blueMark'>{group}</span>
                           ))}</td>

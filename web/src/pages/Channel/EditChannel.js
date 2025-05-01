@@ -919,7 +919,7 @@ const EditChannel = (props) => {
 
 
           <div className="button-group mt-3">
-            <div className="btn btn-cancel" onClick={props.handleModalClose}>{t('取消')}</div>
+            <div className="btn btn-cancel" onClick={props.channelModalClose}>{t('取消')}</div>
             <div onClick={submit} className="btn btn-redeem">{t('提交')}</div>
           </div>
         </div>
