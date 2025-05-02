@@ -7,7 +7,7 @@ import {
   showSuccess,
   timestamp2string,
 } from '../helpers';
-import sortIcon from "../assets/sort.svg";
+
 import {
   Banner,
   Button,
@@ -16,17 +16,12 @@ import {
   Layout,
   Modal,
   Progress,
+  Table,
   Tag,
   Typography,
 } from '@douyinfe/semi-ui';
 import { ITEMS_PER_PAGE } from '../constants';
 import { useTranslation } from 'react-i18next';
-import NoData from './NoData';
-import { Dropdown, Table } from 'react-bootstrap';
-import { IconChevronLeft, IconChevronRight, IconDownload, IconFilter, IconSearch } from '@douyinfe/semi-icons';
-import filterIcon from "../assets/fi_filter.svg";
-import downloadIcon from "../assets/fi_download.svg";
-import { SortIconSvg } from './svgIcon';
 
 const colors = [
   'amber',
@@ -50,9 +45,8 @@ const LogsTable = () => {
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
-  const [chartModel, setChartModel] = useState(false);
   function renderType(type) {
-
+    
     switch (type) {
       case 'IMAGINE':
         return (
@@ -104,9 +98,9 @@ const LogsTable = () => {
         );
       case 'UPLOAD':
         return (
-          <Tag color='blue' size='large'>
-            上传文件
-          </Tag>
+            <Tag color='blue' size='large'>
+              上传文件
+            </Tag>
         );
       case 'SHORTEN':
         return (
@@ -158,9 +152,9 @@ const LogsTable = () => {
         );
     }
   }
-
+  
   function renderCode(code) {
-
+    
     switch (code) {
       case 1:
         return (
@@ -194,9 +188,9 @@ const LogsTable = () => {
         );
     }
   }
-
+  
   function renderStatus(type) {
-
+    
     switch (type) {
       case 'SUCCESS':
         return (
@@ -242,22 +236,22 @@ const LogsTable = () => {
         );
     }
   }
-
+  
   const renderTimestamp = (timestampInSeconds) => {
     const date = new Date(timestampInSeconds * 1000); // 从秒转换为毫秒
-
+  
     const year = date.getFullYear(); // 获取年份
     const month = ('0' + (date.getMonth() + 1)).slice(-2); // 获取月份，从0开始需要+1，并保证两位数
     const day = ('0' + date.getDate()).slice(-2); // 获取日期，并保证两位数
     const hours = ('0' + date.getHours()).slice(-2); // 获取小时，并保证两位数
     const minutes = ('0' + date.getMinutes()).slice(-2); // 获取分钟，并保证两位数
     const seconds = ('0' + date.getSeconds()).slice(-2); // 获取秒钟，并保证两位数
-
+  
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`; // 格式化输出
   };
   // 修改renderDuration函数以包含颜色逻辑
   function renderDuration(submit_time, finishTime) {
-
+    
     if (!submit_time || !finishTime) return 'N/A';
 
     const start = new Date(submit_time);
@@ -491,6 +485,7 @@ const LogsTable = () => {
     // data.key = '' + data.id
     setLogs(logs);
     setLogCount(logs.length + ITEMS_PER_PAGE);
+    // console.log(logCount);
   };
 
   const loadLogs = async (startIdx) => {
@@ -529,7 +524,7 @@ const LogsTable = () => {
     setActivePage(page);
     if (page === Math.ceil(logs.length / ITEMS_PER_PAGE) + 1) {
       // In this case we have to load more data and then append them.
-      loadLogs(page - 1).then((r) => { });
+      loadLogs(page - 1).then((r) => {});
     }
   };
 
@@ -558,186 +553,11 @@ const LogsTable = () => {
       setShowBanner(true);
     }
   }, []);
-  const description = "Add Tokens to start tracking Calls <br /> Distribution Metrics.";
-
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const handleKeywordChange = async (value) => {
-    setSearchKeyword(value.target.value);
-  };
-
 
   return (
     <>
-      <>
-        {/* <NoData description={description} /> */}
-        <div className='searchHeader'>
-          <div className='searchFilter'>
-            <div className='searchOption'>
-              <div className="search-container">
-                <i className="search-icon"><IconSearch /></i>
-                <input type="text" className="search-input" placeholder={t('令牌名称')} value={searchKeyword} onChange={handleKeywordChange} />
-              </div>
-              <button className='searchBtn' style={{ marginLeft: '10px' }}>
-                {t('查询')}
-              </button>
-            </div>
-            <div className=''>
-              <div className='cardTime'>
-                <div className="icon-container" onClick={() => setChartModel(!chartModel)}>
-                  <div className="user-icon">
-                    <button className="d-flex align-items-center"><img src={filterIcon} alt="filter" style={{ marginRight: '5px' }} /> <span>{t('筛选')}</span></button>
-                  </div>
-                </div>
-                {chartModel && <div className="dropdown dashboardDropdown">
-                  <Form layout='horizontal' className="100%" style={{ marginTop: 10 }}>
-                    <Form.Input
-                      field='channel_id'
-                      label={t('渠道 ID')}
-                      style={{ width: '100%' }}
-                      className="w-100"
-                      value={channel_id}
-                      placeholder={t('可选值')}
-                      name='channel_id'
-                      onChange={(value) => handleInputChange(value, 'channel_id')}
-                    />
-                    <Form.Input
-                      field='mj_id'
-                      label={t('任务 ID')}
-                      style={{ width: '100%' }}
-                      value={mj_id}
-                      placeholder={t('可选值')}
-                      name='mj_id'
-                      onChange={(value) => handleInputChange(value, 'mj_id')}
-                    />
-                    <Form.DatePicker
-                      field='start_timestamp'
-                      label={t('起始时间')}
-                      initValue={start_timestamp}
-                      value={start_timestamp}
-                      type='dateTime'
-                      name='start_timestamp'
-                      onChange={(value) => handleInputChange(value, 'start_timestamp')}
-                    />
-                    <Form.DatePicker
-                      field='end_timestamp'
-                      fluid
-                      label={t('结束时间')}
-                      initValue={end_timestamp}
-                      value={end_timestamp}
-                      type='dateTime'
-                      name='end_timestamp'
-                      onChange={(value) => handleInputChange(value, 'end_timestamp')}
-                    />
-
-                    <button type="submit" onClick={refresh} loading={loading} className='searchBtn w-100'>{t('查询')}</button>
-                  </Form>
-                </div>}
-              </div>
-
-              { /*  <button><img src={filterIcon} alt="filter" /> {t('筛选')}</button> 
-                <button><img src={downloadIcon} alt="download" /></button>
-              <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
-                <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
-                  Bulk Action
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item>
-                    Bulk One
-                  </Dropdown.Item>
-                  <Dropdown.Item>
-                    Bulk Two
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown> */}
-            </div>
-          </div>
-        </div>
-        {pageData && pageData.length === 0 ? <NoData description={description} /> : <div className="tableData">
-          <div className="tableBox">
-            <Table borderless hover>
-              <thead>
-                <tr>
-                  <th>{t('提交时间')}</th>
-                  <th>{t('花费时间')}</th>
-                  {isAdmin() ? <th>{t('渠道')}</th> : ""}
-                  <th>{t('类型')}</th>
-                  <th>{t('任务ID')}</th>
-                  {isAdmin() ? <th>{t('提交结果')}</th> : ""}
-                  {isAdmin() ? <th>{t('任务状态')}</th> : ""}
-                  <th>{t('进度')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pageData && pageData.map((drawing, index) => (
-                  <tr key={index}>
-                    <td>{renderTimestamp(drawing.submit_time / 1000)}</td>
-                    <td>{renderDuration(drawing.submit_time, drawing.finish)}</td>
-                    {isAdmin() ? <td> <Tag
-                      color={colors[parseInt(drawing.channel_id) % colors.length]}
-                      size='large'
-                      onClick={() => {
-                        copyText(drawing.channel_id); // 假设copyText是用于文本复制的函数
-                      }}
-                    >
-                      {drawing.channel_id}
-                    </Tag></td> : ""}
-                    <td>{renderType(drawing.action)}</td>
-                    <td>{drawing.mj_id}</td>
-                    {isAdmin() ? <td>{renderCode(drawing.code)}</td> : ""}
-                    {isAdmin() ? <td>{renderStatus(drawing.status)}</td> : ""}
-                    <td>  <Progress
-                      stroke={
-                        record.status === 'FAILURE'
-                          ? 'var(--semi-color-warning)'
-                          : null
-                      }
-                      percent={drawing.progress ? parseInt(drawing.progress.replace('%', '')) : 0}
-                      showInfo={true}
-                      aria-label='drawing progress'
-                    /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </div>
-        </div>}
-
-        {/* <div className='tablePagination'>
-          <div className='leftItems'>
-            <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
-              <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
-                1
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item>1</Dropdown.Item>
-                <Dropdown.Item>2</Dropdown.Item>
-                <Dropdown.Item>3</Dropdown.Item>
-                <Dropdown.Item>4</Dropdown.Item>
-                <Dropdown.Item>5</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-            <p className='item'>Items per page</p>
-            <p className='itemNumber'>1-10 of 200 items</p>
-          </div>
-          <div className='leftItems'>
-            <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
-              <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
-                1
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item>1</Dropdown.Item>
-                <Dropdown.Item>2</Dropdown.Item>
-                <Dropdown.Item>3</Dropdown.Item>
-                <Dropdown.Item>4</Dropdown.Item>
-                <Dropdown.Item>5</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-            <p className='itemNumber'>1-10 of 200 items</p>
-            <button className='pagArrow'> <IconChevronLeft /> </button>
-            <button className='pagArrow'> <IconChevronRight /> </button>
-          </div>
-        </div> */}
-        { /*   {isAdminUser && showBanner ? (
+      <Layout>
+        {isAdminUser && showBanner ? (
           <Banner
             type='info'
             description={t('当前未开启Midjourney回调，部分项目可能无法获得绘图结果，可在运营设置中开启。')}
@@ -818,7 +638,7 @@ const LogsTable = () => {
               }),
           }}
           loading={loading}
-        /> */}
+        />
         <Modal
           visible={isModalOpen}
           onOk={() => setIsModalOpen(false)}
@@ -834,7 +654,7 @@ const LogsTable = () => {
           visible={isModalOpenurl}
           onVisibleChange={(visible) => setIsModalOpenurl(visible)}
         />
-      </>
+      </Layout>
     </>
   );
 };

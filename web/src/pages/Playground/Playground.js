@@ -1,57 +1,37 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { UserContext } from '../../context/User/index.js';
-import {
-  API,
-  getUserIdFromLocalStorage,
-  showError,
-} from '../../helpers/index.js';
-import {
-  Card,
-  Chat,
-  Input,
-  Layout,
-  Select,
-  Slider,
-  TextArea,
-  Typography,
-  Button,
-  Highlight,
-} from '@douyinfe/semi-ui';
+import { API, getUserIdFromLocalStorage, showError } from '../../helpers/index.js';
+import { Card, Chat, Input, Layout, Select, Slider, TextArea, Typography, Button, Highlight } from '@douyinfe/semi-ui';
 import { SSE } from 'sse';
 import { IconSetting } from '@douyinfe/semi-icons';
 import { StyleContext } from '../../context/Style/index.js';
 import { useTranslation } from 'react-i18next';
 import { renderGroupOption, truncateText } from '../../helpers/render.js';
-import DashboardLayout from '../../components/DashboardLayout.js';
-import chatIcon from "../../assets/message.svg";
-import filterIcon from "../../assets/fi_filter.svg";
 
 const roleInfo = {
   user: {
     name: 'User',
-    avatar:
-      'https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/docs-icon.png',
+    avatar: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/docs-icon.png'
   },
   assistant: {
     name: 'Assistant',
-    avatar: 'logo.png',
+    avatar: 'logo.png'
   },
   system: {
     name: 'System',
-    avatar:
-      'https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/other/logo.png',
-  },
-};
+    avatar: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/other/logo.png'
+  }
+}
 
 let id = 4;
 function getId() {
-  return `${id++}`;
+  return `${id++}`
 }
 
 const Playground = () => {
   const { t } = useTranslation();
-
+  
   const defaultMessage = [
     {
       role: 'user',
@@ -64,7 +44,7 @@ const Playground = () => {
       id: '3',
       createAt: 1715676751919,
       content: t('你好，请问有什么可以帮助您的吗？'),
-    },
+    }
   ];
 
   const [inputs, setInputs] = useState({
@@ -76,9 +56,7 @@ const Playground = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [userState, userDispatch] = useContext(UserContext);
   const [status, setStatus] = useState({});
-  const [systemPrompt, setSystemPrompt] = useState(
-    'You are a helpful assistant. You can help me by answering my questions. You can also ask me questions.',
-  );
+  const [systemPrompt, setSystemPrompt] = useState('You are a helpful assistant. You can help me by answering my questions. You can also ask me questions.');
   const [message, setMessage] = useState(defaultMessage);
   const [models, setModels] = useState([]);
   const [groups, setGroups] = useState([]);
@@ -121,35 +99,26 @@ const Playground = () => {
     const { success, message, data } = res.data;
     if (success) {
       let localGroupOptions = Object.entries(data).map(([group, info]) => ({
-        label: truncateText(info.desc, '50%'),
+        label: truncateText(info.desc, "50%"),
         value: group,
         ratio: info.ratio,
-        fullLabel: info.desc, // 保存完整文本用于tooltip
+        fullLabel: info.desc // 保存完整文本用于tooltip
       }));
 
       if (localGroupOptions.length === 0) {
-        localGroupOptions = [
-          {
-            label: t('用户分组'),
-            value: '',
-            ratio: 1,
-          },
-        ];
+        localGroupOptions = [{
+          label: t('用户分组'),
+          value: '',
+          ratio: 1
+        }];
       } else {
         const localUser = JSON.parse(localStorage.getItem('user'));
-        const userGroup =
-          (userState.user && userState.user.group) ||
-          (localUser && localUser.group);
-
+        const userGroup = (userState.user && userState.user.group) || (localUser && localUser.group);
+        
         if (userGroup) {
-          const userGroupIndex = localGroupOptions.findIndex(
-            (g) => g.value === userGroup,
-          );
+          const userGroupIndex = localGroupOptions.findIndex(g => g.value === userGroup);
           if (userGroupIndex > -1) {
-            const userGroupOption = localGroupOptions.splice(
-              userGroupIndex,
-              1,
-            )[0];
+            const userGroupOption = localGroupOptions.splice(userGroupIndex, 1)[0];
             localGroupOptions.unshift(userGroupOption);
           }
         }
@@ -166,7 +135,7 @@ const Playground = () => {
     border: '1px solid var(--semi-color-border)',
     borderRadius: '16px',
     margin: '0px 8px',
-  };
+  }
 
   const getSystemMessage = () => {
     if (systemPrompt !== '') {
@@ -175,22 +144,22 @@ const Playground = () => {
         id: '1',
         createAt: 1715676751919,
         content: systemPrompt,
-      };
+      }
     }
-  };
+  }
 
   let handleSSE = (payload) => {
     let source = new SSE('/pg/chat/completions', {
       headers: {
-        'Content-Type': 'application/json',
-        'New-Api-User': getUserIdFromLocalStorage(),
+        "Content-Type": "application/json",
+        "New-Api-User": getUserIdFromLocalStorage(),
       },
-      method: 'POST',
+      method: "POST",
       payload: JSON.stringify(payload),
     });
-    source.addEventListener('message', (e) => {
+    source.addEventListener("message", (e) => {
       // 只有收到 [DONE] 时才结束
-      if (e.data === '[DONE]') {
+      if (e.data === "[DONE]") {
         source.close();
         completeMessage();
         return;
@@ -203,12 +172,12 @@ const Playground = () => {
       }
     });
 
-    source.addEventListener('error', (e) => {
-      generateMockResponse(e.data);
-      completeMessage('error');
+    source.addEventListener("error", (e) => {
+      generateMockResponse(e.data)
+      completeMessage('error')
     });
 
-    source.addEventListener('readystatechange', (e) => {
+    source.addEventListener("readystatechange", (e) => {
       if (e.readyState >= 2) {
         if (source.status === undefined) {
           source.close();
@@ -217,58 +186,55 @@ const Playground = () => {
       }
     });
     source.stream();
-  };
+  }
 
-  const onMessageSend = useCallback(
-    (content, attachment) => {
-      console.log('attachment: ', attachment);
-      setMessage((prevMessage) => {
-        const newMessage = [
-          ...prevMessage,
-          {
-            role: 'user',
-            content: content,
-            createAt: Date.now(),
-            id: getId(),
-          },
-        ];
-
-        // 将 getPayload 移到这里
-        const getPayload = () => {
-          let systemMessage = getSystemMessage();
-          let messages = newMessage.map((item) => {
-            return {
-              role: item.role,
-              content: item.content,
-            };
-          });
-          if (systemMessage) {
-            messages.unshift(systemMessage);
-          }
-          return {
-            messages: messages,
-            stream: true,
-            model: inputs.model,
-            group: inputs.group,
-            max_tokens: parseInt(inputs.max_tokens),
-            temperature: inputs.temperature,
-          };
-        };
-
-        // 使用更新后的消息状态调用 handleSSE
-        handleSSE(getPayload());
-        newMessage.push({
-          role: 'assistant',
-          content: '',
+  const onMessageSend = useCallback((content, attachment) => {
+    console.log("attachment: ", attachment);
+    setMessage((prevMessage) => {
+      const newMessage = [
+        ...prevMessage,
+        {
+          role: 'user',
+          content: content,
           createAt: Date.now(),
-          id: getId(),
-          status: 'loading',
+          id: getId()
+        }
+      ];
+
+      // 将 getPayload 移到这里
+      const getPayload = () => {
+        let systemMessage = getSystemMessage();
+        let messages = newMessage.map((item) => {
+          return {
+            role: item.role,
+            content: item.content,
+          }
         });
-        return newMessage;
+        if (systemMessage) {
+          messages.unshift(systemMessage);
+        }
+        return {
+          messages: messages,
+          stream: true,
+          model: inputs.model,
+          group: inputs.group,
+          max_tokens: parseInt(inputs.max_tokens),
+          temperature: inputs.temperature,
+        };
+      };
+
+      // 使用更新后的消息状态调用 handleSSE
+      handleSSE(getPayload());
+      newMessage.push({
+        role: 'assistant',
+        content: '',
+        createAt: Date.now(),
+        id: getId(),
+        status: 'loading'
       });
-    },
-    [getSystemMessage],
-  );
+      return newMessage;
+    });
+  }, [getSystemMessage]);
 
   const completeMessage = useCallback((status = 'complete') => {
     // console.log("Complete Message: ", status)
@@ -278,27 +244,27 @@ const Playground = () => {
       if (lastMessage.status === 'complete' || lastMessage.status === 'error') {
         return prevMessage;
       }
-      return [...prevMessage.slice(0, -1), { ...lastMessage, status: status }];
+      return [
+        ...prevMessage.slice(0, -1),
+        { ...lastMessage, status: status }
+      ];
     });
-  }, []);
+  }, [])
 
   const generateMockResponse = useCallback((content) => {
     // console.log("Generate Mock Response: ", content);
     setMessage((message) => {
       const lastMessage = message[message.length - 1];
-      let newMessage = { ...lastMessage };
-      if (
-        lastMessage.status === 'loading' ||
-        lastMessage.status === 'incomplete'
-      ) {
+      let newMessage = {...lastMessage};
+      if (lastMessage.status === 'loading' || lastMessage.status === 'incomplete') {
         newMessage = {
           ...newMessage,
           content: (lastMessage.content || '') + content,
-          status: 'incomplete',
-        };
+          status: 'incomplete'
+        }
       }
-      return [...message.slice(0, -1), newMessage];
-    });
+      return [ ...message.slice(0, -1), newMessage ]
+    })
   }, []);
 
   const SettingsToggle = () => {
@@ -319,120 +285,118 @@ const Playground = () => {
           boxShadow: '2px 0 8px rgba(0, 0, 0, 0.15)',
         }}
         onClick={() => setShowSettings(!showSettings)}
-        theme='solid'
-        type='primary'
+        theme="solid"
+        type="primary"
       />
     );
   };
 
   function CustomInputRender(props) {
     const { detailProps } = props;
-    const { clearContextNode, uploadNode, inputNode, sendNode, onClick } =
-      detailProps;
+    const { clearContextNode, uploadNode, inputNode, sendNode, onClick } = detailProps;
 
-    return (
-      <div
-        style={{
-          margin: '8px 16px',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          borderRadius: 16,
-          padding: 10,
-          border: '1px solid var(--semi-color-border)',
-        }}
-        onClick={onClick}
-      >
-        {/*{uploadNode}*/}
-        {inputNode}
-        {sendNode}
-      </div>
-    );
+    return <div style={{margin: '8px 16px', display: 'flex', flexDirection:'row',
+      alignItems: 'flex-end', borderRadius: 16,padding: 10, border: '1px solid var(--semi-color-border)'}}
+                onClick={onClick}
+    >
+      {/*{uploadNode}*/}
+      {inputNode}
+      {sendNode}
+    </div>
   }
 
   const renderInputArea = useCallback((props) => {
-    return <CustomInputRender {...props} />;
+    return (<CustomInputRender {...props} />)
   }, []);
 
-  const [showFilters, setShowFilters] = useState(false);
-
   return (
-    <DashboardLayout>
-      <div className='chatBox'>
-        {/* <SettingsToggle /> */}
-        <div className='chatMessage'>
-          <div className='mobileChat'>
-            <p>{t('筛选')}</p>
-            {showFilters ? <button className='filterClose' onClick={() => setShowFilters(!showFilters)}> <IconClose /> </button> : <button className='filterBtn' onClick={() => setShowFilters(!showFilters)}><img src={filterIcon} alt="filterIcon" /></button>}
-
-          </div>
-          {/* Buttons appear here when showFilters is true */}
-          {showFilters && (
-            <div className="chatDropdown">
-              <div>
-                <Typography.Text strong>{t('分组')}：</Typography.Text>
-              </div>
-              <Select
-                placeholder={t('请选择分组')}
-                name='group'
-                required
-                selection
-                onChange={(value) => {
-                  handleInputChange('group', value);
-                }}
-                value={inputs.group}
-                autoComplete='new-password'
-                optionList={groups}
-                renderOptionItem={renderGroupOption}
-                style={{ width: '100%' }}
-              />
-              <div style={{ marginTop: 10 }}>
-                <Typography.Text strong>{t('模型')}：</Typography.Text>
-              </div>
-              <Select
-                placeholder={t('请选择模型')}
-                name='model'
-                required
-                selection
-                searchPosition='dropdown'
-                filter
-                onChange={(value) => {
-                  handleInputChange('model', value);
-                }}
-                value={inputs.model}
-                autoComplete='new-password'
-                optionList={models}
-              />
-
-              <div style={{ marginTop: 10 }}>
-                <Typography.Text strong>MaxTokens：</Typography.Text>
-              </div>
-              <Input
-                placeholder='MaxTokens'
-                name='max_tokens'
-                required
-                autoComplete='new-password'
-                defaultValue={0}
-                value={inputs.max_tokens}
-                onChange={(value) => {
-                  handleInputChange('max_tokens', value);
-                }}
-              />
-              <div style={{ marginTop: 10 }}>
-                <Typography.Text strong>Temperature：</Typography.Text>
-              </div>
-              <Slider
-                step={0.1}
-                min={0.1}
-                max={1}
-                value={inputs.temperature}
-                onChange={(value) => {
-                  handleInputChange('temperature', value);
-                }}
-              />
+    <Layout style={{height: '100%'}}>
+      {(showSettings || !styleState.isMobile) && (
+        <Layout.Sider style={{ display: styleState.isMobile ? 'block' : 'initial' }}>
+          <Card style={commonOuterStyle}>
+            <div style={{ marginTop: 10 }}>
+              <Typography.Text strong>{t('分组')}：</Typography.Text>
             </div>
-          )}
+            <Select
+              placeholder={t('请选择分组')}
+              name='group'
+              required
+              selection
+              onChange={(value) => {
+                handleInputChange('group', value);
+              }}
+              value={inputs.group}
+              autoComplete='new-password'
+              optionList={groups}
+              renderOptionItem={renderGroupOption}
+              style={{ width: '100%' }}
+            />
+            <div style={{ marginTop: 10 }}>
+              <Typography.Text strong>{t('模型')}：</Typography.Text>
+            </div>
+            <Select
+              placeholder={t('请选择模型')}
+              name='model'
+              required
+              selection
+              searchPosition='dropdown'
+              filter
+              onChange={(value) => {
+                handleInputChange('model', value);
+              }}
+              value={inputs.model}
+              autoComplete='new-password'
+              optionList={models}
+            />
+            <div style={{ marginTop: 10 }}>
+              <Typography.Text strong>Temperature：</Typography.Text>
+            </div>
+            <Slider
+              step={0.1}
+              min={0.1}
+              max={1}
+              value={inputs.temperature}
+              onChange={(value) => {
+                handleInputChange('temperature', value);
+              }}
+            />
+            <div style={{ marginTop: 10 }}>
+              <Typography.Text strong>MaxTokens：</Typography.Text>
+            </div>
+            <Input
+              placeholder='MaxTokens'
+              name='max_tokens'
+              required
+              autoComplete='new-password'
+              defaultValue={0}
+              value={inputs.max_tokens}
+              onChange={(value) => {
+                handleInputChange('max_tokens', value);
+              }}
+            />
 
+            <div style={{ marginTop: 10 }}>
+              <Typography.Text strong>System：</Typography.Text>
+            </div>
+            <TextArea
+              placeholder='System Prompt'
+              name='system'
+              required
+              autoComplete='new-password'
+              autosize
+              defaultValue={systemPrompt}
+              // value={systemPrompt}
+              onChange={(value) => {
+                setSystemPrompt(value);
+              }}
+            />
+
+          </Card>
+        </Layout.Sider>
+      )}
+      <Layout.Content>
+        <div style={{height: '100%', position: 'relative'}}>
+          <SettingsToggle />
           <Chat
             chatBoxRenderConfig={{
               renderChatBoxAction: () => {
@@ -450,95 +414,8 @@ const Playground = () => {
             }}
           />
         </div>
-        {(showSettings || !styleState.isMobile) && (
-          <Layout.Sider style={{ display: styleState.isMobile ? 'block' : 'initial' }}>
-
-            <Card style={commonOuterStyle}>
-              <div style={{ marginTop: 10 }}>
-                <Typography.Text strong>{t('筛选')}</Typography.Text>
-              </div>
-              <div style={{ marginTop: 30 }}>
-                <Typography.Text strong>{t('分组')}：</Typography.Text>
-              </div>
-              <Select
-                placeholder={t('请选择分组')}
-                name='group'
-                required
-                selection
-                onChange={(value) => {
-                  handleInputChange('group', value);
-                }}
-                value={inputs.group}
-                autoComplete='new-password'
-                optionList={groups}
-                renderOptionItem={renderGroupOption}
-                style={{ width: '100%' }}
-              />
-              <div style={{ marginTop: 10 }}>
-                <Typography.Text strong>{t('模型')}：</Typography.Text>
-              </div>
-              <Select
-                placeholder={t('请选择模型')}
-                name='model'
-                required
-                selection
-                searchPosition='dropdown'
-                filter
-                onChange={(value) => {
-                  handleInputChange('model', value);
-                }}
-                value={inputs.model}
-                autoComplete='new-password'
-                optionList={models}
-              />
-
-              <div style={{ marginTop: 10 }}>
-                <Typography.Text strong>MaxTokens：</Typography.Text>
-              </div>
-              <Input
-                placeholder='MaxTokens'
-                name='max_tokens'
-                required
-                autoComplete='new-password'
-                defaultValue={0}
-                value={inputs.max_tokens}
-                onChange={(value) => {
-                  handleInputChange('max_tokens', value);
-                }}
-              />
-              <div style={{ marginTop: 10 }}>
-                <Typography.Text strong>Temperature：</Typography.Text>
-              </div>
-              <Slider
-                step={0.1}
-                min={0.1}
-                max={1}
-                value={inputs.temperature}
-                onChange={(value) => {
-                  handleInputChange('temperature', value);
-                }}
-              />
-              <div style={{ marginTop: 10 }}>
-                <Typography.Text strong>System：</Typography.Text>
-              </div>
-              <TextArea
-                placeholder='System Prompt'
-                name='system'
-                required
-                autoComplete='new-password'
-                autosize
-                defaultValue={systemPrompt}
-                // value={systemPrompt}
-                onChange={(value) => {
-                  setSystemPrompt(value);
-                }}
-              />
-
-            </Card>
-          </Layout.Sider>
-        )}
-      </div>
-    </DashboardLayout>
+      </Layout.Content>
+    </Layout>
   );
 };
 

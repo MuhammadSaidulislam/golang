@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Label } from 'semantic-ui-react';
 import { API, copy, isAdmin, showError, showSuccess, timestamp2string } from '../helpers';
-import NoData from './NoData';
+
 import {
+    Table,
     Tag,
     Form,
     Button,
@@ -11,14 +12,6 @@ import {
     Typography, Progress, Card
 } from '@douyinfe/semi-ui';
 import { ITEMS_PER_PAGE } from '../constants';
-import sortIcon from "../assets/sort.svg";
-import { Dropdown, Table } from 'react-bootstrap';
-import { IconChevronLeft, IconChevronRight, IconSearch, IconChevronDown } from '@douyinfe/semi-icons';
-import { useTranslation } from 'react-i18next';
-import filterIcon from "../assets/fi_filter.svg";
-import downloadIcon from "../assets/fi_download.svg";
-import { SortIconSvg } from './svgIcon';
-
 
 const colors = ['amber', 'blue', 'cyan', 'green', 'grey', 'indigo',
     'light-blue', 'lime', 'orange', 'pink',
@@ -28,6 +21,7 @@ const colors = ['amber', 'blue', 'cyan', 'green', 'grey', 'indigo',
 
 const renderTimestamp = (timestampInSeconds) => {
     const date = new Date(timestampInSeconds * 1000); // 从秒转换为毫秒
+
     const year = date.getFullYear(); // 获取年份
     const month = ('0' + (date.getMonth() + 1)).slice(-2); // 获取月份，从0开始需要+1，并保证两位数
     const day = ('0' + date.getDate()).slice(-2); // 获取日期，并保证两位数
@@ -64,7 +58,6 @@ function renderDuration(submit_time, finishTime) {
 }
 
 const LogsTable = () => {
-    const { t } = useTranslation();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState('');
     const isAdminUser = isAdmin();
@@ -99,6 +92,7 @@ const LogsTable = () => {
                 return (
                     <div>
                         {
+                            // 转换例如100%为数字100，如果text未定义，返回0
                             isNaN(text.replace('%', '')) ? text : <Progress width={42} type="circle" showInfo={true} percent={Number(text.replace('%', '') || 0)} aria-label="drawing progress" />
                         }
                     </div>
@@ -195,6 +189,7 @@ const LogsTable = () => {
             title: '失败原因',
             dataIndex: 'fail_reason',
             render: (text, record, index) => {
+                // 如果text未定义，返回替代文本，例如空字符串''或其他
                 if (!text) {
                     return '无';
                 }
@@ -227,7 +222,7 @@ const LogsTable = () => {
     const [inputs, setInputs] = useState({
         channel_id: '',
         task_id: '',
-        start_timestamp: timestamp2string(zeroNow.getTime() / 1000),
+        start_timestamp: timestamp2string(zeroNow.getTime() /1000),
         end_timestamp: '',
     });
     const { channel_id, task_id, start_timestamp, end_timestamp } = inputs;
@@ -253,7 +248,7 @@ const LogsTable = () => {
 
         let url = '';
         let localStartTimestamp = parseInt(Date.parse(start_timestamp) / 1000);
-        let localEndTimestamp = parseInt(Date.parse(end_timestamp) / 1000);
+        let localEndTimestamp = parseInt(Date.parse(end_timestamp) / 1000 );
         if (isAdminUser) {
             url = `/api/task/?p=${startIdx}&channel_id=${channel_id}&task_id=${task_id}&start_timestamp=${localStartTimestamp}&end_timestamp=${localEndTimestamp}`;
         } else {
@@ -277,10 +272,10 @@ const LogsTable = () => {
 
     const pageData = logs.slice((activePage - 1) * ITEMS_PER_PAGE, activePage * ITEMS_PER_PAGE);
 
-
     const handlePageChange = page => {
         setActivePage(page);
         if (page === Math.ceil(logs.length / ITEMS_PER_PAGE) + 1) {
+            // In this case we have to load more data and then append them.
             loadLogs(page - 1).then(r => {
             });
         }
@@ -349,194 +344,27 @@ const LogsTable = () => {
         }
     }
 
-    const description = "Add Tokens to start tracking Calls <br /> Distribution Metrics.";
-    const [searchKeyword, setSearchKeyword] = useState('');
-    const [chartModel, setChartModel] = useState(false);
-    const handleKeywordChange = async (value) => {
-        setSearchKeyword(value.target.value);
-    };
-
-
     return (
         <>
 
-            {/* <NoData description={description} /> */}
-
-            {/* Table header */}
-            <div className='searchHeader'>
-                <div className='searchFilter'>
-                    <div className='searchOption'>
-                        <div className="search-container">
-                            <i className="search-icon"><IconSearch /></i>
-                            <input type="text" className="search-input" placeholder={t('令牌名称')} value={searchKeyword} onChange={handleKeywordChange} />
-                        </div>
-                        <button className='searchBtn' style={{ marginLeft: '10px' }}>
-                            {t('查询')}
-                        </button>
-                    </div>
-                    <div className=''>
-                        <div className='cardTime'>
-                            <div className="icon-container" onClick={() => setChartModel(!chartModel)}>
-                                <div className="user-icon">
-                                    <button className="d-flex align-items-center"><img src={filterIcon} alt="filter" style={{ marginRight: '5px' }} /> <span>{t('筛选')}</span></button>
-                                </div>
-                            </div>
-                            {chartModel && <div className="dropdown dashboardDropdown">
-                                <Form layout='horizontal'>
-                                    {isAdminUser && <Form.Input field="channel_id" label={t('渠道 ID')} value={channel_id}
-                                        placeholder={t('可选值')} name='channel_id'
-                                        onChange={value => handleInputChange(value, 'channel_id')} />
-                                    }
-                                    <Form.Input field="task_id" label={t('任务 ID')} value={task_id}
-                                        placeholder={t('可选值')}
-                                        name='task_id'
-                                        onChange={value => handleInputChange(value, 'task_id')} />
-
-
-                                    <Form.DatePicker field="start_timestamp" label={t('起始时间')}
-                                        initValue={start_timestamp}
-                                        value={start_timestamp} type='dateTime'
-                                        name='start_timestamp'
-                                        onChange={value => handleInputChange(value, 'start_timestamp')} />
-                                    <Form.DatePicker field="end_timestamp" fluid label={t('结束时间')}
-                                        initValue={end_timestamp}
-                                        value={end_timestamp} type='dateTime'
-                                        name='end_timestamp'
-                                        onChange={value => handleInputChange(value, 'end_timestamp')} />
-                                    <button className='searchBtn d-block mt-3 w-100' type='submit' onClick={refresh} >
-                                        {t('查询')}
-                                    </button>
-                                </Form>
-                            </div>}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {pageData && pageData.length === 0 ? <NoData description={description} /> : <>
-                <div className="tableData">
-                    <div className="tableBox">
-                        <Table borderless hover>
-                            <thead>
-                                <tr>
-                                    <th>{t('提交时间')}</th>
-                                    <th>{t('结束时间')}</th>
-                                    <th>{t('进度')}</th>
-                                    <th>{t('花费时间')}</th>
-                                    {isAdminUser ? <th>{t('渠道')}</th> : ""}
-                                    <th>{t('平台')}</th>
-                                    <th>{t('类型')}</th>
-                                    <th>{t('任务ID（点击查看详情）')}</th>
-                                    <th>{t('任务状态')}</th>
-                                    <th>{t('失败原因')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {pageData && pageData.map((logs, index) => (
-                                    <tr key={index}>
-                                        <td>{logs.submit_time ? renderTimestamp(logs.submit_time) : "-"}</td>
-                                        <td>{logs.finish_time ? renderTimestamp(logs.finish_time) : "-"}</td>
-                                        <td> {
-                                            isNaN(logs.progress.replace('%', '')) ? logs.progress : <Progress width={42} type="circle" showInfo={true} percent={Number(logs.progress.replace('%', '') || 0)} aria-label="drawing progress" />
-                                        }</td>
-                                        <td>{logs.finish_time ? renderDuration(logs.submit_time, finish) : "-"}</td>
-                                        {isAdminUser ? <td> <Tag
-                                            color={colors[parseInt(logs.channel_id) % colors.length]}
-                                            size='large'
-                                            onClick={() => {
-                                                copyText(logs.channel_id);
-                                            }}
-                                        >
-                                            {logs.channel_id}
-                                        </Tag></td> : ""}
-                                        <td>{renderPlatform(logs.platform)}</td>
-                                        <td>{renderType(logs.action)}</td>
-                                        <td><Typography.Text
-                                            ellipsis={{ showTooltip: true }}
-                                            onClick={() => {
-                                                setModalContent(JSON.stringify(logs, null, 2));
-                                                setIsModalOpen(true);
-                                            }}
-                                        >
-                                            <div>
-                                                {logs.task_id}
-                                            </div>
-                                        </Typography.Text></td>
-                                        <td>{renderStatus(logs.status)}</td>
-                                        <td>{logs.fail_reason ? <Typography.Text
-                                            ellipsis={{ showTooltip: true }}
-                                            style={{ width: 100 }}
-                                            onClick={() => {
-                                                setModalContent(logs.fail_reason);
-                                                setIsModalOpen(true);
-                                            }}
-                                        >
-                                            {logs.fail_reason}
-                                        </Typography.Text> : "无"}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    </div>
-                </div>
-
-                {/* Table Pagination */}
-                <div className='tablePagination'>
-                    <div className='leftItems'>
-                        <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
-                            <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
-                                1
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item>1</Dropdown.Item>
-                                <Dropdown.Item>2</Dropdown.Item>
-                                <Dropdown.Item>3</Dropdown.Item>
-                                <Dropdown.Item>4</Dropdown.Item>
-                                <Dropdown.Item>5</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <p className='item'>Items per page</p>
-                        <p className='itemNumber'>1-10 of 200 items</p>
-                    </div>
-                    <div className='leftItems'>
-                        <Dropdown className='bulkDropdown' style={{ borderRadius: '6px' }} onMouseDown={(e) => e.stopPropagation()}>
-                            <Dropdown.Toggle id="dropdown-basic" style={{ borderRadius: '6px' }}>
-                                1
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item>1</Dropdown.Item>
-                                <Dropdown.Item>2</Dropdown.Item>
-                                <Dropdown.Item>3</Dropdown.Item>
-                                <Dropdown.Item>4</Dropdown.Item>
-                                <Dropdown.Item>5</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <p className='itemNumber'>1-10 of 200 items</p>
-                        <button className='pagArrow'> <IconChevronLeft /> </button>
-                        <button className='pagArrow'> <IconChevronRight /> </button>
-                    </div>
-                </div>
-            </>}
-
-
-
-
-            {/*  <Form layout='horizontal' labelPosition='inset'>
+            <Layout>
+                <Form layout='horizontal' labelPosition='inset'>
                     <>
-                        {isAdminUser && <Form.Input field="channel_id" label='渠道 ID' value={channel_id}
-                            placeholder={'可选值'} name='channel_id'
-                            onChange={value => handleInputChange(value, 'channel_id')} />
+                        {isAdminUser && <Form.Input field="channel_id" label='渠道 ID' style={{ width: '236px', marginBottom: '10px' }} value={channel_id}
+                                                    placeholder={'可选值'} name='channel_id'
+                                                    onChange={value => handleInputChange(value, 'channel_id')} />
                         }
-                        <Form.Input field="task_id" label={"任务 ID"} value={task_id}
+                        <Form.Input field="task_id" label={"任务 ID"} style={{ width: '236px', marginBottom: '10px' }} value={task_id}
                             placeholder={"可选值"}
                             name='task_id'
                             onChange={value => handleInputChange(value, 'task_id')} />
 
-                        <Form.DatePicker field="start_timestamp" label={"起始时间"}
+                        <Form.DatePicker field="start_timestamp" label={"起始时间"} style={{ width: '236px', marginBottom: '10px' }}
                             initValue={start_timestamp}
                             value={start_timestamp} type='dateTime'
                             name='start_timestamp'
                             onChange={value => handleInputChange(value, 'start_timestamp')} />
-                        <Form.DatePicker field="end_timestamp" fluid label={"结束时间"}
+                        <Form.DatePicker field="end_timestamp" fluid label={"结束时间"} style={{ width: '236px', marginBottom: '10px' }}
                             initValue={end_timestamp}
                             value={end_timestamp} type='dateTime'
                             name='end_timestamp'
@@ -553,18 +381,18 @@ const LogsTable = () => {
                         pageSizeOpts: [10, 20, 50, 100],
                         onPageChange: handlePageChange,
                     }} loading={loading} />
-                </Card> */}
-            <Modal
-                visible={isModalOpen}
-                onOk={() => setIsModalOpen(false)}
-                onCancel={() => setIsModalOpen(false)}
-                closable={null}
-                bodyStyle={{ height: '400px', overflow: 'auto' }} // 设置模态框内容区域样式
-                width={800} // 设置模态框宽度
-            >
-                <p style={{ whiteSpace: 'pre-line' }}>{modalContent}</p>
-            </Modal>
-
+                </Card>
+                <Modal
+                    visible={isModalOpen}
+                    onOk={() => setIsModalOpen(false)}
+                    onCancel={() => setIsModalOpen(false)}
+                    closable={null}
+                    bodyStyle={{ height: '400px', overflow: 'auto' }} // 设置模态框内容区域样式
+                    width={800} // 设置模态框宽度
+                >
+                    <p style={{ whiteSpace: 'pre-line' }}>{modalContent}</p>
+                </Modal>
+            </Layout>
         </>
     );
 };

@@ -2,15 +2,19 @@ import React from 'react';
 import UsersTable from '../../components/UsersTable';
 import { Layout } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
-import DashboardLayout from '../../components/DashboardLayout';
 
 const User = () => {
   const { t } = useTranslation();
   return (
     <>
-      <DashboardLayout>
+      <Layout>
+        <Layout.Header>
+        <h3>{t('管理用户')}</h3>
+      </Layout.Header>
+      <Layout.Content>
         <UsersTable />
-      </DashboardLayout>
+        </Layout.Content>
+      </Layout>
     </>
   );
 };

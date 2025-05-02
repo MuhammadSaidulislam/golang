@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Button, Col, Form, Row, Spin, Switch } from '@douyinfe/semi-ui';
+import { Button, Col, Form, Row, Spin } from '@douyinfe/semi-ui';
 import {
   compareObjects,
   API,
   showError,
   showSuccess,
-  showWarning,
+  showWarning, verifyJSON
 } from '../../../helpers';
 import { useTranslation } from 'react-i18next';
 
@@ -17,6 +17,7 @@ export default function SettingsMonitoring(props) {
     QuotaRemindThreshold: '',
     AutomaticDisableChannelEnabled: false,
     AutomaticEnableChannelEnabled: false,
+    AutomaticDisableKeywords: '',
   });
   const refForm = useRef();
   const [inputsRow, setInputsRow] = useState(inputs);
@@ -66,7 +67,7 @@ export default function SettingsMonitoring(props) {
     setInputsRow(structuredClone(currentInputs));
     refForm.current.setValues(currentInputs);
   }, [props.options]);
-
+  
   return (
     <>
       <Spin spinning={loading}>
@@ -77,9 +78,9 @@ export default function SettingsMonitoring(props) {
         >
           <Form.Section text={t('监控设置')}>
             <Row gutter={16}>
-              <Col span={8}>
+              <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                 <Form.InputNumber
-                  label={t('最长响应时间')}
+                  label={t('测试所有渠道的最长响应时间')}
                   step={1}
                   min={0}
                   suffix={t('秒')}
@@ -94,7 +95,7 @@ export default function SettingsMonitoring(props) {
                   }
                 />
               </Col>
-              <Col span={8}>
+              <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                 <Form.InputNumber
                   label={t('额度提醒阈值')}
                   step={1}
@@ -112,66 +113,54 @@ export default function SettingsMonitoring(props) {
                 />
               </Col>
             </Row>
-            <div className='settingInputBox gap-3 mt-3'>
-              <div className="personalInput">
-                <label>{t('失败时自动禁用通道')}</label>
-                <Switch
+            <Row gutter={16}>
+              <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                <Form.Switch
                   field={'AutomaticDisableChannelEnabled'}
-                  checked={inputs.AutomaticDisableChannelEnabled}
+                  label={t('失败时自动禁用通道')}
+                  size='default'
+                  checkedText='｜'
+                  uncheckedText='〇'
                   onChange={(value) => {
-                    setInputs((prev) => ({
-                      ...prev,
+                    setInputs({
+                      ...inputs,
                       AutomaticDisableChannelEnabled: value,
-                    }))
-                  }}
-                  size="default"
-                  checkedText='｜'
-                  uncheckedText='〇'
-                  style={{
-                    backgroundColor: inputs.AutomaticDisableChannelEnabled ? '#dbeafe' : '#f1f5f9',
-                    border: 'none',
-                  }}
-                  innerStyle={{
-                    backgroundColor: '#cbd5e1',
-                    width: 20,
-                    height: 20,
-                    marginTop: 2,
-                    marginLeft: 2,
+                    });
                   }}
                 />
-              </div>
-              <div className="personalInput">
-                <label>{t('成功时自动启用通道')}</label>
-                <Switch
+              </Col>
+              <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                <Form.Switch
                   field={'AutomaticEnableChannelEnabled'}
-                  checked={inputs.AutomaticEnableChannelEnabled}
-                  onChange={(value) => {
-                    setInputs((prev) => ({
-                      ...prev,
-                      AutomaticEnableChannelEnabled: value,
-                    }))
-                  }}
-                  size="default"
+                  label={t('成功时自动启用通道')}
+                  size='default'
                   checkedText='｜'
                   uncheckedText='〇'
-                  style={{
-                    backgroundColor: inputs.AutomaticEnableChannelEnabled ? '#dbeafe' : '#f1f5f9',
-                    border: 'none',
-                  }}
-                  innerStyle={{
-                    backgroundColor: '#cbd5e1',
-                    width: 20,
-                    height: 20,
-                    marginTop: 2,
-                    marginLeft: 2,
-                  }}
+                  onChange={(value) =>
+                    setInputs({
+                      ...inputs,
+                      AutomaticEnableChannelEnabled: value,
+                    })
+                  }
                 />
-              </div>
-            </div>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col xs={24} sm={16}>
+                <Form.TextArea
+                  label={t('自动禁用关键词')}
+                  placeholder={t('一行一个，不区分大小写')}
+                  extraText={t('当上游通道返回错误中包含这些关键词时（不区分大小写），自动禁用通道')}
+                  field={'AutomaticDisableKeywords'}
+                  autosize={{ minRows: 6, maxRows: 12 }}
+                  onChange={(value) => setInputs({ ...inputs, AutomaticDisableKeywords: value })}
+                />
+              </Col>
+            </Row>
             <Row>
-              <button className='searchBtn mt-4' onClick={onSubmit}>
+              <Button size='default' onClick={onSubmit}>
                 {t('保存监控设置')}
-              </button>
+              </Button>
             </Row>
           </Form.Section>
         </Form>

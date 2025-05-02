@@ -8,15 +8,11 @@ import {
   Message,
   Modal,
 } from 'semantic-ui-react';
-import { API, removeTrailingSlash, showError, verifyJSON } from '../helpers';
+import { API, removeTrailingSlash, showError, showSuccess, verifyJSON } from '../helpers';
 
 import { useTheme } from '../context/Theme';
-import { IconArrowLeft } from '@douyinfe/semi-icons';
-import { useTranslation } from 'react-i18next';
 
-const SystemSetting = ({ setMobileTab }) => {
-  const { t } = useTranslation();
-
+const SystemSetting = () => {
   let [inputs, setInputs] = useState({
     PasswordLoginEnabled: '',
     PasswordRegisterEnabled: '',
@@ -24,6 +20,13 @@ const SystemSetting = ({ setMobileTab }) => {
     GitHubOAuthEnabled: '',
     GitHubClientId: '',
     GitHubClientSecret: '',
+    'oidc.enabled': '',
+    'oidc.client_id': '',
+    'oidc.client_secret': '',
+    'oidc.well_known': '',
+    'oidc.authorization_endpoint': '',
+    'oidc.token_endpoint': '',
+    'oidc.user_info_endpoint': '',
     Notice: '',
     SMTPServer: '',
     SMTPPort: '',
@@ -101,7 +104,7 @@ const SystemSetting = ({ setMobileTab }) => {
   useEffect(() => {
     getOptions().then();
   }, []);
-  useEffect(() => { }, [inputs.EmailDomainWhitelist]);
+  useEffect(() => {}, [inputs.EmailDomainWhitelist]);
 
   const updateOption = async (key, value) => {
     setLoading(true);
@@ -110,6 +113,7 @@ const SystemSetting = ({ setMobileTab }) => {
       case 'PasswordRegisterEnabled':
       case 'EmailVerificationEnabled':
       case 'GitHubOAuthEnabled':
+      case 'oidc.enabled':
       case 'LinuxDOOAuthEnabled':
       case 'WeChatAuthEnabled':
       case 'TelegramOAuthEnabled':
@@ -163,6 +167,12 @@ const SystemSetting = ({ setMobileTab }) => {
       name === 'PayAddress' ||
       name === 'GitHubClientId' ||
       name === 'GitHubClientSecret' ||
+      name === 'oidc.well_known' ||
+      name === 'oidc.client_id' ||
+      name === 'oidc.client_secret' ||
+      name === 'oidc.authorization_endpoint' ||
+      name === 'oidc.token_endpoint' ||
+      name === 'oidc.user_info_endpoint' ||
       name === 'WeChatServerAddress' ||
       name === 'WeChatServerToken' ||
       name === 'WeChatAccountQRCodeImageURL' ||
@@ -195,7 +205,6 @@ const SystemSetting = ({ setMobileTab }) => {
   };
 
   const submitPayAddress = async () => {
-
     if (inputs.ServerAddress === '') {
       showError('请先填写服务器地址');
       return;
@@ -245,7 +254,7 @@ const SystemSetting = ({ setMobileTab }) => {
   const submitEmailDomainWhitelist = async () => {
     if (
       originInputs['EmailDomainWhitelist'] !==
-      inputs.EmailDomainWhitelist.join(',') &&
+        inputs.EmailDomainWhitelist.join(',') &&
       inputs.SMTPToken !== ''
     ) {
       await updateOption(
@@ -290,6 +299,44 @@ const SystemSetting = ({ setMobileTab }) => {
       await updateOption('GitHubClientSecret', inputs.GitHubClientSecret);
     }
   };
+
+  const submitOIDCSettings = async () => {
+    if (inputs['oidc.well_known'] !== '') {
+      if (!inputs['oidc.well_known'].startsWith('http://') && !inputs['oidc.well_known'].startsWith('https://')) {
+        showError('Well-Known URL 必须以 http:// 或 https:// 开头');
+        return;
+      }
+      try {
+        const res = await API.get(inputs['oidc.well_known']);
+        inputs['oidc.authorization_endpoint'] = res.data['authorization_endpoint'];
+        inputs['oidc.token_endpoint'] = res.data['token_endpoint'];
+        inputs['oidc.user_info_endpoint'] = res.data['userinfo_endpoint'];
+        showSuccess('获取 OIDC 配置成功！');
+      } catch (err) {
+        console.error(err);
+        showError("获取 OIDC 配置失败，请检查网络状况和 Well-Known URL 是否正确");
+      }
+    }
+
+    if (originInputs['oidc.well_known'] !== inputs['oidc.well_known']) {
+      await updateOption('oidc.well_known', inputs['oidc.well_known']);
+    }
+    if (originInputs['oidc.client_id'] !== inputs['oidc.client_id']) {
+      await updateOption('oidc.client_id', inputs['oidc.client_id']);
+    }
+    if (originInputs['oidc.client_secret'] !== inputs['oidc.client_secret'] && inputs['oidc.client_secret'] !== '') {
+      await updateOption('oidc.client_secret', inputs['oidc.client_secret']);
+    }
+    if (originInputs['oidc.authorization_endpoint'] !== inputs['oidc.authorization_endpoint']) {
+      await updateOption('oidc.authorization_endpoint', inputs['oidc.authorization_endpoint']);
+    }
+    if (originInputs['oidc.token_endpoint'] !== inputs['oidc.token_endpoint']) {
+      await updateOption('oidc.token_endpoint', inputs['oidc.token_endpoint']);
+    }
+    if (originInputs['oidc.user_info_endpoint'] !== inputs['oidc.user_info_endpoint']) {
+      await updateOption('oidc.user_info_endpoint', inputs['oidc.user_info_endpoint']);
+    }
+  }
 
   const submitTelegramSettings = async () => {
     // await updateOption('TelegramOAuthEnabled', inputs.TelegramOAuthEnabled);
@@ -344,534 +391,602 @@ const SystemSetting = ({ setMobileTab }) => {
   };
 
   return (
-    <>
-      <p className="accountText" onClick={() => setMobileTab('')}> <IconArrowLeft /> Account Settings</p>
-      <Grid columns={1}>
-        <Grid.Column>
-          <Form loading={loading} inverted={isDark}>
-            <Header as='h3' inverted={isDark}>
-              {t('通用设置')}
-            </Header>
-            <Form.Group widths='equal'>
-              <Form.Input
-                label={t('服务器地址')}
-                placeholder={`${t('例如')}: https://yourdomain.com`}
-                value={inputs.ServerAddress}
-                name='ServerAddress'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-            </Form.Group>
-            <button className='searchBtn mt-2' onClick={submitServerAddress}>
-              {t('更新服务器地址')}
-            </button>
-            <Header as='h3' inverted={isDark}>
-              {t('代理设置（支持 ')}
+    <Grid columns={1}>
+      <Grid.Column>
+        <Form loading={loading} inverted={isDark}>
+          <Header as='h3' inverted={isDark}>
+            通用设置
+          </Header>
+          <Form.Group widths='equal'>
+            <Form.Input
+              label='服务器地址'
+              placeholder='例如：https://yourdomain.com'
+              value={inputs.ServerAddress}
+              name='ServerAddress'
+              onChange={handleInputChange}
+            />
+          </Form.Group>
+          <Form.Button onClick={submitServerAddress}>
+            更新服务器地址
+          </Form.Button>
+          <Header as='h3' inverted={isDark}>
+            代理设置（支持{' '}
+            <a
+              href='https://github.com/Calcium-Ion/new-api-worker'
+              target='_blank'
+              rel='noreferrer'
+            >
+              new-api-worker
+            </a>
+            ）
+          </Header>
+          <Message info>
+            注意：代理功能仅对图片请求和 Webhook 请求生效，不会影响其他 API 请求。如需配置 API 请求代理，请参考
+            <a
+              href='https://github.com/Calcium-Ion/new-api/blob/main/docs/channel/other_setting.md'
+              target='_blank'
+              rel='noreferrer'
+            >
+              {' '}API 代理设置文档
+            </a>
+            。
+          </Message>
+          <Form.Group widths='equal'>
+            <Form.Input
+              label='Worker地址，不填写则不启用代理'
+              placeholder='例如：https://workername.yourdomain.workers.dev'
+              value={inputs.WorkerUrl}
+              name='WorkerUrl'
+              onChange={handleInputChange}
+            />
+            <Form.Input
+              label='Worker密钥，根据你部署的 Worker 填写'
+              placeholder='例如：your_secret_key'
+              value={inputs.WorkerValidKey}
+              name='WorkerValidKey'
+              onChange={handleInputChange}
+            />
+          </Form.Group>
+          <Form.Button onClick={submitWorker}>更新Worker设置</Form.Button>
+          <Divider />
+          <Header as='h3' inverted={isDark}>
+            支付设置（当前仅支持易支付接口，默认使用上方服务器地址作为回调地址！）
+          </Header>
+          <Form.Group widths='equal'>
+            <Form.Input
+              label='支付地址，不填写则不启用在线支付'
+              placeholder='例如：https://yourdomain.com'
+              value={inputs.PayAddress}
+              name='PayAddress'
+              onChange={handleInputChange}
+            />
+            <Form.Input
+              label='易支付商户ID'
+              placeholder='例如：0001'
+              value={inputs.EpayId}
+              name='EpayId'
+              onChange={handleInputChange}
+            />
+            <Form.Input
+              label='易支付商户密钥'
+              placeholder='敏感信息不会发送到前端显示'
+              value={inputs.EpayKey}
+              name='EpayKey'
+              onChange={handleInputChange}
+            />
+          </Form.Group>
+          <Form.Group widths='equal'>
+            <Form.Input
+              label='回调地址，不填写则使用上方服务器地址作为回调地址'
+              placeholder='例如：https://yourdomain.com'
+              value={inputs.CustomCallbackAddress}
+              name='CustomCallbackAddress'
+              onChange={handleInputChange}
+            />
+            <Form.Input
+              label='充值价格（x元/美金）'
+              placeholder='例如：7，就是7元/美金'
+              value={inputs.Price}
+              name='Price'
+              min={0}
+              onChange={handleInputChange}
+            />
+            <Form.Input
+              label='最低充值美元数量（以美金为单位，如果使用额度请自行换算！）'
+              placeholder='例如：2，就是最低充值2$'
+              value={inputs.MinTopUp}
+              name='MinTopUp'
+              min={1}
+              onChange={handleInputChange}
+            />
+          </Form.Group>
+          <Form.Group widths='equal'>
+            <Form.TextArea
+              label='充值分组倍率'
+              name='TopupGroupRatio'
+              onChange={handleInputChange}
+              style={{ minHeight: 250, fontFamily: 'JetBrains Mono, Consolas' }}
+              autoComplete='new-password'
+              value={inputs.TopupGroupRatio}
+              placeholder='为一个 JSON 文本，键为组名称，值为倍率'
+            />
+          </Form.Group>
+          <Form.Button onClick={submitPayAddress}>更新支付设置</Form.Button>
+          <Divider />
+          <Header as='h3' inverted={isDark}>
+            配置登录注册
+          </Header>
+          <Form.Group inline>
+            <Form.Checkbox
+              checked={inputs.PasswordLoginEnabled === 'true'}
+              label='允许通过密码进行登录'
+              name='PasswordLoginEnabled'
+              onChange={handleInputChange}
+            />
+            {showPasswordWarningModal && (
+              <Modal
+                open={showPasswordWarningModal}
+                onClose={() => setShowPasswordWarningModal(false)}
+                size={'tiny'}
+                style={{ maxWidth: '450px' }}
+              >
+                <Modal.Header>警告</Modal.Header>
+                <Modal.Content>
+                  <p>
+                    取消密码登录将导致所有未绑定其他登录方式的用户（包括管理员）无法通过密码登录，确认取消？
+                  </p>
+                </Modal.Content>
+                <Modal.Actions>
+                  <Button onClick={() => setShowPasswordWarningModal(false)}>
+                    取消
+                  </Button>
+                  <Button
+                    color='yellow'
+                    onClick={async () => {
+                      setShowPasswordWarningModal(false);
+                      await updateOption('PasswordLoginEnabled', 'false');
+                    }}
+                  >
+                    确定
+                  </Button>
+                </Modal.Actions>
+              </Modal>
+            )}
+            <Form.Checkbox
+              checked={inputs.PasswordRegisterEnabled === 'true'}
+              label='允许通过密码进行注册'
+              name='PasswordRegisterEnabled'
+              onChange={handleInputChange}
+            />
+            <Form.Checkbox
+              checked={inputs.EmailVerificationEnabled === 'true'}
+              label='通过密码注册时需要进行邮箱验证'
+              name='EmailVerificationEnabled'
+              onChange={handleInputChange}
+            />
+            <Form.Checkbox
+              checked={inputs.GitHubOAuthEnabled === 'true'}
+              label='允许通过 GitHub 账户登录 & 注册'
+              name='GitHubOAuthEnabled'
+              onChange={handleInputChange}
+            />
+            <Form.Checkbox
+                checked={inputs['oidc.enabled'] === 'true'}
+                label='允许通过 OIDC 登录 & 注册'
+                name='oidc.enabled'
+                onChange={handleInputChange}
+            />
+            <Form.Checkbox
+              checked={inputs.LinuxDOOAuthEnabled === 'true'}
+              label='允许通过 LinuxDO 账户登录 & 注册'
+              name='LinuxDOOAuthEnabled'
+              onChange={handleInputChange}
+            />
+            <Form.Checkbox
+              checked={inputs.WeChatAuthEnabled === 'true'}
+              label='允许通过微信登录 & 注册'
+              name='WeChatAuthEnabled'
+              onChange={handleInputChange}
+            />
+            <Form.Checkbox
+              checked={inputs.TelegramOAuthEnabled === 'true'}
+              label='允许通过 Telegram 进行登录'
+              name='TelegramOAuthEnabled'
+              onChange={handleInputChange}
+            />
+          </Form.Group>
+          <Form.Group inline>
+            <Form.Checkbox
+              checked={inputs.RegisterEnabled === 'true'}
+              label='允许新用户注册（此项为否时，新用户将无法以任何方式进行注册）'
+              name='RegisterEnabled'
+              onChange={handleInputChange}
+            />
+            <Form.Checkbox
+              checked={inputs.TurnstileCheckEnabled === 'true'}
+              label='启用 Turnstile 用户校验'
+              name='TurnstileCheckEnabled'
+              onChange={handleInputChange}
+            />
+          </Form.Group>
+          <Divider />
+          <Header as='h3' inverted={isDark}>
+            配置邮箱域名白名单
+            <Header.Subheader>
+              用以防止恶意用户利用临时邮箱批量注册
+            </Header.Subheader>
+          </Header>
+          <Form.Group widths={3}>
+            <Form.Checkbox
+              label='启用邮箱域名白名单'
+              name='EmailDomainRestrictionEnabled'
+              onChange={handleInputChange}
+              checked={inputs.EmailDomainRestrictionEnabled === 'true'}
+            />
+          </Form.Group>
+          <Form.Group widths={3}>
+            <Form.Checkbox
+              label='启用邮箱别名限制（例如：ab.cd@gmail.com）'
+              name='EmailAliasRestrictionEnabled'
+              onChange={handleInputChange}
+              checked={inputs.EmailAliasRestrictionEnabled === 'true'}
+            />
+          </Form.Group>
+          <Form.Group widths={2}>
+            <Form.Dropdown
+              label='允许的邮箱域名'
+              placeholder='允许的邮箱域名'
+              name='EmailDomainWhitelist'
+              required
+              fluid
+              multiple
+              selection
+              onChange={handleInputChange}
+              value={inputs.EmailDomainWhitelist}
+              autoComplete='new-password'
+              options={EmailDomainWhitelist}
+            />
+            <Form.Input
+              label='添加新的允许的邮箱域名'
+              action={
+                <Button
+                  type='button'
+                  onClick={() => {
+                    submitNewRestrictedDomain();
+                  }}
+                >
+                  填入
+                </Button>
+              }
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  submitNewRestrictedDomain();
+                }
+              }}
+              autoComplete='new-password'
+              placeholder='输入新的允许的邮箱域名'
+              value={restrictedDomainInput}
+              onChange={(e, { value }) => {
+                setRestrictedDomainInput(value);
+              }}
+            />
+          </Form.Group>
+          <Form.Button onClick={submitEmailDomainWhitelist}>
+            保存邮箱域名白名单设置
+          </Form.Button>
+          <Divider />
+          <Header as='h3' inverted={isDark}>
+            配置 SMTP
+            <Header.Subheader>用以支持系统的邮件发送</Header.Subheader>
+          </Header>
+          <Form.Group widths={3}>
+            <Form.Input
+              label='SMTP 服务器地址'
+              name='SMTPServer'
+              onChange={handleInputChange}
+              autoComplete='new-password'
+              value={inputs.SMTPServer}
+              placeholder='例如：smtp.qq.com'
+            />
+            <Form.Input
+              label='SMTP 端口'
+              name='SMTPPort'
+              onChange={handleInputChange}
+              autoComplete='new-password'
+              value={inputs.SMTPPort}
+              placeholder='默认: 587'
+            />
+            <Form.Input
+              label='SMTP 账户'
+              name='SMTPAccount'
+              onChange={handleInputChange}
+              autoComplete='new-password'
+              value={inputs.SMTPAccount}
+              placeholder='通常是邮箱地址'
+            />
+          </Form.Group>
+          <Form.Group widths={3}>
+            <Form.Input
+              label='SMTP 发送者邮箱'
+              name='SMTPFrom'
+              onChange={handleInputChange}
+              autoComplete='new-password'
+              value={inputs.SMTPFrom}
+              placeholder='通常和邮箱地址保持一致'
+            />
+            <Form.Input
+              label='SMTP 访问凭证'
+              name='SMTPToken'
+              onChange={handleInputChange}
+              type='password'
+              autoComplete='new-password'
+              checked={inputs.RegisterEnabled === 'true'}
+              placeholder='敏感信息不会发送到前端显示'
+            />
+          </Form.Group>
+          <Form.Group widths={3}>
+            <Form.Checkbox
+              label='启用SMTP SSL（465端口强制开启）'
+              name='SMTPSSLEnabled'
+              onChange={handleInputChange}
+              checked={inputs.SMTPSSLEnabled === 'true'}
+            />
+          </Form.Group>
+          <Form.Button onClick={submitSMTP}>保存 SMTP 设置</Form.Button>
+          <Divider />
+          <Header as='h3' inverted={isDark}>
+            配置 GitHub OAuth App
+            <Header.Subheader>
+              用以支持通过 GitHub 进行登录注册，
               <a
-                href='https://github.com/Calcium-Ion/new-api-worker'
+                href='https://github.com/settings/developers'
                 target='_blank'
                 rel='noreferrer'
               >
-                new-api-worker
+                点击此处
               </a>
-              ）
-            </Header>
-            <Form.Group widths='equal'>
-              <Form.Input
-                label={t('Worker地址，不填写则不启用代理')}
-                placeholder={`${t('例如')}: https://workername.yourdomain.workers.dev`}
-                value={inputs.WorkerUrl}
-                name='WorkerUrl'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-              <Form.Input
-                label={t('Worker密钥，根据你部署的 Worker 填写')}
-                placeholder={`${t('例如')}: your_secret_key`}
-                value={inputs.WorkerValidKey}
-                name='WorkerValidKey'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-            </Form.Group>
-            <button className='searchBtn mt-2' onClick={submitWorker}>
-              {t('更新Worker设置')}
-            </button>
-            <Divider />
-            <Header as='h3' inverted={isDark}>
-              {t('支付设置（当前仅支持易支付接口，默认使用上方服务器地址作为回调地址！）')}
-            </Header>
-            <Form.Group widths='equal'>
-              <Form.Input
-                label={t('支付地址，不填写则不启用在线支付')}
-                placeholder={t('例如：https://yourdomain.com')}
-                value={inputs.PayAddress}
-                name='PayAddress'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-              <Form.Input
-                label={t('易支付商户ID')}
-                placeholder={t('例如：0001')}
-                value={inputs.EpayId}
-                name='EpayId'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-              <Form.Input
-                label={t('易支付商户密钥')}
-                placeholder={t('敏感信息不会发送到前端显示')}
-                value={inputs.EpayKey}
-                name='EpayKey'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-            </Form.Group>
-            <Form.Group widths='equal'>
-              <Form.Input
-                label={t('回调地址，不填写则使用上方服务器地址作为回调地址')}
-                placeholder={t('例如：https://yourdomain.com')}
-                value={inputs.CustomCallbackAddress}
-                name='CustomCallbackAddress'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-              <Form.Input
-                label={t('充值价格（x元/美金）')}
-                placeholder={t('例如：7，就是7元/美金')}
-                value={inputs.Price}
-                name='Price'
-                min={0}
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-              <Form.Input
-                label={t('最低充值美元数量（以美金为单位，如果使用额度请自行换算！）')}
-                placeholder={t('例如：2，就是最低充值2$')}
-                value={inputs.MinTopUp}
-                name='MinTopUp'
-                min={1}
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-            </Form.Group>
-            <Form.Group widths='equal'>
-              <Form.TextArea
-                label={t('充值分组倍率')}
-                name='TopupGroupRatio'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                style={{ minHeight: 250, fontFamily: 'JetBrains Mono, Consolas' }}
-                autoComplete='new-password'
-                value={inputs.TopupGroupRatio}
-                placeholder={t('为一个 JSON 文本，键为组名称，值为倍率')}
-              />
-            </Form.Group>
-            <button className='searchBtn mt-2' onClick={submitPayAddress}>
-              {t('更新支付设置')}
-            </button>
-            <Divider />
-            <Header as='h3' inverted={isDark}>
-              {t('配置登录注册')}
-            </Header>
-            <Form.Group inline>
-              <Form.Checkbox
-                checked={inputs.PasswordLoginEnabled === 'true'}
-                label={t('允许通过密码进行登录')}
-                name='PasswordLoginEnabled'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-              {showPasswordWarningModal && (
-                <Modal
-                  open={showPasswordWarningModal}
-                  onClose={() => setShowPasswordWarningModal(false)}
-                  size={'tiny'}
-                  style={{ maxWidth: '450px' }}
-                >
-                  <Modal.Header>{t('警告')}</Modal.Header>
-                  <Modal.Content>
-                    <p>
-                      {t('取消密码登录将导致所有未绑定其他登录方式的用户（包括管理员）无法通过密码登录，确认取消？')}
-                    </p>
-                  </Modal.Content>
-                  <Modal.Actions>
-                    <Button onClick={() => setShowPasswordWarningModal(false)}>
-                      {t('取消')}
-                    </Button>
-                    <Button
-                      color='yellow'
-                      onClick={async () => {
-                        setShowPasswordWarningModal(false);
-                        await updateOption('PasswordLoginEnabled', 'false');
-                      }}
-                    >
-                      {t('确定')}
-                    </Button>
-                  </Modal.Actions>
-                </Modal>
-              )}
-              <Form.Checkbox
-                checked={inputs.PasswordRegisterEnabled === 'true'}
-                label={t('允许通过密码进行注册')}
-                name='PasswordRegisterEnabled'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-              <Form.Checkbox
-                checked={inputs.EmailVerificationEnabled === 'true'}
-                label={t('通过密码注册时需要进行邮箱验证')}
-                name='EmailVerificationEnabled'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-              <Form.Checkbox
-                checked={inputs.GitHubOAuthEnabled === 'true'}
-                label={t('允许通过 GitHub 账户登录 & 注册')}
-                name='GitHubOAuthEnabled'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-              <Form.Checkbox
-                checked={inputs.LinuxDOOAuthEnabled === 'true'}
-                label={t('允许通过 LinuxDO 账户登录 & 注册')}
-                name='LinuxDOOAuthEnabled'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-              <Form.Checkbox
-                checked={inputs.WeChatAuthEnabled === 'true'}
-                label={t('允许通过微信登录 & 注册')}
-                name='WeChatAuthEnabled'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-              <Form.Checkbox
-                checked={inputs.TelegramOAuthEnabled === 'true'}
-                label={t('允许通过 Telegram 进行登录')}
-                name='TelegramOAuthEnabled'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-            </Form.Group>
-            <Form.Group inline>
-              <Form.Checkbox
-                checked={inputs.RegisterEnabled === 'true'}
-                label={t('允许新用户注册（此项为否时，新用户将无法以任何方式进行注册）')}
-                name='RegisterEnabled'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-              <Form.Checkbox
-                checked={inputs.TurnstileCheckEnabled === 'true'}
-                label={t('启用 Turnstile 用户校验')}
-                name='TurnstileCheckEnabled'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-              />
-            </Form.Group>
-            <Divider />
-            <Header as='h3' inverted={isDark}>
-              {t('配置邮箱域名白名单')}
-              <Header.Subheader>
-                {t('用以防止恶意用户利用临时邮箱批量注册')}
-              </Header.Subheader>
-            </Header>
-            <Form.Group widths={3}>
-              <Form.Checkbox
-                label={t('启用邮箱域名白名单')}
-                name='EmailDomainRestrictionEnabled'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                checked={inputs.EmailDomainRestrictionEnabled === 'true'}
-              />
-            </Form.Group>
-            <Form.Group widths={3}>
-              <Form.Checkbox
-                label={t('启用邮箱别名限制（例如：ab.cd@gmail.com）')}
-                name='EmailAliasRestrictionEnabled'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                checked={inputs.EmailAliasRestrictionEnabled === 'true'}
-              />
-            </Form.Group>
-            <Form.Group widths={2}>
-              <Form.Dropdown
-                label={t('允许的邮箱域名')}
-                placeholder={t('允许的邮箱域名')}
-                name='EmailDomainWhitelist'
-                required
-                fluid
-                multiple
-                selection
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                value={inputs.EmailDomainWhitelist}
-                autoComplete='new-password'
-                options={EmailDomainWhitelist}
-              />
-              <Form.Input
-                label={t('添加新的允许的邮箱域名')}
-                action={
-                  <Button
-                    type='button'
-                    onClick={() => {
-                      submitNewRestrictedDomain();
-                    }}
-                  >
-                    {t('填入')}
-                  </Button>
-                }
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    submitNewRestrictedDomain();
-                  }
-                }}
-                autoComplete='new-password'
-                placeholder={t('输入新的允许的邮箱域名')}
-                value={restrictedDomainInput}
-                onChange={(e, { value }) => {
-                  setRestrictedDomainInput(value);
-                }}
-              />
-            </Form.Group>
-            <button className='searchBtn mt-2' onClick={submitEmailDomainWhitelist}>
-              {t('保存邮箱域名白名单设置')}
-            </button>
-            <Divider />
-            <Header as='h3' inverted={isDark}>
-              {t('配置 SMTP')}
-              <Header.Subheader>{t('用以支持系统的邮件发送')}</Header.Subheader>
-            </Header>
-            <Form.Group widths={3}>
-              <Form.Input
-                label={t('SMTP 服务器地址')}
-                name='SMTPServer'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                autoComplete='new-password'
-                value={inputs.SMTPServer}
-                placeholder={t('例如：smtp.qq.com')}
-              />
-              <Form.Input
-                label={t('SMTP 端口')}
-                name='SMTPPort'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                autoComplete='new-password'
-                value={inputs.SMTPPort}
-                placeholder={t('默认: 587')}
-              />
-              <Form.Input
-                label={t('SMTP 账户')}
-                name='SMTPAccount'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                autoComplete='new-password'
-                value={inputs.SMTPAccount}
-                placeholder={t('通常是邮箱地址')}
-              />
-            </Form.Group>
-            <Form.Group widths={3}>
-              <Form.Input
-                label={t('SMTP 发送者邮箱')}
-                name='SMTPFrom'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                autoComplete='new-password'
-                value={inputs.SMTPFrom}
-                placeholder={t('通常和邮箱地址保持一致')}
-              />
-              <Form.Input
-                label={t('SMTP 访问凭证')}
-                name='SMTPToken'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
+              管理你的 GitHub OAuth App
+            </Header.Subheader>
+          </Header>
+          <Message>
+            Homepage URL 填 <code>{inputs.ServerAddress}</code>
+            ，Authorization callback URL 填{' '}
+            <code>{`${inputs.ServerAddress}/oauth/github`}</code>
+          </Message>
+          <Form.Group widths={3}>
+            <Form.Input
+              label='GitHub Client ID'
+              name='GitHubClientId'
+              onChange={handleInputChange}
+              autoComplete='new-password'
+              value={inputs.GitHubClientId}
+              placeholder='输入你注册的 GitHub OAuth APP 的 ID'
+            />
+            <Form.Input
+              label='GitHub Client Secret'
+              name='GitHubClientSecret'
+              onChange={handleInputChange}
+              type='password'
+              autoComplete='new-password'
+              value={inputs.GitHubClientSecret}
+              placeholder='敏感信息不会发送到前端显示'
+            />
+          </Form.Group>
+          <Form.Button onClick={submitGitHubOAuth}>
+            保存 GitHub OAuth 设置
+          </Form.Button>
+          <Divider />
+          <Header as='h3' inverted={isDark}>
+            配置 WeChat Server
+            <Header.Subheader>
+              用以支持通过微信进行登录注册，
+              <a
+                href='https://github.com/songquanpeng/wechat-server'
+                target='_blank'
+                rel='noreferrer'
+              >
+                点击此处
+              </a>
+              了解 WeChat Server
+            </Header.Subheader>
+          </Header>
+          <Form.Group widths={3}>
+            <Form.Input
+              label='WeChat Server 服务器地址'
+              name='WeChatServerAddress'
+              placeholder='例如：https://yourdomain.com'
+              onChange={handleInputChange}
+              autoComplete='new-password'
+              value={inputs.WeChatServerAddress}
+            />
+            <Form.Input
+              label='WeChat Server 访问凭证'
+              name='WeChatServerToken'
+              type='password'
+              onChange={handleInputChange}
+              autoComplete='new-password'
+              value={inputs.WeChatServerToken}
+              placeholder='敏感信息不会发送到前端显示'
+            />
+            <Form.Input
+              label='微信公众号二维码图片链接'
+              name='WeChatAccountQRCodeImageURL'
+              onChange={handleInputChange}
+              autoComplete='new-password'
+              value={inputs.WeChatAccountQRCodeImageURL}
+              placeholder='输入一个图片链接'
+            />
+          </Form.Group>
+          <Form.Button onClick={submitWeChat}>
+            保存 WeChat Server 设置
+          </Form.Button>
+          <Divider />
+          <Header as='h3' inverted={isDark}>
+            配置 Telegram 登录
+          </Header>
+          <Form.Group inline>
+            <Form.Input
+              label='Telegram Bot Token'
+              name='TelegramBotToken'
+              onChange={handleInputChange}
+              value={inputs.TelegramBotToken}
+              placeholder='输入你的 Telegram Bot Token'
+            />
+            <Form.Input
+              label='Telegram Bot 名称'
+              name='TelegramBotName'
+              onChange={handleInputChange}
+              value={inputs.TelegramBotName}
+              placeholder='输入你的 Telegram Bot 名称'
+            />
+          </Form.Group>
+          <Form.Button onClick={submitTelegramSettings}>
+            保存 Telegram 登录设置
+          </Form.Button>
+          <Divider />
+          <Header as='h3' inverted={isDark}>
+            配置 Turnstile
+            <Header.Subheader>
+              用以支持用户校验，
+              <a
+                href='https://dash.cloudflare.com/'
+                target='_blank'
+                rel='noreferrer'
+              >
+                点击此处
+              </a>
+              管理你的 Turnstile Sites，推荐选择 Invisible Widget Type
+            </Header.Subheader>
+          </Header>
+          <Form.Group widths={3}>
+            <Form.Input
+              label='Turnstile Site Key'
+              name='TurnstileSiteKey'
+              onChange={handleInputChange}
+              autoComplete='new-password'
+              value={inputs.TurnstileSiteKey}
+              placeholder='输入你注册的 Turnstile Site Key'
+            />
+            <Form.Input
+              label='Turnstile Secret Key'
+              name='TurnstileSecretKey'
+              onChange={handleInputChange}
+              type='password'
+              autoComplete='new-password'
+              value={inputs.TurnstileSecretKey}
+              placeholder='敏感信息不会发送到前端显示'
+            />
+          </Form.Group>
+          <Form.Button onClick={submitTurnstile}>
+            保存 Turnstile 设置
+          </Form.Button>
+          <Divider />
+          <Header as='h3' inverted={isDark}>
+            配置 LinuxDO OAuth App
+            <Header.Subheader>
+              用以支持通过 LinuxDO 进行登录注册，
+              <a
+                href='https://connect.linux.do/'
+                target='_blank'
+                rel='noreferrer'
+              >
+                点击此处
+              </a>
+              管理你的 LinuxDO OAuth App
+            </Header.Subheader>
+          </Header>
+          <Message>
+            Homepage URL 填 <code>{inputs.ServerAddress}</code>
+            ，Authorization callback URL 填{' '}
+            <code>{`${inputs.ServerAddress}/oauth/linuxdo`}</code>
+          </Message>
+          <Form.Group widths={3}>
+            <Form.Input
+              label='LinuxDO Client ID'
+              name='LinuxDOClientId'
+              onChange={handleInputChange}
+              autoComplete='new-password'
+              value={inputs.LinuxDOClientId}
+              placeholder='输入你注册的 LinuxDO OAuth APP 的 ID'
+            />
+            <Form.Input
+              label='LinuxDO Client Secret'
+              name='LinuxDOClientSecret'
+              onChange={handleInputChange}
+              type='password'
+              autoComplete='new-password'
+              value={inputs.LinuxDOClientSecret}
+              placeholder='敏感信息不会发送到前端显示'
+            />
+          </Form.Group>
+          <Form.Button onClick={submitLinuxDOOAuth}>
+            保存 LinuxDO OAuth 设置
+          </Form.Button>
+          <Divider />
+          <Header as='h3' inverted={isDark}>
+            配置 OIDC
+            <Header.Subheader>
+              用以支持通过 OIDC 登录，例如 Okta、Auth0 等兼容 OIDC 协议的 IdP
+            </Header.Subheader>
+          </Header>
+          <Message>
+            主页链接填 <code>{ inputs.ServerAddress }</code>，
+            重定向 URL 填 <code>{ `${ inputs.ServerAddress }/oauth/oidc` }</code>
+          </Message>
+          <Message>
+            若你的 OIDC Provider 支持 Discovery Endpoint，你可以仅填写 OIDC Well-Known URL，系统会自动获取 OIDC 配置
+          </Message>
+          <Form.Group widths={3}>
+            <Form.Input
+                label='Client ID'
+                name='oidc.client_id'
+                onChange={handleInputChange}
+                value={inputs['oidc.client_id']}
+                placeholder='输入 OIDC 的 Client ID'
+            />
+            <Form.Input
+                label='Client Secret'
+                name='oidc.client_secret'
+                onChange={handleInputChange}
                 type='password'
-                autoComplete='new-password'
-                checked={inputs.RegisterEnabled === 'true'}
-                placeholder={t('敏感信息不会发送到前端显示')}
-              />
-            </Form.Group>
-            <Form.Group widths={3}>
-              <Form.Checkbox
-                label={t('启用SMTP SSL（465端口强制开启）')}
-                name='SMTPSSLEnabled'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                checked={inputs.SMTPSSLEnabled === 'true'}
-              />
-            </Form.Group>
-            <button className='searchBtn mt-2' onClick={submitSMTP}>
-              {t('保存 SMTP 设置')}
-            </button>
-            <Divider />
-            <Header as='h3' inverted={isDark}>
-              {t('配置 GitHub OAuth App')}
-              <Header.Subheader>
-                {t('用以支持通过 GitHub 进行登录注册，')}
-                <a
-                  href='https://github.com/settings/developers'
-                  target='_blank'
-                  rel='noreferrer'
-                >
-                  {t('点击此处')}
-                </a>
-                {t('管理你的 GitHub OAuth App')}
-              </Header.Subheader>
-            </Header>
-
-            <Message>
-              {t('Homepage URL 填')} <code>{inputs.ServerAddress}</code>
-              {t('，Authorization callback URL 填')}{' '}
-              <code>{`${inputs.ServerAddress}/oauth/github`}</code>
-            </Message>
-            <Form.Group widths={3}>
-              <Form.Input
-                label={t('GitHub Client ID')}
-                name='GitHubClientId'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                autoComplete='new-password'
-                value={inputs.GitHubClientId}
-                placeholder={t('输入你注册的 GitHub OAuth APP 的 ID')}
-              />
-              <Form.Input
-                label={t('GitHub Client Secret')}
-                name='GitHubClientSecret'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                type='password'
-                autoComplete='new-password'
-                value={inputs.GitHubClientSecret}
-                placeholder={t('敏感信息不会发送到前端显示')}
-              />
-            </Form.Group>
-            <button className='searchBtn mt-2' onClick={submitGitHubOAuth}>
-              {t('保存 GitHub OAuth 设置')}
-            </button>
-
-            <Divider />
-            <Header as='h3' inverted={isDark}>
-              {t('配置 WeChat Server')}
-              <Header.Subheader>
-                {t('用以支持通过微信进行登录注册，')}
-                <a
-                  href='https://github.com/songquanpeng/wechat-server'
-                  target='_blank'
-                  rel='noreferrer'
-                >
-                  {t('点击此处')}
-                </a>
-                {t('了解 WeChat Server')}
-              </Header.Subheader>
-            </Header>
-            <Form.Group widths={3}>
-              <Form.Input
-                label={t('WeChat Server 服务器地址')}
-                name='WeChatServerAddress'
-                placeholder={t('例如：https://yourdomain.com')}
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                autoComplete='new-password'
-                value={inputs.WeChatServerAddress}
-              />
-              <Form.Input
-                label={t('WeChat Server 访问凭证')}
-                name='WeChatServerToken'
-                type='password'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                autoComplete='new-password'
-                value={inputs.WeChatServerToken}
-                placeholder={t('敏感信息不会发送到前端显示')}
-              />
-              <Form.Input
-                label={t('微信公众号二维码图片链接')}
-                name='WeChatAccountQRCodeImageURL'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                autoComplete='new-password'
-                value={inputs.WeChatAccountQRCodeImageURL}
-                placeholder={t('输入一个图片链接')}
-              />
-            </Form.Group>
-            <button className='searchBtn mt-2' onClick={submitWeChat}>
-              {t('保存 WeChat Server 设置')}
-            </button>
-
-            <Divider />
-            <Header as='h3' inverted={isDark}>
-              {t('配置 Telegram 登录')}
-            </Header>
-            <Form.Group inline>
-              <Form.Input
-                label={t('Telegram Bot Token')}
-                name='TelegramBotToken'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                value={inputs.TelegramBotToken}
-                placeholder={t('输入你的 Telegram Bot Token')}
-              />
-              <Form.Input
-                label={t('Telegram Bot 名称')}
-                name='TelegramBotName'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                value={inputs.TelegramBotName}
-                placeholder={t('输入你的 Telegram Bot 名称')}
-              />
-            </Form.Group>
-            <button className='searchBtn mt-2' onClick={submitTelegramSettings}>
-              {t('保存 Telegram 登录设置')}
-            </button>
-            <Divider />
-            <Header as='h3' inverted={isDark}>
-              {t('配置 Turnstile')}
-              <Header.Subheader>
-                {t('用以支持用户校验，')}
-                <a
-                  href='https://dash.cloudflare.com/'
-                  target='_blank'
-                  rel='noreferrer'
-                >
-                  {t('点击此处')}
-                </a>
-                {t('管理你的 Turnstile Sites，推荐选择 Invisible Widget Type')}
-              </Header.Subheader>
-            </Header>
-            <Form.Group widths={3}>
-              <Form.Input
-                label={t('Turnstile Site Key')}
-                name='TurnstileSiteKey'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                autoComplete='new-password'
-                value={inputs.TurnstileSiteKey}
-                placeholder={t('输入你注册的 Turnstile Site Key')}
-              />
-              <Form.Input
-                label={t('Turnstile Secret Key')}
-                name='TurnstileSecretKey'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                type='password'
-                autoComplete='new-password'
-                value={inputs.TurnstileSecretKey}
-                placeholder={t('敏感信息不会发送到前端显示')}
-              />
-            </Form.Group>
-            <button className='searchBtn mt-2' onClick={submitTurnstile}>
-              {t('保存 Turnstile 设置')}
-            </button>
-            <Divider />
-            <Header as='h3' inverted={isDark}>
-              {t('配置 LinuxDO OAuth App')}
-              <Header.Subheader>
-                {t('用以支持通过 LinuxDO 进行登录注册，')}
-                <a
-                  href='https://connect.linux.do/'
-                  target='_blank'
-                  rel='noreferrer'
-                >
-                  {t('点击此处')}
-                </a>
-                {t('管理你的 LinuxDO OAuth App')}
-              </Header.Subheader>
-            </Header>
-            <Message>
-              {t('Homepage URL 填')} <code>{inputs.ServerAddress}</code>，{t('Authorization callback URL 填')}
-              <code>{`${inputs.ServerAddress}/oauth/linuxdo`}</code>
-            </Message>
-            <Form.Group widths={3}>
-              <Form.Input
-                label={t('LinuxDO Client ID')}
-                name='LinuxDOClientId'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                autoComplete='new-password'
-                value={inputs.LinuxDOClientId}
-                placeholder={t('输入你注册的 LinuxDO OAuth APP 的 ID')}
-              />
-              <Form.Input
-                label={t('LinuxDO Client Secret')}
-                name='LinuxDOClientSecret'
-                onChange={(e, { name, value }) => handleInputChange(e, { name, value })}
-                type='password'
-                autoComplete='new-password'
-                value={inputs.LinuxDOClientSecret}
-                placeholder={t('敏感信息不会发送到前端显示')}
-              />
-            </Form.Group>
-            <button className='searchBtn mt-2' onClick={submitLinuxDOOAuth}>
-              {t('保存 LinuxDO OAuth 设置')}
-            </button>
-          </Form>
-        </Grid.Column>
-      </Grid>
-    </>
+                value={inputs['oidc.client_secret']}
+                placeholder='敏感信息不会发送到前端显示'
+            />
+            <Form.Input
+                label='Well-Known URL'
+                name='oidc.well_known'
+                onChange={handleInputChange}
+                value={inputs['oidc.well_known']}
+                placeholder='请输入 OIDC 的 Well-Known URL'
+            />
+            <Form.Input
+                label='Authorization Endpoint'
+                name='oidc.authorization_endpoint'
+                onChange={handleInputChange}
+                value={inputs['oidc.authorization_endpoint']}
+                placeholder='输入 OIDC 的 Authorization Endpoint'
+            />
+            <Form.Input
+                label='Token Endpoint'
+                name='oidc.token_endpoint'
+                onChange={handleInputChange}
+                value={inputs['oidc.token_endpoint']}
+                placeholder='输入 OIDC 的 Token Endpoint'
+            />
+            <Form.Input
+                label='Userinfo Endpoint'
+                name='oidc.user_info_endpoint'
+                onChange={handleInputChange}
+                value={inputs['oidc.user_info_endpoint']}
+                placeholder='输入 OIDC 的 Userinfo Endpoint'
+            />
+          </Form.Group>
+          <Form.Button onClick={submitOIDCSettings}>
+            保存 OIDC 设置
+          </Form.Button>
+        </Form>
+      </Grid.Column>
+    </Grid>
   );
 };
 

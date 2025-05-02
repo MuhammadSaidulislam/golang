@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { API, showError, showSuccess } from '../../helpers';
-import { renderQuotaWithPrompt } from '../../helpers/render';
-import { Divider, Select } from '@douyinfe/semi-ui';
+import { useNavigate } from 'react-router-dom';
+import { API, isMobile, showError, showSuccess } from '../../helpers';
+import { renderQuota, renderQuotaWithPrompt } from '../../helpers/render';
+import Title from '@douyinfe/semi-ui/lib/es/typography/title';
+import {
+  Button,
+  Divider,
+  Input,
+  Modal,
+  Select,
+  SideSheet,
+  Space,
+  Spin,
+  Typography,
+} from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
-import { Modal } from 'react-bootstrap';
-import { IconClose } from '@douyinfe/semi-icons';
 
 const EditUser = (props) => {
   const userId = props.editingUser.id;
@@ -16,6 +26,7 @@ const EditUser = (props) => {
     display_name: '',
     password: '',
     github_id: '',
+    oidc_id: '',
     wechat_id: '',
     email: '',
     quota: 0,
@@ -27,6 +38,7 @@ const EditUser = (props) => {
     display_name,
     password,
     github_id,
+    oidc_id,
     wechat_id,
     telegram_id,
     email,
@@ -49,7 +61,10 @@ const EditUser = (props) => {
       showError(error.message);
     }
   };
-
+  const navigate = useNavigate();
+  const handleCancel = () => {
+    props.handleClose();
+  };
   const loadUser = async () => {
     setLoading(true);
     let res = undefined;
@@ -92,7 +107,6 @@ const EditUser = (props) => {
       showSuccess('用户信息更新成功！');
       props.refresh();
       props.handleClose();
-      props.handleUpdateClose();
     } else {
       showError(message);
     }
@@ -113,27 +127,73 @@ const EditUser = (props) => {
 
   return (
     <>
-      <Modal show={props.updateShow} onHide={props.handleUpdateClose} centered size="md">
-        <div className='modalHeading'>
-          <h1>{t('添加用户')}</h1>
-          <button onClick={props.handleUpdateClose}><IconClose /></button>
-        </div>
-        <div className='modalContent walletModal'>
-          <div className="personalInput w-100">
-            <label>{t('用户名')}</label>
-            <input type="text" className="search-input" placeholder={t('请输入新的用户名')} name='username' value={username} onChange={(value) => handleInputChange('username', value.target.value)} />
+      <SideSheet
+        placement={'right'}
+        title={<Title level={3}>{t('编辑用户')}</Title>}
+        headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
+        bodyStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
+        visible={props.visible}
+        footer={
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Space>
+              <Button theme='solid' size={'large'} onClick={submit}>
+                {t('提交')}
+              </Button>
+              <Button
+                theme='solid'
+                size={'large'}
+                type={'tertiary'}
+                onClick={handleCancel}
+              >
+                {t('取消')}
+              </Button>
+            </Space>
           </div>
-          <div className="personalInput w-100">
-            <label>{t('密码')}</label>
-            <input type="password" className="search-input" placeholder={t('请输入新的密码，最短 8 位')} name='password' value={password} onChange={(value) => handleInputChange('password', value.target.value)} />
+        }
+        closeIcon={null}
+        onCancel={() => handleCancel()}
+        width={isMobile() ? '100%' : 600}
+      >
+        <Spin spinning={loading}>
+          <div style={{ marginTop: 20 }}>
+            <Typography.Text>{t('用户名')}</Typography.Text>
           </div>
-          <div className="personalInput w-100">
-            <label>{t('显示名称')}</label>
-            <input type="text" className="search-input" placeholder={t('请输入新的显示名称')} name='display_name' value={display_name} onChange={(value) => handleInputChange('display_name', value.target.value)} />
+          <Input
+            label={t('用户名')}
+            name='username'
+            placeholder={t('请输入新的用户名')}
+            onChange={(value) => handleInputChange('username', value)}
+            value={username}
+            autoComplete='new-password'
+          />
+          <div style={{ marginTop: 20 }}>
+            <Typography.Text>{t('密码')}</Typography.Text>
           </div>
-          {userId && <div className='w-100'>
-            <div className="personalInput w-100">
-              <label>{t('分组')}</label>
+          <Input
+            label={t('密码')}
+            name='password'
+            type={'password'}
+            placeholder={t('请输入新的密码，最短 8 位')}
+            onChange={(value) => handleInputChange('password', value)}
+            value={password}
+            autoComplete='new-password'
+          />
+          <div style={{ marginTop: 20 }}>
+            <Typography.Text>{t('显示名称')}</Typography.Text>
+          </div>
+          <Input
+            label={t('显示名称')}
+            name='display_name'
+            placeholder={t('请输入新的显示名称')}
+            onChange={(value) => handleInputChange('display_name', value)}
+            value={display_name}
+            autoComplete='new-password'
+          />
+          {userId && (
+            <>
+              <div style={{ marginTop: 20 }}>
+                <Typography.Text>{t('分组')}</Typography.Text>
+              </div>
               <Select
                 placeholder={t('请选择分组')}
                 name='group'
@@ -147,36 +207,97 @@ const EditUser = (props) => {
                 autoComplete='new-password'
                 optionList={groupOptions}
               />
-            </div>
-            <div className="personalInput w-100 mt-3">
-              <label>{`${t('剩余额度')}${renderQuotaWithPrompt(quota)}`}</label>
-              <input type="number" className="search-input" placeholder={t('请输入新的剩余额度')} name='quota' value={quota} onChange={(value) => handleInputChange('quota', value.target.value)} />
-            </div>
-          </div>}
-
+              <div style={{ marginTop: 20 }}>
+                <Typography.Text>{`${t('剩余额度')}${renderQuotaWithPrompt(quota)}`}</Typography.Text>
+              </div>
+              <Space>
+                <Input
+                  name='quota'
+                  placeholder={t('请输入新的剩余额度')}
+                  onChange={(value) => handleInputChange('quota', value)}
+                  value={quota}
+                  type={'number'}
+                  autoComplete='new-password'
+                />
+                <Button onClick={openAddQuotaModal}>{t('添加额度')}</Button>
+              </Space>
+            </>
+          )}
           <Divider style={{ marginTop: 20 }}>{t('以下信息不可修改')}</Divider>
-
-          <div className="personalInput w-100 mt-4">
-            <label>{t('已绑定的 GitHub 账户')}</label>
-            <input type="text" className="search-input" placeholder={t('此项只读，需要用户通过个人设置页面的相关绑定按钮进行绑定，不可直接修改')} name='github_id' value={github_id} />
+          <div style={{ marginTop: 20 }}>
+            <Typography.Text>{t('已绑定的 GitHub 账户')}</Typography.Text>
           </div>
-          <div className="personalInput w-100">
-            <label>{t('已绑定的微信账户')}</label>
-            <input type="text" className="search-input" placeholder={t('此项只读，需要用户通过个人设置页面的相关绑定按钮进行绑定，不可直接修改')} name='wechat_id' value={wechat_id} />
+          <Input
+            name='github_id'
+            value={github_id}
+            autoComplete='new-password'
+            placeholder={t('此项只读，需要用户通过个人设置页面的相关绑定按钮进行绑定，不可直接修改')}
+            readonly
+          />
+          <div style={{ marginTop: 20 }}>
+            <Typography.Text>{t('`已绑定的 OIDC 账户')}</Typography.Text>
           </div>
-          <div className="personalInput w-100">
-            <label>{t('已绑定的微信账户')}</label>
-            <input type="email" className="search-input" placeholder={t('此项只读，需要用户通过个人设置页面的相关绑定按钮进行绑定，不可直接修改')} name='email' value={email} />
+          <Input
+              name='oidc_id'
+              value={oidc_id}
+              placeholder={t('此项只读，需要用户通过个人设置页面的相关绑定按钮进行绑定，不可直接修改')}
+              readonly
+          />
+          <div style={{ marginTop: 20 }}>
+            <Typography.Text>{t('已绑定的微信账户')}</Typography.Text>
           </div>
-          <div className="personalInput w-100">
-            <label>{t('已绑定的微信账户')}</label>
-            <input type="text" className="search-input" placeholder={t('此项只读，需要用户通过个人设置页面的相关绑定按钮进行绑定，不可直接修改')} name='telegram_id' value={telegram_id} />
+          <Input
+            name='wechat_id'
+            value={wechat_id}
+            autoComplete='new-password'
+            placeholder={t('此项只读，需要用户通过个人设置页面的相关绑定按钮进行绑定，不可直接修改')}
+            readonly
+          />
+          <div style={{ marginTop: 20 }}>
+            <Typography.Text>{t('已绑定的邮箱账户')}</Typography.Text>
           </div>
-          <div className="button-group w-100">
-            <div className="btn btn-cancel" onClick={props.handleUpdateClose}>{t('取消')}</div>
-            <div onClick={submit} className="btn btn-redeem">{t('提交')}</div>
+          <Input
+            name='email'
+            value={email}
+            autoComplete='new-password'
+            placeholder={t('此项只读，需要用户通过个人设置页面的相关绑定按钮进行绑定，不可直接修改')}
+            readonly
+          />
+          <div style={{ marginTop: 20 }}>
+            <Typography.Text>{t('已绑定的Telegram账户')}</Typography.Text>
           </div>
+          <Input
+            name='telegram_id'
+            value={telegram_id}
+            autoComplete='new-password'
+            placeholder={t('此项只读，需要用户通过个人设置页面的相关绑定按钮进行绑定，不可直接修改')}
+            readonly
+          />
+        </Spin>
+      </SideSheet>
+      <Modal
+        centered={true}
+        visible={addQuotaModalOpen}
+        onOk={() => {
+          addLocalQuota();
+          setIsModalOpen(false);
+        }}
+        onCancel={() => setIsModalOpen(false)}
+        closable={null}
+      >
+        <div style={{ marginTop: 20 }}>
+          <Typography.Text>{`${t('新额度')}${renderQuota(quota)} + ${renderQuota(addQuotaLocal)} = ${renderQuota(quota + parseInt(addQuotaLocal))}`}</Typography.Text>
         </div>
+        <Input
+          name='addQuotaLocal'
+          placeholder={t('需要添加的额度（支持负数）')}
+          onChange={(value) => {
+            setAddQuotaLocal(value);
+          }}
+          value={addQuotaLocal}
+          type={'number'}
+          autoComplete='new-password'
+        />
       </Modal>
     </>
   );

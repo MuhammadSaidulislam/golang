@@ -9,13 +9,13 @@ import {
   showWarning,
   timestamp2string
 } from '../helpers';
-import filterIcon from "../assets/fi_filter.svg";
+
 import { CHANNEL_OPTIONS, ITEMS_PER_PAGE } from '../constants';
 import {
   getQuotaPerUnit,
   renderGroup,
   renderNumberWithPoint,
-  renderQuota, renderQuotaWithPrompt
+  renderQuota, renderQuotaWithPrompt, stringToColor
 } from '../helpers/render';
 import {
   Button, Divider,
@@ -26,27 +26,22 @@ import {
   Space,
   SplitButtonGroup,
   Switch,
+  Table,
   Tag,
   Tooltip,
-  Typography
+  Typography,
+  Checkbox,
+  Layout
 } from '@douyinfe/semi-ui';
 import EditChannel from '../pages/Channel/EditChannel';
-import { IconList, IconSearch, IconTreeTriangleDown, IconChevronLeft, IconChevronRight, IconChevronDown } from '@douyinfe/semi-icons';
+import { IconList, IconTreeTriangleDown, IconClose, IconFilter, IconPlus, IconRefresh, IconSetting } from '@douyinfe/semi-icons';
 import { loadChannelModels } from './utils.js';
 import EditTagModal from '../pages/Channel/EditTagModal.js';
 import TextNumberInput from './custom/TextNumberInput.js';
 import { useTranslation } from 'react-i18next';
-import NoData from './NoData.js';
-import { Table } from 'react-bootstrap';
-import deleteIcon from "../assets/Delete.svg";
-import disableIcon from "../assets/fi_disable.svg";
-import editIcon from "../assets/fi_edit-2.svg";
-import chatIcon from "../assets/fi_chat_2.svg";
-import copyIcon from "../assets/u_copy-alt.svg";
-import enableIcon from "../assets/fi_check.svg";
 
 function renderTimestamp(timestamp) {
-  return timestamp2string(timestamp);
+  return <>{timestamp2string(timestamp)}</>;
 }
 
 const ChannelsTable = () => {
@@ -60,11 +55,11 @@ const ChannelsTable = () => {
       for (let i = 0; i < CHANNEL_OPTIONS.length; i++) {
         type2label[CHANNEL_OPTIONS[i].value] = CHANNEL_OPTIONS[i];
       }
-      type2label[0] = { value: 0, text: t('未知类型'), color: 'grey' };
+      type2label[0] = { value: 0, label: t('未知类型'), color: 'grey' };
     }
     return (
       <Tag size="large" color={type2label[type]?.color}>
-        {type2label[type]?.text}
+        {type2label[type]?.label}
       </Tag>
     );
   };
@@ -148,21 +143,105 @@ const ChannelsTable = () => {
     }
   };
 
-  const columns = [
-    // {
-    //     title: '',
-    //     dataIndex: 'checkbox',
-    //     className: 'checkbox',
-    // },
+  // Define column keys for selection
+  const COLUMN_KEYS = {
+    ID: 'id',
+    NAME: 'name',
+    GROUP: 'group',
+    TYPE: 'type',
+    STATUS: 'status',
+    RESPONSE_TIME: 'response_time',
+    BALANCE: 'balance',
+    PRIORITY: 'priority',
+    WEIGHT: 'weight',
+    OPERATE: 'operate'
+  };
+
+  // State for column visibility
+  const [visibleColumns, setVisibleColumns] = useState({});
+  const [showColumnSelector, setShowColumnSelector] = useState(false);
+
+  // Load saved column preferences from localStorage
+  useEffect(() => {
+    const savedColumns = localStorage.getItem('channels-table-columns');
+    if (savedColumns) {
+      try {
+        const parsed = JSON.parse(savedColumns);
+        // Make sure all columns are accounted for
+        const defaults = getDefaultColumnVisibility();
+        const merged = { ...defaults, ...parsed };
+        setVisibleColumns(merged);
+      } catch (e) {
+        console.error('Failed to parse saved column preferences', e);
+        initDefaultColumns();
+      }
+    } else {
+      initDefaultColumns();
+    }
+  }, []);
+
+  // Update table when column visibility changes
+  useEffect(() => {
+    if (Object.keys(visibleColumns).length > 0) {
+      // Save to localStorage
+      localStorage.setItem('channels-table-columns', JSON.stringify(visibleColumns));
+    }
+  }, [visibleColumns]);
+
+  // Get default column visibility
+  const getDefaultColumnVisibility = () => {
+    return {
+      [COLUMN_KEYS.ID]: true,
+      [COLUMN_KEYS.NAME]: true,
+      [COLUMN_KEYS.GROUP]: true,
+      [COLUMN_KEYS.TYPE]: true,
+      [COLUMN_KEYS.STATUS]: true,
+      [COLUMN_KEYS.RESPONSE_TIME]: true,
+      [COLUMN_KEYS.BALANCE]: true,
+      [COLUMN_KEYS.PRIORITY]: true,
+      [COLUMN_KEYS.WEIGHT]: true,
+      [COLUMN_KEYS.OPERATE]: true
+    };
+  };
+
+  // Initialize default column visibility
+  const initDefaultColumns = () => {
+    const defaults = getDefaultColumnVisibility();
+    setVisibleColumns(defaults);
+  };
+
+  // Handle column visibility change
+  const handleColumnVisibilityChange = (columnKey, checked) => {
+    const updatedColumns = { ...visibleColumns, [columnKey]: checked };
+    setVisibleColumns(updatedColumns);
+  };
+
+  // Handle "Select All" checkbox
+  const handleSelectAll = (checked) => {
+    const allKeys = Object.keys(COLUMN_KEYS).map(key => COLUMN_KEYS[key]);
+    const updatedColumns = {};
+    
+    allKeys.forEach(key => {
+      updatedColumns[key] = checked;
+    });
+    
+    setVisibleColumns(updatedColumns);
+  };
+
+  // Define all columns with keys
+  const allColumns = [
     {
+      key: COLUMN_KEYS.ID,
       title: t('ID'),
       dataIndex: 'id'
     },
     {
+      key: COLUMN_KEYS.NAME,
       title: t('名称'),
       dataIndex: 'name'
     },
     {
+      key: COLUMN_KEYS.GROUP,
       title: t('分组'),
       dataIndex: 'group',
       render: (text, record, index) => {
@@ -184,6 +263,7 @@ const ChannelsTable = () => {
       }
     },
     {
+      key: COLUMN_KEYS.TYPE,
       title: t('类型'),
       dataIndex: 'type',
       render: (text, record, index) => {
@@ -195,6 +275,7 @@ const ChannelsTable = () => {
       }
     },
     {
+      key: COLUMN_KEYS.STATUS,
       title: t('状态'),
       dataIndex: 'status',
       render: (text, record, index) => {
@@ -218,6 +299,7 @@ const ChannelsTable = () => {
       }
     },
     {
+      key: COLUMN_KEYS.RESPONSE_TIME,
       title: t('响应时间'),
       dataIndex: 'response_time',
       render: (text, record, index) => {
@@ -225,6 +307,7 @@ const ChannelsTable = () => {
       }
     },
     {
+      key: COLUMN_KEYS.BALANCE,
       title: t('已用/剩余'),
       dataIndex: 'expired_time',
       render: (text, record, index) => {
@@ -262,6 +345,7 @@ const ChannelsTable = () => {
       }
     },
     {
+      key: COLUMN_KEYS.PRIORITY,
       title: t('优先级'),
       dataIndex: 'priority',
       render: (text, record, index) => {
@@ -311,6 +395,7 @@ const ChannelsTable = () => {
       }
     },
     {
+      key: COLUMN_KEYS.WEIGHT,
       title: t('权重'),
       dataIndex: 'weight',
       render: (text, record, index) => {
@@ -360,6 +445,7 @@ const ChannelsTable = () => {
       }
     },
     {
+      key: COLUMN_KEYS.OPERATE,
       title: '',
       dataIndex: 'operate',
       render: (text, record, index) => {
@@ -378,17 +464,15 @@ const ChannelsTable = () => {
                 >
                   {t('测试')}
                 </Button>
-                <Dropdown
-                  trigger="click"
-                  position="bottomRight"
-                  menu={record.test_models}
-                >
-                  <Button
-                    style={{ padding: '8px 4px' }}
-                    type="primary"
-                    icon={<IconTreeTriangleDown />}
-                  ></Button>
-                </Dropdown>
+                <Button
+                  style={{ padding: '8px 4px' }}
+                  type="primary"
+                  icon={<IconTreeTriangleDown />}
+                  onClick={() => {
+                    setCurrentTestChannel(record);
+                    setShowModelTestModal(true);
+                  }}
+                ></Button>
               </SplitButtonGroup>
               <Popconfirm
                 title={t('确定是否要删除此渠道？')}
@@ -495,6 +579,72 @@ const ChannelsTable = () => {
     }
   ];
 
+  // Filter columns based on visibility settings
+  const getVisibleColumns = () => {
+    return allColumns.filter(column => visibleColumns[column.key]);
+  };
+
+  // Column selector modal
+  const renderColumnSelector = () => {
+    return (
+      <Modal
+        title={t('列设置')}
+        visible={showColumnSelector}
+        onCancel={() => setShowColumnSelector(false)}
+        footer={
+          <>
+            <Button onClick={() => initDefaultColumns()}>{t('重置')}</Button>
+            <Button onClick={() => setShowColumnSelector(false)}>{t('取消')}</Button>
+            <Button type="primary" onClick={() => setShowColumnSelector(false)}>{t('确定')}</Button>
+          </>
+        }
+        style={{ width: isMobile() ? '90%' : 500 }}
+        bodyStyle={{ padding: '24px' }}
+      >
+        <div style={{ marginBottom: 20 }}>
+          <Checkbox
+            checked={Object.values(visibleColumns).every(v => v === true)}
+            indeterminate={Object.values(visibleColumns).some(v => v === true) && !Object.values(visibleColumns).every(v => v === true)}
+            onChange={e => handleSelectAll(e.target.checked)}
+          >
+            {t('全选')}
+          </Checkbox>
+        </div>
+        <div style={{ 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          maxHeight: '400px', 
+          overflowY: 'auto',
+          border: '1px solid var(--semi-color-border)',
+          borderRadius: '6px',
+          padding: '16px'
+        }}>
+          {allColumns.map(column => {
+            // Skip columns without title
+            if (!column.title) {
+              return null;
+            }
+            
+            return (
+              <div key={column.key} style={{ 
+                width: isMobile() ? '100%' : '50%', 
+                marginBottom: 16, 
+                paddingRight: 8 
+              }}>
+                <Checkbox
+                  checked={!!visibleColumns[column.key]}
+                  onChange={e => handleColumnVisibilityChange(column.key, e.target.checked)}
+                >
+                  {column.title}
+                </Checkbox>
+              </div>
+            );
+          })}
+        </div>
+      </Modal>
+    );
+  };
+
   const [channels, setChannels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activePage, setActivePage] = useState(1);
@@ -522,11 +672,10 @@ const ChannelsTable = () => {
   const [enableTagMode, setEnableTagMode] = useState(false);
   const [showBatchSetTag, setShowBatchSetTag] = useState(false);
   const [batchSetTagValue, setBatchSetTagValue] = useState('');
-  const [chartModel, setChartModel] = useState(false);
-  const [channelModal, setChannelModal] = useState(false);
-  const channelModalClose = () => {
-    setChannelModal(false);
-  }
+  const [showModelTestModal, setShowModelTestModal] = useState(false);
+  const [currentTestChannel, setCurrentTestChannel] = useState(null);
+  const [modelSearchKeyword, setModelSearchKeyword] = useState('');
+
 
   const removeRecord = (record) => {
     let newDataSource = [...channels];
@@ -556,17 +705,6 @@ const ChannelsTable = () => {
     let channelTags = {};
     for (let i = 0; i < channels.length; i++) {
       channels[i].key = '' + channels[i].id;
-      let test_models = [];
-      channels[i].models.split(',').forEach((item, index) => {
-        test_models.push({
-          node: 'item',
-          name: item,
-          onClick: () => {
-            testChannel(channels[i], item);
-          }
-        });
-      });
-      channels[i].test_models = test_models;
       if (!enableTagMode) {
         channelDates.push(channels[i]);
       } else {
@@ -692,6 +830,7 @@ const ChannelsTable = () => {
   };
 
   useEffect(() => {
+    // console.log('default effect')
     const localIdSort = localStorage.getItem('id-sort') === 'true';
     const localPageSize =
       parseInt(localStorage.getItem('page-size')) || ITEMS_PER_PAGE;
@@ -755,6 +894,7 @@ const ChannelsTable = () => {
   };
 
   const manageTag = async (tag, action) => {
+    console.log(tag, action);
     let res;
     switch (action) {
       case 'enable':
@@ -807,13 +947,59 @@ const ChannelsTable = () => {
     setSearching(false);
   };
 
+  const updateChannelProperty = (channelId, updateFn) => {
+    // Create a new copy of channels array
+    const newChannels = [...channels];
+    let updated = false;
+
+    // Find and update the correct channel
+    newChannels.forEach(channel => {
+      if (channel.children !== undefined) {
+        // If this is a tag group, search in its children
+        channel.children.forEach(child => {
+          if (child.id === channelId) {
+            updateFn(child);
+            updated = true;
+          }
+        });
+      } else if (channel.id === channelId) {
+        // Direct channel match
+        updateFn(channel);
+        updated = true;
+      }
+    });
+
+    // Only update state if we actually modified a channel
+    if (updated) {
+      setChannels(newChannels);
+    }
+  };
+
   const testChannel = async (record, model) => {
     const res = await API.get(`/api/channel/test/${record.id}?model=${model}`);
     const { success, message, time } = res.data;
     if (success) {
-      record.response_time = time * 1000;
-      record.test_time = Date.now() / 1000;
+      // Also update the channels state to persist the change
+      updateChannelProperty(record.id, (channel) => {
+        channel.response_time = time * 1000;
+        channel.test_time = Date.now() / 1000;
+      });
+      
       showInfo(t('通道 ${name} 测试成功，耗时 ${time.toFixed(2)} 秒。').replace('${name}', record.name).replace('${time.toFixed(2)}', time.toFixed(2)));
+    } else {
+      showError(message);
+    }
+  };
+
+  const updateChannelBalance = async (record) => {
+    const res = await API.get(`/api/channel/update_balance/${record.id}/`);
+    const { success, message, balance } = res.data;
+    if (success) {
+      updateChannelProperty(record.id, (channel) => {
+        channel.balance = balance;
+        channel.balance_updated_time = Date.now() / 1000;
+      });
+      showInfo(t('通道 ${name} 余额更新成功！').replace('${name}', record.name));
     } else {
       showError(message);
     }
@@ -835,18 +1021,6 @@ const ChannelsTable = () => {
     if (success) {
       showSuccess(t('已删除所有禁用渠道，共计 ${data} 个').replace('${data}', data));
       await refresh();
-    } else {
-      showError(message);
-    }
-  };
-
-  const updateChannelBalance = async (record) => {
-    const res = await API.get(`/api/channel/update_balance/${record.id}/`);
-    const { success, message, balance } = res.data;
-    if (success) {
-      record.balance = balance;
-      record.balance_updated_time = Date.now() / 1000;
-      showInfo(t('通道 ${name} 余额更新成功！').replace('${name}', record.name));
     } else {
       showError(message);
     }
@@ -1008,388 +1182,327 @@ const ChannelsTable = () => {
     }
   };
 
-  const description = "Add Tokens to start tracking Calls <br /> Distribution Metrics.";
-
-
   return (
     <>
+      {renderColumnSelector()}
       <EditTagModal
         visible={showEditTag}
         tag={editingTag}
         handleClose={() => setShowEditTag(false)}
         refresh={refresh}
       />
-
       <EditChannel
         refresh={refresh}
         visible={showEdit}
         handleClose={closeEdit}
         editingChannel={editingChannel}
-        channelModal={channelModal}
-        channelModalClose={channelModalClose}
       />
-
-
-
-
-      <div className='searchHeader'>
-        <div className='searchFilter channelWrap'>
-          <div className='searchOption'>
-            <Form
-              onSubmit={() => {
-                searchChannels(searchKeyword, searchGroup, searchModel, enableTagMode);
+      <Form
+        onSubmit={() => {
+          searchChannels(searchKeyword, searchGroup, searchModel, enableTagMode);
+        }}
+        labelPosition="left"
+      >
+        <div style={{ display: 'flex' }}>
+          <Space>
+            <Form.Input
+              field="search_keyword"
+              label={t('搜索渠道关键词')}
+              placeholder={t('搜索渠道的 ID，名称和密钥 ...')}
+              value={searchKeyword}
+              loading={searching}
+              onChange={(v) => {
+                setSearchKeyword(v.trim());
               }}
-              labelPosition="left"
+            />
+            <Form.Input
+              field="search_model"
+              label={t('模型')}
+              placeholder={t('模型关键字')}
+              value={searchModel}
+              loading={searching}
+              onChange={(v) => {
+                setSearchModel(v.trim());
+              }}
+            />
+            <Form.Select
+              field="group"
+              label={t('分组')}
+              optionList={[{ label: t('选择分组'), value: null }, ...groupOptions]}
+              initValue={null}
+              onChange={(v) => {
+                setSearchGroup(v);
+                searchChannels(searchKeyword, v, searchModel, enableTagMode);
+              }}
+            />
+            <Button
+              label={t('查询')}
+              type="primary"
+              htmlType="submit"
+              className="btn-margin-right"
+              style={{ marginRight: 8 }}
             >
-              <div style={{ display: 'flex' }}>
-                <Space>
-                  <div className="search-container" style={{ width: "205px" }}>
-                    <i className="search-icon"><IconSearch /></i>
-                    <input type="text" className="search-input" placeholder={t('搜索渠道的 ID，名称和密钥 ...')} value={searchKeyword} onChange={(v) => {
-                      setSearchKeyword(v.target.value);
-                    }} />
-                  </div>
-                  <div className="search-container" style={{ width: "205px" }}>
-                    <i className="search-icon"><IconSearch /></i>
-                    <input type="text" className="search-input" placeholder={t('模型关键字')} value={searchModel} onChange={(v) => {
-                      setSearchModel(v.target.value);
-                    }} />
-                  </div>
-                  <Form.Select
-                    optionList={[{ label: t('选择分组'), value: null }, ...groupOptions]}
-                    initValue={null}
-                    onChange={(v) => {
-                      setSearchGroup(v);
-                      searchChannels(searchKeyword, v, searchModel, enableTagMode);
-                    }}
-                  />
-                  <button
-                    label={t('查询')} className='searchBtn'
-                    type="primary"
-                    htmlType="submit"
-                    style={{ marginRight: '8px' }}
-                  >
-                    {t('查询')}
-                  </button>
-                </Space>
-              </div>
-            </Form>
+              {t('查询')}
+            </Button>
+          </Space>
+        </div>
+      </Form>
+      <Divider style={{ marginBottom: 15 }} />
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: isMobile() ? 'column' : 'row',
+          marginTop: isMobile() ? 0 : -45,
+          zIndex: 999,
+          pointerEvents: 'none'
+        }}
+      >
+        <Space
+          style={{ 
+            pointerEvents: 'auto', 
+            marginTop: isMobile() ? 0 : 45,
+            marginBottom: isMobile() ? 16 : 0,
+            display: 'flex',
+            flexWrap: isMobile() ? 'wrap' : 'nowrap',
+            gap: '8px'
+          }}
+        >
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center',
+            marginRight: 16,
+            flexWrap: 'nowrap'
+          }}>
+            <Typography.Text strong style={{ marginRight: 8 }}>{t('使用ID排序')}</Typography.Text>
+            <Switch
+              checked={idSort}
+              label={t('使用ID排序')}
+              uncheckedText={t('关')}
+              aria-label={t('是否用ID排序')}
+              onChange={(v) => {
+                localStorage.setItem('id-sort', v + '');
+                setIdSort(v);
+                loadChannels(0, pageSize, v, enableTagMode)
+                  .then()
+                  .catch((reason) => {
+                    showError(reason);
+                  });
+              }}
+            ></Switch>
           </div>
-          <div className='channelCart'>
-            <div className='cardTime channel-dropdown'>
-              <div className="icon-container-channel">
-                <button className="d-flex align-items-center createChannel" onClick={() => { setEditingChannel({ id: undefined }); setChannelModal(true); }}>{t('添加渠道')}</button>
-                <button className="d-flex align-items-center channelIcon" onClick={() => setChartModel(!chartModel)}><IconChevronDown /></button>
-              </div>
-              {chartModel && <div className="dropdown dashboardDropdown">
-                <div className='channelDropdown'>
-                  <button className="d-flex align-items-center" onClick={refresh}>{t('刷新')}</button>
-                  <button className="d-flex align-items-center" onClick={testAllChannels}>{t('测试所有通道')}</button>
-                  <button className="d-flex align-items-center" onClick={updateAllChannelsBalance}>{t('更新所有已启用通道余额')}</button>
-                  <button className="d-flex align-items-center" onClick={deleteAllDisabledChannels}>{t('删除禁用通道')}</button>
-                  <button className="d-flex align-items-center" onClick={fixChannelsAbilities}>{t('修复数据库一致性')}</button>
-                </div>
-              </div>}
-            </div>
+          
+          <div style={{ 
+            display: 'flex', 
+            flexWrap: 'wrap',
+            gap: '8px'
+          }}>
+            <Button
+              theme="light"
+              type="primary"
+              icon={<IconPlus />}
+              onClick={() => {
+                setEditingChannel({
+                  id: undefined
+                });
+                setShowEdit(true);
+              }}
+            >
+              {t('添加渠道')}
+            </Button>
+            
+            <Button
+              theme="light"
+              type="primary"
+              icon={<IconRefresh />}
+              onClick={refresh}
+            >
+              {t('刷新')}
+            </Button>
+            
+            <Dropdown
+              trigger="click"
+              render={
+                <Dropdown.Menu>
+                  <Dropdown.Item>
+                    <Popconfirm
+                      title={t('确定？')}
+                      okType={'warning'}
+                      onConfirm={testAllChannels}
+                      position={isMobile() ? 'top' : 'top'}
+                    >
+                      <Button theme="light" type="warning" style={{ width: '100%' }}>
+                        {t('测试所有通道')}
+                      </Button>
+                    </Popconfirm>
+                  </Dropdown.Item>
+                  <Dropdown.Item>
+                    <Popconfirm
+                      title={t('确定？')}
+                      okType={'secondary'}
+                      onConfirm={updateAllChannelsBalance}
+                    >
+                      <Button theme="light" type="secondary" style={{ width: '100%' }}>
+                        {t('更新所有已启用通道余额')}
+                      </Button>
+                    </Popconfirm>
+                  </Dropdown.Item>
+                  <Dropdown.Item>
+                    <Popconfirm
+                      title={t('确定是否要删除禁用通道？')}
+                      content={t('此修改将不可逆')}
+                      okType={'danger'}
+                      onConfirm={deleteAllDisabledChannels}
+                    >
+                      <Button theme="light" type="danger" style={{ width: '100%' }}>
+                        {t('删除禁用通道')}
+                      </Button>
+                    </Popconfirm>
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              }
+            >
+              <Button theme="light" type="tertiary" icon={<IconSetting />}>
+                {t('批量操作')}
+              </Button>
+            </Dropdown>
           </div>
+        </Space>
+      </div>
+      <div style={{ 
+        marginTop: 20,
+        display: 'flex',
+        flexDirection: isMobile() ? 'column' : 'row',
+        alignItems: isMobile() ? 'flex-start' : 'center',
+        gap: isMobile() ? '8px' : '16px'
+      }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center',
+          marginBottom: isMobile() ? 8 : 0
+        }}>
+          <Typography.Text strong style={{ marginRight: 8 }}>{t('开启批量操作')}</Typography.Text>
+          <Switch
+            label={t('开启批量操作')}
+            uncheckedText={t('关')}
+            aria-label={t('是否开启批量操作')}
+            onChange={(v) => {
+              setEnableBatchDelete(v);
+            }}
+          />
+        </div>
+        
+        <div style={{ 
+          display: 'flex', 
+          flexWrap: 'wrap',
+          gap: '8px'
+        }}>
+          <Popconfirm
+            title={t('确定是否要删除所选通道？')}
+            content={t('此修改将不可逆')}
+            okType={'danger'}
+            onConfirm={batchDeleteChannels}
+            disabled={!enableBatchDelete}
+          >
+            <Button
+              disabled={!enableBatchDelete}
+              theme="light"
+              type="danger"
+            >
+              {t('删除所选通道')}
+            </Button>
+          </Popconfirm>
+          <Popconfirm
+            title={t('确定是否要修复数据库一致性？')}
+            content={t('进行该操作时，可能导致渠道访问错误，请仅在数据库出现问题时使用')}
+            okType={'warning'}
+            onConfirm={fixChannelsAbilities}
+          >
+            <Button theme="light" type="secondary">
+              {t('修复数据库一致性')}
+            </Button>
+          </Popconfirm>
         </div>
       </div>
-      {pageData && pageData.length === 0 ? <NoData description={description} /> : <>
-        <div className="tableData">
-          <div className="tableBox">
-            <Table borderless hover>
-              <thead>
-                <tr>
-                  <th>{t('ID')}</th>
-                  <th>{t('名称')}</th>
-                  <th>{t('分组')}</th>
-                  <th>{t('类型')}</th>
-                  <th>{t('状态')}</th>
-                  <th>{t('响应时间')}</th>
-                  <th>{t('已用/剩余')}</th>
-                  <th>{t('优先级')}</th>
-                  <th>{t('权重')}</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {pageData && pageData.map((channel, index) => (
-                  <tr key={index}>
-                    <td>{channel.id}</td>
-                    <td>{channel.name}</td>
-                    <td>{channel.group?.split(',').sort((a, b) => {
-                      if (a === 'default') return -1;
-                      if (b === 'default') return 1;
-                      return a.localeCompare(b);
-                    }).map((item, index) => { return renderGroup(item); })}
-                    </td>
-                    <td>  {(() => {
-                      if (channel.children === undefined) {
-                        return renderType(channel.type);
-                      } else {
-                        return renderTagType();
-                      }
-                    })()}</td>
-                    <td>
-                      {(() => {
-                        if (channel.status === 3) {
-                          if (channel.other_info === '') {
-                            channel.other_info = '{}';
-                          }
-
-                          let otherInfo = JSON.parse(channel.other_info);
-                          let reason = otherInfo['status_reason'];
-                          let time = otherInfo['status_time'];
-
-                          return (
-                            <Tooltip content={t('原因：') + reason + t('，时间：') + timestamp2string(time)}>
-                              {renderStatus(channel.status)}
-                            </Tooltip>
-                          );
-                        } else {
-                          return renderStatus(channel.status);
-                        }
-                      })()}
-                    </td>
-                    <td>{renderResponseTime(channel.response_time)}</td>
-                    <td>
-                      {(() => {
-                        if (channel.children === undefined) {
-                          return (
-                            <div>
-                              <Space spacing={1}>
-                                <Tooltip content={t('已用额度')}>
-                                  <Tag color="white" type="ghost" size="large">
-                                    {renderQuota(channel.used_quota)}
-                                  </Tag>
-                                </Tooltip>
-                                <Tooltip content={t('剩余额度') + channel.balance + t('，点击更新')}>
-                                  <Tag
-                                    color="white"
-                                    type="ghost"
-                                    size="large"
-                                    onClick={() => updateChannelBalance(channel)}
-                                  >
-                                    ${renderNumberWithPoint(channel.balance)}
-                                  </Tag>
-                                </Tooltip>
-                              </Space>
-                            </div>
-                          );
-                        } else {
-                          return (
-                            <Tooltip content={t('已用额度')}>
-                              <Tag color="white" type="ghost" size="large">
-                                {renderQuota(channel.used_quota)}
-                              </Tag>
-                            </Tooltip>
-                          );
-                        }
-                      })()}
-                    </td>
-                    <td>
-                      {(() => {
-                        if (channel.children === undefined) {
-                          return (
-                            <InputNumber
-                              style={{ width: 70 }}
-                              name="priority"
-                              onBlur={(e) => {
-                                manageChannel(channel.id, 'priority', channel, e.target.value);
-                              }}
-                              keepFocus={true}
-                              innerButtons
-                              defaultValue={channel.priority}
-                              min={-999}
-                            />
-                          );
-                        } else {
-                          return (
-                            <InputNumber
-                              style={{ width: 70 }}
-                              name="priority"
-                              keepFocus={true}
-                              onBlur={(e) => {
-                                Modal.warning({
-                                  title: t('修改子渠道优先级'),
-                                  content: t('确定要修改所有子渠道优先级为 ') + e.target.value + t(' 吗？'),
-                                  onOk: () => {
-                                    if (e.target.value === '') {
-                                      return;
-                                    }
-                                    submitTagEdit('priority', {
-                                      tag: channel.key,
-                                      priority: e.target.value,
-                                    });
-                                  },
-                                });
-                              }}
-                              innerButtons
-                              defaultValue={channel.priority}
-                              min={-999}
-                            />
-                          );
-                        }
-                      })()}
-                    </td>
-                    <td>
-                      {(() => {
-                        if (channel.children === undefined) {
-                          return (
-                            <InputNumber
-                              style={{ width: 70 }}
-                              name="weight"
-                              onBlur={(e) => {
-                                manageChannel(channel.id, 'weight', channel, e.target.value);
-                              }}
-                              keepFocus={true}
-                              innerButtons
-                              defaultValue={channel.weight}
-                              min={0}
-                            />
-                          );
-                        } else {
-                          return (
-                            <InputNumber
-                              style={{ width: 70 }}
-                              name="weight"
-                              keepFocus={true}
-                              onBlur={(e) => {
-                                Modal.warning({
-                                  title: t('修改子渠道权重'),
-                                  content: t('确定要修改所有子渠道权重为 ') + e.target.value + t(' 吗？'),
-                                  onOk: () => {
-                                    if (e.target.value === '') return;
-                                    submitTagEdit('weight', {
-                                      tag: channel.key,
-                                      weight: e.target.value,
-                                    });
-                                  },
-                                });
-                              }}
-                              innerButtons
-                              defaultValue={channel.weight}
-                              min={-999}
-                            />
-                          );
-                        }
-                      })()}
-                    </td>
-                    <td className='tableActions'>
-                      {(() => {
-                        if (channel.children === undefined) {
-                          return (
-                            <div>
-                              <SplitButtonGroup
-                                style={{ marginRight: 1 }}
-                                aria-label={t('测试单个渠道操作项目组')}
-                              >
-                                <button onClick={() => { testChannel(channel, ''); }}  >
-                                  {t('测试')}
-                                </button>
-                                <Dropdown
-                                  trigger="click"
-                                  position="bottomRight"
-                                  menu={channel.test_models}
-                                >
-                                  <Button
-                                    style={{ padding: '8px 4px' }}
-                                    type="primary"
-                                    icon={<IconTreeTriangleDown />}
-                                  />
-                                </Dropdown>
-                              </SplitButtonGroup>
-
-                              <Popconfirm
-                                title={t('确定是否要删除此渠道？')}
-                                content={t('此修改将不可逆')}
-                                okType={'danger'}
-                                position={'left'}
-                                onConfirm={() => {
-                                  manageChannel(channel.id, 'delete', channel).then(() => {
-                                    removeRecord(channel);
-                                  });
-                                }}
-                              >
-                                <button><img src={deleteIcon} alt="tableAction" /></button>
-                              </Popconfirm>
-
-                              {channel.status === 1 ? (
-                                <button onClick={() => { manageChannel(channel.id, 'disable', channel); }}  >
-                                  <img src={disableIcon} alt="tableAction" />
-                                </button>
-                              ) : (
-                                <button onClick={() => { manageChannel(channel.id, 'enable', channel); }}  >
-                                  <img src={enableIcon} alt="tableAction" />
-                                </button>
-                              )}
-
-                              <button onClick={() => { setEditingChannel(channel); setShowEdit(true); setChannelModal(true) }}  ><img src={editIcon} alt="tableAction" />  </button>
-
-                              <Popconfirm
-                                title={t('确定是否要复制此渠道？')}
-                                content={t('复制渠道的所有信息')}
-                                okType={'danger'}
-                                position={'left'}
-                                onConfirm={() => {
-                                  copySelectedChannel(channel);
-                                }}
-                              >
-                                <button><img src={copyIcon} alt="tableAction" /></button>
-                              </Popconfirm>
-                            </div>
-                          );
-                        } else {
-                          return (
-                            <>
-                              <Button
-                                theme="light"
-                                type="secondary"
-                                style={{ marginRight: 1 }}
-                                onClick={() => {
-                                  manageTag(channel.key, 'enable');
-                                }}
-                              >
-                                {t('启用全部')}
-                              </Button>
-                              <Button
-                                theme="light"
-                                type="warning"
-                                style={{ marginRight: 1 }}
-                                onClick={() => {
-                                  manageTag(channel.key, 'disable');
-                                }}
-                              >
-                                {t('禁用全部')}
-                              </Button>
-                              <Button
-                                theme="light"
-                                type="tertiary"
-                                style={{ marginRight: 1 }}
-                                onClick={() => {
-                                  setShowEditTag(true);
-                                  setEditingTag(channel.key);
-                                }}
-                              >
-                                {t('编辑')}
-                              </Button>
-                            </>
-                          );
-                        }
-                      })()}
-                    </td>
-
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </div>
+      
+      <div style={{ 
+        marginTop: 20,
+        display: 'flex',
+        flexDirection: isMobile() ? 'column' : 'row',
+        alignItems: isMobile() ? 'flex-start' : 'center',
+        gap: isMobile() ? '8px' : '16px'
+      }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center',
+          marginBottom: isMobile() ? 8 : 0
+        }}>
+          <Typography.Text strong style={{ marginRight: 8 }}>{t('标签聚合模式')}</Typography.Text>
+          <Switch
+            checked={enableTagMode}
+            label={t('标签聚合模式')}
+            uncheckedText={t('关')}
+            aria-label={t('是否启用标签聚合')}
+            onChange={(v) => {
+              setEnableTagMode(v);
+              loadChannels(0, pageSize, idSort, v);
+            }}
+          />
         </div>
+        
+        <div style={{ 
+          display: 'flex', 
+          flexWrap: 'wrap',
+          gap: '8px'
+        }}>
+          <Button
+            disabled={!enableBatchDelete}
+            theme="light"
+            type="primary"
+            onClick={() => setShowBatchSetTag(true)}
+          >
+            {t('批量设置标签')}
+          </Button>
+          
+          <Button
+            theme="light"
+            type="tertiary"
+            icon={<IconSetting />}
+            onClick={() => setShowColumnSelector(true)}
+          >
+            {t('列设置')}
+          </Button>
+        </div>
+      </div>
 
-
-      </>}
-
-
+      <Table
+        loading={loading}
+        columns={getVisibleColumns()}
+        dataSource={pageData}
+        pagination={{
+          currentPage: activePage,
+          pageSize: pageSize,
+          total: channelCount,
+          pageSizeOpts: [10, 20, 50, 100],
+          showSizeChanger: true,
+          formatPageText: (page) => '',
+          onPageSizeChange: (size) => {
+            handlePageSizeChange(size).then();
+          },
+          onPageChange: handlePageChange
+        }}
+        expandAllRows={false}
+        onRow={handleRow}
+        rowSelection={
+          enableBatchDelete
+            ? {
+              onChange: (selectedRowKeys, selectedRows) => {
+                // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                setSelectedChannels(selectedRows);
+              }
+            }
+            : null
+        }
+      />
       <Modal
         title={t('批量设置标签')}
         visible={showBatchSetTag}
@@ -1397,6 +1510,7 @@ const ChannelsTable = () => {
         onCancel={() => setShowBatchSetTag(false)}
         maskClosable={false}
         centered={true}
+        style={{ width: isMobile() ? '90%' : 500 }}
       >
         <div style={{ marginBottom: 20 }}>
           <Typography.Text>{t('请输入要设置的标签名称')}</Typography.Text>
@@ -1405,7 +1519,89 @@ const ChannelsTable = () => {
           placeholder={t('请输入标签名称')}
           value={batchSetTagValue}
           onChange={(v) => setBatchSetTagValue(v)}
+          size="large"
         />
+        <div style={{ marginTop: 16 }}>
+          <Typography.Text type="secondary">
+            {t('已选择 ${count} 个渠道').replace('${count}', selectedChannels.length)}
+          </Typography.Text>
+        </div>
+      </Modal>
+      
+      {/* 模型测试弹窗 */}
+      <Modal
+        title={t('选择模型进行测试')}
+        visible={showModelTestModal && currentTestChannel !== null}
+        onCancel={() => {
+          setShowModelTestModal(false);
+          setModelSearchKeyword('');
+        }}
+        footer={null}
+        maskClosable={true}
+        centered={true}
+      >
+        <div style={{ maxHeight: '500px', overflowY: 'auto', padding: '10px' }}>
+          {currentTestChannel && (
+            <div>
+              <Typography.Title heading={6} style={{ marginBottom: '16px' }}>
+                {t('渠道')}: {currentTestChannel.name}
+              </Typography.Title>
+              
+              {/* 搜索框 */}
+              <Input
+                placeholder={t('搜索模型...')}
+                value={modelSearchKeyword}
+                onChange={(v) => setModelSearchKeyword(v)}
+                style={{ marginBottom: '16px' }}
+                prefix={<IconFilter />}
+                showClear
+              />
+              
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
+                gap: '12px',
+                marginBottom: '16px'
+              }}>
+                {currentTestChannel.models.split(',')
+                  .filter(model => model.toLowerCase().includes(modelSearchKeyword.toLowerCase()))
+                  .map((model, index) => {
+
+                    return (
+                      <Button
+                          theme="light"
+                          type="tertiary"
+                          style={{ 
+                            height: 'auto',
+                            padding: '10px 12px',
+                            textAlign: 'center',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            width: '100%',
+                            borderRadius: '6px'
+                          }}
+                          onClick={() => {
+                            testChannel(currentTestChannel, model);
+                          }}
+                        >
+                          {model}
+                        </Button>
+                    );
+                  })}
+              </div>
+              
+              {/* 显示搜索结果数量 */}
+              {modelSearchKeyword && (
+                <Typography.Text type="secondary" style={{ display: 'block' }}>
+                  {t('找到')} {currentTestChannel.models.split(',').filter(model => 
+                    model.toLowerCase().includes(modelSearchKeyword.toLowerCase())
+                  ).length} {t('个模型')}
+                </Typography.Text>
+              )}
+            </div>
+          )}
+        </div>
       </Modal>
     </>
   );

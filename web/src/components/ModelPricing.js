@@ -2,13 +2,13 @@ import React, { useContext, useEffect, useRef, useMemo, useState } from 'react';
 import { API, copy, showError, showInfo, showSuccess } from '../helpers';
 import { useTranslation } from 'react-i18next';
 
-import "./PriceTable.css"
 import {
   Banner,
   Input,
   Layout,
   Modal,
   Space,
+  Table,
   Tag,
   Tooltip,
   Popover,
@@ -20,20 +20,9 @@ import {
   IconVerify,
   IconUploadError,
   IconHelpCircle,
-  IconFilter,
-  IconSort,
-  IconChevronLeft,
-  IconChevronRight,
 } from '@douyinfe/semi-icons';
 import { UserContext } from '../context/User/index.js';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
-import { Dropdown, Table } from "react-bootstrap";
-import checkMark from "../assets/checkTable.svg";
-import sortIcon from "../assets/sort.svg";
-import TablePagination from './TablePagination.js';
-import { SortIconSvg } from './svgIcon';
-import NoData from './NoData.js';
-
 
 const ModelPricing = () => {
   const { t } = useTranslation();
@@ -45,12 +34,12 @@ const ModelPricing = () => {
   const [selectedGroup, setSelectedGroup] = useState('default');
 
   const rowSelection = useMemo(
-    () => ({
-      onChange: (selectedRowKeys, selectedRows) => {
-        setSelectedRowKeys(selectedRowKeys);
-      },
-    }),
-    []
+      () => ({
+          onChange: (selectedRowKeys, selectedRows) => {
+            setSelectedRowKeys(selectedRowKeys);
+          },
+      }),
+      []
   );
 
   const handleChange = (value) => {
@@ -70,7 +59,7 @@ const ModelPricing = () => {
     const newFilteredValue = value ? [value] : [];
     setFilteredValue(newFilteredValue);
   };
-
+  
   function renderQuotaType(type) {
     // Ensure all cases are string literals by adding quotes.
     switch (type) {
@@ -90,7 +79,7 @@ const ModelPricing = () => {
         return t('未知');
     }
   }
-
+  
   function renderAvailable(available) {
     return (
       <Popover
@@ -107,7 +96,7 @@ const ModelPricing = () => {
           borderStyle: 'solid',
         }}
       >
-        <IconVerify style={{ color: 'green' }} size="large" />
+        <IconVerify style={{ color: 'green' }}  size="large" />
       </Popover>
     )
   }
@@ -117,7 +106,7 @@ const ModelPricing = () => {
       title: t('可用性'),
       dataIndex: 'available',
       render: (text, record, index) => {
-        // if record.enable_groups contains selectedGroup, then available is true
+         // if record.enable_groups contains selectedGroup, then available is true
         return renderAvailable(record.enable_groups.includes(selectedGroup));
       },
       sorter: (a, b) => a.available - b.available,
@@ -156,7 +145,7 @@ const ModelPricing = () => {
       title: t('可用分组'),
       dataIndex: 'enable_groups',
       render: (text, record, index) => {
-
+        
         // enable_groups is a string array
         return (
           <Space>
@@ -197,22 +186,22 @@ const ModelPricing = () => {
     },
     {
       title: () => (
-        <span style={{ 'display': 'flex', 'alignItems': 'center' }}>
+        <span style={{'display':'flex','alignItems':'center'}}>
           {t('倍率')}
           <Popover
             content={
               <div style={{ padding: 8 }}>
-                {t('倍率是为了方便换算不同价格的模型')}<br />
+                {t('倍率是为了方便换算不同价格的模型')}<br/>
                 {t('点击查看倍率说明')}
               </div>
             }
             position='top'
             style={{
-              backgroundColor: 'rgba(var(--semi-blue-4),1)',
-              borderColor: 'rgba(var(--semi-blue-4),1)',
-              color: 'var(--semi-color-white)',
-              borderWidth: 1,
-              borderStyle: 'solid',
+                backgroundColor: 'rgba(var(--semi-blue-4),1)',
+                borderColor: 'rgba(var(--semi-blue-4),1)',
+                color: 'var(--semi-color-white)',
+                borderWidth: 1,
+                borderStyle: 'solid',
             }}
           >
             <IconHelpCircle
@@ -267,7 +256,7 @@ const ModelPricing = () => {
       },
     },
   ];
-  const [priceList, setPriceList] = useState([]);
+
   const [models, setModels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userState, userDispatch] = useContext(UserContext);
@@ -303,12 +292,12 @@ const ModelPricing = () => {
 
   const loadPricing = async () => {
     setLoading(true);
+
     let url = '';
     url = `/api/pricing`;
     const res = await API.get(url);
     const { success, message, data, group_ratio, usable_group } = res.data;
     if (success) {
-      setPriceList(res.data.data)
       setGroupRatio(group_ratio);
       setUsableGroup(usable_group);
       setSelectedGroup(userState.user ? userState.user.group : 'default')
@@ -336,144 +325,80 @@ const ModelPricing = () => {
     refresh().then();
   }, []);
 
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(20);
-
-  // Calculate paginated items
-  const totalItems = priceList.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedList = priceList.slice(startIndex, endIndex);
-
-
   return (
     <>
       <Layout>
-        {priceList && priceList.length === 0 ? <section className='priceTable'>
-
-          <div className='container'>
-            <div className='row'>
-              <div className='col-md-12 priceHeading mb-5'>
-                <h1>{t('价格')}</h1>
-                <p>{t('一个 API 解决您的所有问题。 - DuckLLM')}</p>
-              </div>
-              <div className='col-md-12 priceTableList'>
-                <NoData />
-              </div>
-            </div>
-          </div>
-
-
-        </section> :
-          <section className='priceTable'>
-            <div className='container'>
-              <div className='row'>
-                <div className='col-md-12 priceHeading mb-5'>
-                  <h1>{t('价格')}</h1>
-                  <p>{t('一个 API 解决您的所有问题。 - DuckLLM')}</p>
-                </div>
-                <div className='col-md-12 priceTableList'>
-                  <div className='tablePrice priceListTable'>
-                    <Table responsive borderless hover>
-                      <thead>
-                        <tr>
-                          <th></th>
-                          <th>{t('模型')}</th>
-                          <th>{t('计费类型')}</th>
-                          <th>{t('可用分组')}</th>
-                          <th>{t('模型价格')}</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {paginatedList && paginatedList.map((data) => <tr>
-                          <td><img src={checkMark} alt="check" /></td>
-                          <td><span className='greenMark'>{data.model_name}</span></td>
-                          <td><span className='redMark'>pay-as-you-go</span></td>
-                          <td>{data.enable_groups.map((group, index) => (
-                            <span key={index} className='blueMark'>{group}</span>
-                          ))}</td>
-                          <td> {(() => {
-                            const ratio = groupRatio[selectedGroup];
-                            const isQuotaTypeZero = data.quota_type === 0;
-
-                            if (isQuotaTypeZero) {
-                              const inputRatioPrice = data.model_ratio * 2 * ratio;
-                              const completionRatioPrice = data.model_ratio * data.completion_ratio * 2 * ratio;
-
-                              return (
-                                <>
-                                  <Text>{t('提示')} ${inputRatioPrice.toFixed(4)} / 1M tokens</Text>
-                                  <br />
-                                  <Text>{t('补全')} ${completionRatioPrice.toFixed(4)} / 1M tokens</Text>
-                                </>
-                              );
-                            } else {
-                              const price = parseFloat(data.price || 0) * ratio;
-                              return <Text>{t('模型价格')} ${price.toFixed(4)}</Text>;
-                            }
-                          })()}</td>
-                        </tr>)}
-                      </tbody>
-                    </Table>
-                  </div>
-                  <div className="tablePagination">
-                    <div className="leftItems">
-                      {/* Items per page dropdown */}
-                      <Dropdown className="bulkDropdown">
-                        <Dropdown.Toggle id="dropdown-basic">{itemsPerPage}</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                          {[10, 20, 30, 50, 100].map((size) => (
-                            <Dropdown.Item key={size} onClick={() => { setItemsPerPage(size); setCurrentPage(1); }}>
-                              {size}
-                            </Dropdown.Item>
-                          ))}
-                        </Dropdown.Menu>
-                      </Dropdown>
-                      <p className="itemNumber">
-                        {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} items
-                      </p>
-                    </div>
-
-                    <div className="leftItems">
-
-                      <Dropdown className="bulkDropdown pcPagPrice">
-                        <Dropdown.Toggle id="dropdown-basic">{currentPage}</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                          {[...Array(totalPages)].map((_, index) => (
-                            <Dropdown.Item key={index + 1} onClick={() => setCurrentPage(index + 1)}>
-                              {index + 1}
-                            </Dropdown.Item>
-                          ))}
-                        </Dropdown.Menu>
-                      </Dropdown>
-
-
-                      {/* Prev & Next buttons */}
-                      <button className="pagArrow" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
-                        <IconChevronLeft />
-                      </button>
-                      {/* Page number dropdown */}
-                      <div className='mobilePagPrice'>
-                        {[...Array(totalPages)].map((_, index) => (
-                          <button
-                            onClick={() => setCurrentPage(index + 1)}
-                            key={index + 1}
-                          >
-                            {index + 1}
-                          </button>
-                        ))}
-                      </div>
-                      <button className="pagArrow" onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
-                        <IconChevronRight />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>}
+        {userState.user ? (
+          <Banner
+            type="success"
+            fullMode={false}
+            closeIcon="null"
+            description={t('您的默认分组为：{{group}}，分组倍率为：{{ratio}}', {
+              group: userState.user.group,
+              ratio: groupRatio[userState.user.group]
+            })}
+          />
+        ) : (
+          <Banner
+            type='warning'
+            fullMode={false}
+            closeIcon="null"
+            description={t('您还未登陆，显示的价格为默认分组倍率: {{ratio}}', {
+              ratio: groupRatio['default']
+            })}
+          />
+        )}
+        <br/>
+        <Banner 
+            type="info"
+            fullMode={false}
+            description={<div>{t('按量计费费用 = 分组倍率 × 模型倍率 × （提示token数 + 补全token数 × 补全倍率）/ 500000 （单位：美元）')}</div>}
+            closeIcon="null"
+        />
+        <br/>
+        <Space style={{ marginBottom: 16 }}>
+          <Input
+            placeholder={t('模糊搜索模型名称')}
+            style={{ width: 200 }}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            onChange={handleChange}
+            showClear
+          />
+          <Button
+            theme='light'
+            type='tertiary'
+            style={{width: 150}}
+            onClick={() => {
+              copyText(selectedRowKeys);
+            }}
+            disabled={selectedRowKeys == ""}
+          >
+            {t('复制选中模型')}
+          </Button>
+        </Space>
+        <Table
+          style={{ marginTop: 5 }}
+          columns={columns}
+          dataSource={models}
+          loading={loading}
+          pagination={{
+            formatPageText: (page) =>
+              t('第 {{start}} - {{end}} 条，共 {{total}} 条', {
+                start: page.currentStart,
+                end: page.currentEnd,
+                total: models.length
+              }),
+            pageSize: models.length,
+            showSizeChanger: false,
+          }}
+          rowSelection={rowSelection}
+        />
+        <ImagePreview
+          src={modalImageUrl}
+          visible={isModalOpenurl}
+          onVisibleChange={(visible) => setIsModalOpenurl(visible)}
+        />
       </Layout>
     </>
   );
