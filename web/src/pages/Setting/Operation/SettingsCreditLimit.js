@@ -76,7 +76,7 @@ export default function SettingsCreditLimit(props) {
         >
           <Form.Section text={t('额度设置')}>
             <Row gutter={16}>
-              <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+              <Col span={6}>
                 <Form.InputNumber
                   label={t('新用户初始额度')}
                   field={'QuotaForNewUser'}
@@ -92,7 +92,7 @@ export default function SettingsCreditLimit(props) {
                   }
                 />
               </Col>
-              <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+              <Col span={6}>
                 <Form.InputNumber
                   label={t('请求预扣费额度')}
                   field={'PreConsumedQuota'}
@@ -109,7 +109,7 @@ export default function SettingsCreditLimit(props) {
                   }
                 />
               </Col>
-              <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+              <Col span={6}>
                 <Form.InputNumber
                   label={t('邀请新用户奖励额度')}
                   field={'QuotaForInviter'}
@@ -126,9 +126,7 @@ export default function SettingsCreditLimit(props) {
                   }
                 />
               </Col>
-            </Row>
-            <Row>
-              <Col xs={24} sm={12} md={8} lg={8} xl={6}>
+              <Col span={6}>
                 <Form.InputNumber
                   label={t('新用户使用邀请码奖励额度')}
                   field={'QuotaForInvitee'}
@@ -148,9 +146,9 @@ export default function SettingsCreditLimit(props) {
             </Row>
 
             <Row>
-              <Button size='default' onClick={onSubmit}>
+              <button className='searchBtn mt-4' onClick={onSubmit}>
                 {t('保存额度设置')}
-              </Button>
+              </button>
             </Row>
           </Form.Section>
         </Form>

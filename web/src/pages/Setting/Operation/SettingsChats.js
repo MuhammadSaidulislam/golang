@@ -22,9 +22,7 @@ export default function SettingsChats(props) {
 
   async function onSubmit() {
     try {
-      console.log('Starting validation...');
       await refForm.current.validate().then(() => {
-        console.log('Validation passed');
         const updateArray = compareObjects(inputs, inputsRow);
         if (!updateArray.length) return showWarning(t('你似乎并没有修改什么'));
         const requestQueue = updateArray.map((item) => {
@@ -63,7 +61,6 @@ export default function SettingsChats(props) {
       });
     } catch (error) {
       showError(t('请检查输入'));
-      console.error(error);
     }
   }
 
@@ -141,9 +138,9 @@ export default function SettingsChats(props) {
         </Form.Section>
       </Form>
       <Space>
-        <Button onClick={onSubmit}>
+        <button className='searchBtn mt-4' onClick={onSubmit}>
           {t('保存聊天设置')}
-        </Button>
+        </button>
       </Space>
     </Spin>
   );

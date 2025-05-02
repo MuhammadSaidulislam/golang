@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Button, Col, Form, Row, Spin, Tag } from '@douyinfe/semi-ui';
+import { Button, Col, Form, Row, Spin, Switch, Tag } from '@douyinfe/semi-ui';
 import {
   compareObjects,
   API,
@@ -74,40 +74,64 @@ export default function SettingsSensitiveWords(props) {
           style={{ marginBottom: 15 }}
         >
           <Form.Section text={t('屏蔽词过滤设置')}>
-            <Row gutter={16}>
-              <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                <Form.Switch
+            <div className='settingInputBox gap-3 mt-3'>
+              <div className="personalInput">
+                <label>{t('启用屏蔽词过滤功能')}</label>
+                <Switch
                   field={'CheckSensitiveEnabled'}
-                  label={t('启用屏蔽词过滤功能')}
-                  size='default'
+                  checked={inputs.CheckSensitiveEnabled}
+                  onChange={(value) =>
+                    setInputs((prev) => ({
+                      ...prev,
+                      CheckSensitiveEnabled: value,
+                    }))
+                  }
+                  size="default"
                   checkedText='｜'
                   uncheckedText='〇'
-                  onChange={(value) => {
-                    setInputs({
-                      ...inputs,
-                      CheckSensitiveEnabled: value,
-                    });
+                  style={{
+                    backgroundColor: inputs.CheckSensitiveEnabled ? '#dbeafe' : '#f1f5f9',
+                    border: 'none',
+                  }}
+                  innerStyle={{
+                    backgroundColor: '#cbd5e1',
+                    width: 20,
+                    height: 20,
+                    marginTop: 2,
+                    marginLeft: 2,
                   }}
                 />
-              </Col>
-              <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                <Form.Switch
+              </div>
+              <div className="personalInput">
+                <label>{t('允许回调（会泄露服务器 IP 地址）')}</label>
+                <Switch
                   field={'CheckSensitiveOnPromptEnabled'}
-                  label={t('启用 Prompt 检查')}
-                  size='default'
+                  checked={inputs.CheckSensitiveOnPromptEnabled}
+                  onChange={(value) => {
+                    setInputs((prev) => ({
+                      ...prev,
+                      CheckSensitiveOnPromptEnabled: value,
+                    }))
+                  }}
+                  size="default"
                   checkedText='｜'
                   uncheckedText='〇'
-                  onChange={(value) =>
-                    setInputs({
-                      ...inputs,
-                      CheckSensitiveOnPromptEnabled: value,
-                    })
-                  }
+                  style={{
+                    backgroundColor: inputs.CheckSensitiveOnPromptEnabled ? '#dbeafe' : '#f1f5f9',
+                    border: 'none',
+                  }}
+                  innerStyle={{
+                    backgroundColor: '#cbd5e1',
+                    width: 20,
+                    height: 20,
+                    marginTop: 2,
+                    marginLeft: 2,
+                  }}
                 />
-              </Col>
-            </Row>
+              </div>
+            </div>
             <Row>
-              <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+              <div className="personalInput">
                 <Form.TextArea
                   label={t('屏蔽词列表')}
                   extraText={t('一行一个屏蔽词，不需要符号分割')}
@@ -122,12 +146,12 @@ export default function SettingsSensitiveWords(props) {
                   style={{ fontFamily: 'JetBrains Mono, Consolas' }}
                   autosize={{ minRows: 6, maxRows: 12 }}
                 />
-              </Col>
+              </div>
             </Row>
             <Row>
-              <Button size='default' onClick={onSubmit}>
+              <button className='searchBtn mt-4' onClick={onSubmit}>
                 {t('保存屏蔽词过滤设置')}
-              </Button>
+              </button>
             </Row>
           </Form.Section>
         </Form>

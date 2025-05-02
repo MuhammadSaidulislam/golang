@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, userRef } from 'react';
 import {
   API,
   copy,
@@ -6,33 +6,42 @@ import {
   showSuccess,
   timestamp2string,
 } from '../helpers';
-
 import { ITEMS_PER_PAGE } from '../constants';
-import {renderGroup, renderQuota} from '../helpers/render';
+import { formatDate, renderGroup, renderQuota } from '../helpers/render';
 import {
   Button, Divider,
-  Dropdown,
   Form,
-  Modal,
   Popconfirm,
   Popover, Space,
   SplitButtonGroup,
-  Table,
   Tag,
 } from '@douyinfe/semi-ui';
-
-import { IconTreeTriangleDown } from '@douyinfe/semi-icons';
+import { Modal, Dropdown, Table } from "react-bootstrap";
+import Icon, { IconArrowDown, IconChevronDown, IconChevronLeft, IconChevronRight, IconClose, IconCode, IconCodeStroked, IconLanguage, IconPlus, IconSearch, IconTreeTriangleDown } from '@douyinfe/semi-icons';
 import EditToken from '../pages/Token/EditToken';
 import { useTranslation } from 'react-i18next';
+import NoData from './NoData';
+import codeIcon from "../assets/fi_code.svg";
+import trendingIcon from "../assets/fi_trending-up.svg";
+import summaryIcon from "../assets/fi_ticket.svg";
+import sortIcon from "../assets/sort.svg";
+import ModalToken from '../pages/Token/ModalToken';
+import deleteIcon from "../assets/Delete.svg";
+import disableIcon from "../assets/fi_disable.svg";
+import editIcon from "../assets/fi_edit-2.svg";
+import chatIcon from "../assets/fi_chat_2.svg";
+import copyIcon from "../assets/u_copy-alt.svg";
+import TablePagination from './TablePagination';
+import { SortIconSvg } from './svgIcon';
+import enableIcon from "../assets/fi_check.svg";
+import { useLocation } from 'react-router-dom';
 
-function renderTimestamp(timestamp) {
-  return <>{timestamp2string(timestamp)}</>;
-}
+
 
 const TokensTable = () => {
 
   const { t } = useTranslation();
-
+  const [tokenList, setTokenList] = useState([]);
   const renderStatus = (status, model_limits_enabled = false) => {
     switch (status) {
       case 1:
@@ -77,87 +86,48 @@ const TokensTable = () => {
   };
 
   const columns = [
-    {
-      title: t('名称'),
-      dataIndex: 'name',
-    },
-    {
-      title: t('状态'),
-      dataIndex: 'status',
-      key: 'status',
-      render: (text, record, index) => {
-        return <div>
-          <Space>
-            {renderStatus(text, record.model_limits_enabled)}
-            {renderGroup(record.group)}
-          </Space>
-        </div>;
-      },
-    },
-    {
-      title: t('已用额度'),
-      dataIndex: 'used_quota',
-      render: (text, record, index) => {
-        return <div>{renderQuota(parseInt(text))}</div>;
-      },
-    },
-    {
-      title: t('剩余额度'),
-      dataIndex: 'remain_quota',
-      render: (text, record, index) => {
-        return (
-          <div>
-            {record.unlimited_quota ? (
-              <Tag size={'large'} color={'white'}>
-                {t('无限制')}
-              </Tag>
-            ) : (
-              <Tag size={'large'} color={'light-blue'}>
-                {renderQuota(parseInt(text))}
-              </Tag>
-            )}
-          </div>
-        );
-      },
-    },
-    {
-      title: t('创建时间'),
-      dataIndex: 'created_time',
-      render: (text, record, index) => {
-        return <div>{renderTimestamp(text)}</div>;
-      },
-    },
-    {
-      title: t('过期时间'),
-      dataIndex: 'expired_time',
-      render: (text, record, index) => {
-        return (
-          <div>
-            {record.expired_time === -1 ? t('永不过期') : renderTimestamp(text)}
-          </div>
-        );
-      },
-    },
+
+
     {
       title: '',
       dataIndex: 'operate',
       render: (text, record, index) => {
         let chats = localStorage.getItem('chats');
         let chatsArray = []
+        let chatLink = localStorage.getItem('chat_link');
+        let mjLink = localStorage.getItem('chat_link2');
         let shouldUseCustom = true;
-
+        if (chatLink) {
+          shouldUseCustom = false;
+          chatLink += `/#/?settings={"key":"{key}","url":"{address}"}`;
+          chatsArray.push({
+            node: 'item',
+            key: 'default',
+            name: 'ChatGPT Next Web',
+            onClick: () => {
+              onOpenLink('default', chatLink, record);
+            },
+          });
+        }
+        if (mjLink) {
+          shouldUseCustom = false;
+          mjLink += `/#/?settings={"key":"{key}","url":"{address}"}`;
+          chatsArray.push({
+            node: 'item',
+            key: 'mj',
+            name: 'ChatGPT Next Midjourney',
+            onClick: () => {
+              onOpenLink('mj', mjLink, record);
+            },
+          });
+        }
         if (shouldUseCustom) {
           try {
-            // console.log(chats);
             chats = JSON.parse(chats);
-            // check chats is array
             if (Array.isArray(chats)) {
               for (let i = 0; i < chats.length; i++) {
                 let chat = {}
                 chat.node = 'item';
-                // c is a map
-                // chat.key = chats[i].name;
-                // console.log(chats[i])
                 for (let key in chats[i]) {
                   if (chats[i].hasOwnProperty(key)) {
                     chat.key = i;
@@ -172,31 +142,13 @@ const TokensTable = () => {
             }
 
           } catch (e) {
-            console.log(e);
             showError(t('聊天链接配置错误，请联系管理员'));
           }
         }
         return (
           <div>
-            <Popover
-              content={'sk-' + record.key}
-              style={{ padding: 20 }}
-              position='top'
-            >
-              <Button theme='light' type='tertiary' style={{ marginRight: 1 }}>
-                {t('查看')}
-              </Button>
-            </Popover>
-            <Button
-              theme='light'
-              type='secondary'
-              style={{ marginRight: 1 }}
-              onClick={async (text) => {
-                await copyText('sk-' + record.key);
-              }}
-            >
-              {t('复制')}
-            </Button>
+
+
             <SplitButtonGroup
               style={{ marginRight: 1 }}
               aria-label={t('项目操作按钮组')}
@@ -229,61 +181,15 @@ const TokensTable = () => {
                 ></Button>
               </Dropdown>
             </SplitButtonGroup>
-            <Popconfirm
-              title={t('确定是否要删除此令牌？')}
-              content={t('此修改将不可逆')}
-              okType={'danger'}
-              position={'left'}
-              onConfirm={() => {
-                manageToken(record.id, 'delete', record).then(() => {
-                  removeRecord(record.key);
-                });
-              }}
-            >
-              <Button theme='light' type='danger' style={{ marginRight: 1 }}>
-                {t('删除')}
-              </Button>
-            </Popconfirm>
-            {record.status === 1 ? (
-              <Button
-                theme='light'
-                type='warning'
-                style={{ marginRight: 1 }}
-                onClick={async () => {
-                  manageToken(record.id, 'disable', record);
-                }}
-              >
-                {t('禁用')}
-              </Button>
-            ) : (
-              <Button
-                theme='light'
-                type='secondary'
-                style={{ marginRight: 1 }}
-                onClick={async () => {
-                  manageToken(record.id, 'enable', record);
-                }}
-              >
-                {t('启用')}
-              </Button>
-            )}
-            <Button
-              theme='light'
-              type='tertiary'
-              style={{ marginRight: 1 }}
-              onClick={() => {
-                setEditingToken(record);
-                setShowEdit(true);
-              }}
-            >
-              {t('编辑')}
-            </Button>
+
           </div>
         );
       },
     },
   ];
-
+  const location = useLocation();
+  const [openWarning, setOpenWarning] = useState(false);
+  const openModalClose = () => { setOpenWarning(false); };
   const [pageSize, setPageSize] = useState(ITEMS_PER_PAGE);
   const [showEdit, setShowEdit] = useState(false);
   const [tokens, setTokens] = useState([]);
@@ -294,10 +200,14 @@ const TokensTable = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchToken, setSearchToken] = useState('');
   const [searching, setSearching] = useState(false);
+  const [modalShow, setModalShow] = useState(false);
   const [chats, setChats] = useState([]);
   const [editingToken, setEditingToken] = useState({
     id: undefined,
   });
+  const handleModalClose = () => {
+    setModalShow(false);
+  }
 
   const closeEdit = () => {
     setShowEdit(false);
@@ -307,6 +217,12 @@ const TokensTable = () => {
       });
     }, 500);
   };
+
+  useEffect(() => {
+    if (location.state?.showDefaultPasswordWarning) {
+      setOpenWarning(true);
+    }
+  }, [location.state]);
 
   const setTokensFormat = (tokens) => {
     setTokens(tokens);
@@ -321,6 +237,7 @@ const TokensTable = () => {
     (activePage - 1) * pageSize,
     activePage * pageSize,
   );
+
   const loadTokens = async (startIdx) => {
     setLoading(true);
     const res = await API.get(`/api/token/?p=${startIdx}&size=${pageSize}`);
@@ -328,10 +245,12 @@ const TokensTable = () => {
     if (success) {
       if (startIdx === 0) {
         setTokensFormat(data);
+        setTokenList(data);
       } else {
         let newTokens = [...tokens];
         newTokens.splice(startIdx * pageSize, data.length, ...data);
         setTokensFormat(newTokens);
+        setTokenList(data);
       }
     } else {
       showError(message);
@@ -356,7 +275,6 @@ const TokensTable = () => {
   };
 
   const onOpenLink = async (type, url, record) => {
-    // console.log(type, url, key);
     let status = localStorage.getItem('status');
     let serverAddress = '';
     if (status) {
@@ -373,22 +291,23 @@ const TokensTable = () => {
     window.open(url, '_blank');
   };
 
-  useEffect(() => {
-    loadTokens(0)
-      .then()
-      .catch((reason) => {
-        showError(reason);
-      });
-  }, [pageSize]);
+  // useEffect(() => {
+  //   loadTokens(0)
+  //     .then()
+  //     .catch((reason) => {
+  //       showError(reason);
+  //     });
+  // }, [pageSize]);
 
   const removeRecord = (key) => {
+
     let newDataSource = [...tokens];
     if (key != null) {
       let idx = newDataSource.findIndex((data) => data.key === key);
-
       if (idx > -1) {
         newDataSource.splice(idx, 1);
         setTokensFormat(newDataSource);
+        showSuccess('操作成功完成！');
       }
     }
   };
@@ -415,11 +334,9 @@ const TokensTable = () => {
       showSuccess('操作成功完成！');
       let token = res.data.data;
       let newTokens = [...tokens];
-      // let realIdx = (activePage - 1) * ITEMS_PER_PAGE + idx;
       if (action === 'delete') {
       } else {
         record.status = token.status;
-        // newTokens[realIdx].status = token.status;
       }
       setTokensFormat(newTokens);
     } else {
@@ -450,7 +367,7 @@ const TokensTable = () => {
   };
 
   const handleKeywordChange = async (value) => {
-    setSearchKeyword(value.trim());
+    setSearchKeyword(value.target.value);
   };
 
   const handleSearchTokenChange = async (value) => {
@@ -474,14 +391,13 @@ const TokensTable = () => {
   const handlePageChange = (page) => {
     setActivePage(page);
     if (page === Math.ceil(tokens.length / pageSize) + 1) {
-      // In this case we have to load more data and then append them.
-      loadTokens(page - 1).then((r) => {});
+      loadTokens(page - 1).then((r) => { });
     }
   };
 
   const rowSelection = {
-    onSelect: (record, selected) => {},
-    onSelectAll: (selected, selectedRows) => {},
+    onSelect: (record, selected) => { },
+    onSelectAll: (selected, selectedRows) => { },
     onChange: (selectedRowKeys, selectedRows) => {
       setSelectedKeys(selectedRows);
     },
@@ -499,6 +415,130 @@ const TokensTable = () => {
     }
   };
 
+  const description = "Add Tokens to start tracking Calls <br /> Distribution Metrics.";
+
+  const addToken = () => {
+    setEditingToken({
+      id: undefined,
+    });
+    setShowEdit(true);
+  }
+  const [userDropdown, setUserDropdown] = useState(false);
+  const toggleUserDropdown = (e) => {
+    e.stopPropagation();
+    setUserDropdown(!userDropdown);
+  };
+
+
+
+  const [isChecked, setIsChecked] = useState(true);
+  const [updateShow, setUpdateShow] = useState(false);
+  const handleUpdateClose = () => setUpdateShow(false);
+  const handleChange = () => {
+    setIsChecked(!isChecked);
+  };
+
+
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageToSize, setPageToSize] = useState(10);
+  const [isLastPage, setIsLastPage] = useState(false);
+  const [totalItems, setTotalItems] = useState(0);
+
+  useEffect(() => {
+    fetchData(currentPage);
+  }, [currentPage, pageToSize]);
+
+  const fetchData = async (page) => {
+    setLoading(true);
+    try {
+      const response = await API.get(`/api/token/?p=${currentPage}&size=${pageToSize}`);
+      setTokenList(response.data.data);
+      setIsLastPage(response.data.data.length < pageToSize);
+      setTotalItems(((page + 1) - 1) * pageToSize + response.data.data.length);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    setLoading(false);
+  };
+
+  const startItem = ((currentPage + 1) - 1) * pageToSize + 1;
+  const endItem = startItem + tokenList.length - 1;
+
+  const totalPages = Math.ceil(totalItems / pageToSize);
+
+  const maxPageButtons = 50; // Max visible page buttons
+  let startPage = Math.max(1, (currentPage + 1) - Math.floor(maxPageButtons / 2));
+  let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+
+  // Ensure 5 pages are shown when possible
+  if (endPage - startPage + 1 < maxPageButtons) {
+    startPage = Math.max(1, endPage - maxPageButtons + 1);
+  }
+
+  // Create an array of visible page numbers
+  const pageNumbers = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
+
+
+  const getStoredChats = () => {
+    let chats = localStorage.getItem('chats');
+    let chatLink = localStorage.getItem('chat_link');
+    let mjLink = localStorage.getItem('chat_link2');
+    let chatsArray = [];
+    let shouldUseCustom = true;
+
+    if (chatLink) {
+      shouldUseCustom = false;
+      chatLink += `/#/?settings={"key":"{key}","url":"{address}"}`;
+      chatsArray.push({
+        node: 'item',
+        key: 'default',
+        name: 'ChatGPT Next Web',
+        link: chatLink,
+      });
+    }
+
+    if (mjLink) {
+      shouldUseCustom = false;
+      mjLink += `/#/?settings={"key":"{key}","url":"{address}"}`;
+      chatsArray.push({
+        node: 'item',
+        key: 'mj',
+        name: 'ChatGPT Next Midjourney',
+        link: mjLink,
+      });
+    }
+
+    if (shouldUseCustom) {
+      try {
+        chats = JSON.parse(chats);
+        if (Array.isArray(chats)) {
+          chats.forEach((chatObj, index) => {
+            for (let key in chatObj) {
+              if (chatObj.hasOwnProperty(key)) {
+                chatsArray.push({
+                  node: 'item',
+                  key: index,
+                  name: key,
+                  link: chatObj[key],
+                });
+              }
+            }
+          });
+        }
+      } catch (e) {
+        console.error('Error parsing chats:', e);
+      }
+    }
+
+    return chatsArray;
+  };
+  const chatMessage = getStoredChats();
+
+
   return (
     <>
       <EditToken
@@ -506,100 +546,220 @@ const TokensTable = () => {
         editingToken={editingToken}
         visiable={showEdit}
         handleClose={closeEdit}
+        modalShow={modalShow}
+        handleModalClose={handleModalClose}
       ></EditToken>
-      <Form
-        layout='horizontal'
-        style={{ marginTop: 10 }}
-        labelPosition={'left'}
-      >
-        <Form.Input
-          field='keyword'
-          label={t('搜索关键字')}
-          placeholder={t('令牌名称')}
-          value={searchKeyword}
-          loading={searching}
-          onChange={handleKeywordChange}
-        />
-        <Form.Input
-          field='token'
-          label={t('密钥')}
-          placeholder={t('密钥')}
-          value={searchToken}
-          loading={searching}
-          onChange={handleSearchTokenChange}
-        />
-        <Button
-          label={t('查询')}
+
+      <Modal show={openWarning} onHide={openModalClose} centered size="md">
+        <div className='modalHeading'>
+          <h1>{t('您正在使用默认密码！')}</h1>
+          <button onClick={openModalClose}><IconClose /></button>
+        </div>
+        <div className='modalContent walletModal'>
+          <p>{t('请立刻修改默认密码！')}</p>
+          <div className="button-group mt-3">
+            <div className="btn btn-cancel" onClick={openModalClose}>{t('取消')}</div>
+            <div onClick={openModalClose} className="btn btn-redeem">{t('确定')}</div>
+          </div>
+        </div>
+      </Modal>
+
+      {/* <ModalToken refresh={refresh} visiable={showEdit} editingToken={editingToken} updateShow={updateShow} handleUpdateClose={handleUpdateClose} /> */}
+
+      {/* <div className="container">
+        <div className='row'>
+          <div className='col-md-4'>
+            <div className='firstBox'>
+              <div className='cardHeader'>
+                <div className='cardIcon'>
+                  <img src={codeIcon} alt="codeIcon" />
+                </div>
+                <div className='cardTime'>
+                  <div
+                    className="icon-container"
+                    ref={userRef}
+                    onClick={toggleUserDropdown}
+                  >
+                    <div className="user-icon">
+                      This Week <IconChevronDown />
+                    </div>
+                    {userDropdown && (
+                      <div className="dropdown active">
+                        <div className="dropdown-item">This Week</div>
+                        <div className="dropdown-item">This Month</div>
+                        <div className="dropdown-item">This Year</div>
+                      </div>)}
+                  </div>
+                </div>
+              </div>
+              <div className='cardContent'>
+                <div>
+                  <h6>All Tokens</h6>
+                  <p>0</p>
+                </div>
+                <div>
+                  <h6>Active</h6>
+                  <p>0 <span>+0.00%</span> </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='col-md-4'>
+            <div className='firstBox'>
+              <div className='cardHeader'>
+                <div className='cardIcon'>
+                  <img src={trendingIcon} alt="trendingIcon" />
+                </div>
+                <div className='cardTime'>
+                  <div
+                    className="icon-container"
+                    ref={userRef}
+                    onClick={toggleUserDropdown}
+                  >
+                    <div className="user-icon">
+                      This Week <IconChevronDown />
+                    </div>
+                    {userDropdown && (
+                      <div className="dropdown active">
+                        <div className="dropdown-item">This Week</div>
+                        <div className="dropdown-item">This Month</div>
+                        <div className="dropdown-item">This Year</div>
+                      </div>)}
+                  </div>
+                </div>
+              </div>
+              <div className='cardContent'>
+                <div>
+                  <h6>All Tokens</h6>
+                  <p>0</p>
+                </div>
+                <div>
+                  <h6>Success</h6>
+                  <p>10.2k</p>
+                </div>
+                <div>
+                  <h6>Active</h6>
+                  <p>0 <span>+0.00%</span> </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='col-md-4'>
+            <div className='firstBox'>
+              <div className='cardHeader'>
+                <div className='cardIcon'>
+                  <img src={summaryIcon} alt="summaryIcon" />
+                </div>
+                <div className='cardTime'>
+                  <div
+                    className="icon-container"
+                    ref={userRef}
+                    onClick={toggleUserDropdown}
+                  >
+                    <div className="user-icon">
+                      This Week <IconChevronDown />
+                    </div>
+                    {userDropdown && (
+                      <div className="dropdown active">
+                        <div className="dropdown-item">This Week</div>
+                        <div className="dropdown-item">This Month</div>
+                        <div className="dropdown-item">This Year</div>
+                      </div>)}
+                  </div>
+                </div>
+              </div>
+              <div className='cardContent'>
+                <div>
+                  <h6>All Tokens</h6>
+                  <p>0</p>
+                </div>
+                <div>
+                  <h6>Active</h6>
+                  <p>0 <span>+0.00%</span> </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> */}
+
+      <div className='searchAdd'>
+        <div className='searchBox'>
+          <div className="search-container">
+            <i className="search-icon"><IconSearch /></i>
+            <input type="text" className="search-input" placeholder={t('令牌名称')} value={searchKeyword} onChange={handleKeywordChange} />
+          </div>
+          <button className='searchBtn' onClick={searchTokens} style={{ marginLeft: '10px' }}>
+            {t('查询')}
+          </button>
+        </div>
+        <button className='searchBtn'
+          theme='light'
           type='primary'
-          htmlType='submit'
-          className='btn-margin-right'
-          onClick={searchTokens}
           style={{ marginRight: 8 }}
+          onClick={() => {
+            setEditingToken({
+              id: undefined,
+            });
+            setModalShow(true);
+            setUpdateShow(true);
+          }}
         >
-          {t('查询')}
-        </Button>
-      </Form>
-      <Divider style={{margin:'15px 0'}}/>
-      <div>
-        <Button
-            theme='light'
-            type='primary'
-            style={{ marginRight: 8 }}
-            onClick={() => {
-              setEditingToken({
-                id: undefined,
-              });
-              setShowEdit(true);
-            }}
-        >
-            {t('添加令牌')}
-        </Button>
-        <Button
-            label={t('复制所选令牌')}
-            type='warning'
-            onClick={async () => {
-              if (selectedKeys.length === 0) {
-                showError(t('请至少选择一个令牌！'));
-                return;
-              }
-              let keys = '';
-              for (let i = 0; i < selectedKeys.length; i++) {
-                keys +=
-                    selectedKeys[i].name + '    sk-' + selectedKeys[i].key + '\n';
-              }
-              await copyText(keys);
-            }}
-        >
-          {t('复制所选令牌到剪贴板')}
-        </Button>
+          <IconPlus /> {t('添加令牌')}
+        </button>
       </div>
 
-      <Table
-        style={{ marginTop: 20 }}
-        columns={columns}
-        dataSource={pageData}
-        pagination={{
-          currentPage: activePage,
-          pageSize: pageSize,
-          total: tokenCount,
-          showSizeChanger: true,
-          pageSizeOptions: [10, 20, 50, 100],
-          formatPageText: (page) =>
-            t('第 {{start}} - {{end}} 条，共 {{total}} 条', {
-              start: page.currentStart,
-              end: page.currentEnd,
-              total: tokens.length
-            }),
-          onPageSizeChange: (size) => {
-            setPageSize(size);
-            setActivePage(1);
-          },
-          onPageChange: handlePageChange,
-        }}
-        loading={loading}
-        rowSelection={rowSelection}
-        onRow={handleRow}
-      ></Table>
+      {/* <NoData description={description} btnFunction={addToken} /> */}
+      <div className="tableData">
+        <div className='tableBox'>
+          <Table borderless hover>
+            <thead>
+              <tr>
+                <th>{t('代币名称')}</th>
+                <th>{t('任务状态')}</th>
+                <th>{t('已用额度')}</th>
+                <th>{t('配额余额')}</th>
+                <th>{t('已创建')}</th>
+                <th>{t('到期日')}</th>
+                <th>{t('操作')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tokenList && tokenList.map((data) => <tr>
+                <td>{data.name}</td>
+                <td>{renderStatus(data.status, data.model_limits_enabled)}
+                  {renderGroup(data.group)}</td>
+                <td>{renderQuota(parseInt(data.used_quota))}</td>
+                <td>{renderQuota(parseInt(data.remain_quota))}</td>
+                <td>{formatDate(data.created_time)}</td>
+                <td>{data.expired_time === -1 ? t('永不过期') : formatDate(data.expired_time)}</td>
+                <td className='tableActions'>
+                  <button onClick={async (text) => { await copyText('sk-' + data.key); }}><img src={copyIcon} alt="tableAction" /></button>
+                  <button onClick={() => onOpenLink('default', chatMessage[0].link, data)}><img src={chatIcon} alt="tableAction" /> </button>
+                  <button onClick={() => { setEditingToken(data); setModalShow(true); }}><img src={editIcon} alt="tableAction" /></button>
+                  {data.status === 1 ? <button onClick={async () => { manageToken(data.id, 'disable', data); }}><img src={disableIcon} alt="tableAction" /></button> : <button onClick={async () => { manageToken(data.id, 'enable', data); }}><img src={enableIcon} alt="tableAction" /></button>}
+                  <Popconfirm
+                    title={t('确定是否要删除此令牌？')}
+                    content={t('此修改将不可逆')}
+                    okType={'danger'}
+                    position={'left'}
+                    onConfirm={() => {
+                      manageToken(data.id, 'delete', data).then(() => {
+                        removeRecord(data.key);
+                      });
+                    }}
+                  >
+                    <button><img src={deleteIcon} alt="tableAction" /></button>
+                  </Popconfirm>
+
+                </td>
+              </tr>)}
+            </tbody>
+          </Table>
+        </div>
+      </div>
+      {  /* Pagination */}
+      <TablePagination pageToSize={pageToSize} setPageToSize={setPageToSize} setCurrentPage={setCurrentPage} startItem={startItem} endItem={endItem} currentPage={currentPage} pageNumbers={pageNumbers} isLastPage={isLastPage} />
     </>
   );
 };

@@ -16,6 +16,7 @@ import FooterBar from './components/Footer';
 import { StyleProvider } from './context/Style/index.js';
 import PageLayout from './components/PageLayout.js';
 import './i18n/i18n.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // initialization
 

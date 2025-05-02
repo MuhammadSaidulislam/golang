@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Grid, Header, Image, Segment } from 'semantic-ui-react';
 import { API, showError, showInfo, showSuccess } from '../helpers';
 import Turnstile from 'react-turnstile';
+import { useTranslation } from 'react-i18next';
+import Title from '@douyinfe/semi-ui/lib/es/typography/title';
+import { Layout } from '@douyinfe/semi-ui';
 
 const PasswordResetForm = () => {
+  const { t } = useTranslation();
   const [inputs, setInputs] = useState({
     email: '',
   });
@@ -56,46 +60,46 @@ const PasswordResetForm = () => {
   }
 
   return (
-    <Grid textAlign='center' style={{ marginTop: '48px' }}>
-      <Grid.Column style={{ maxWidth: 450 }}>
-        <Header as='h2' color='' textAlign='center'>
-          <Image src='/logo.png' /> 密码重置
-        </Header>
-        <Form size='large'>
-          <Segment>
-            <Form.Input
-              fluid
-              icon='mail'
-              iconPosition='left'
-              placeholder='邮箱地址'
-              name='email'
-              value={email}
-              onChange={handleChange}
-            />
-            {turnstileEnabled ? (
-              <Turnstile
-                sitekey={turnstileSiteKey}
-                onVerify={(token) => {
-                  setTurnstileToken(token);
-                }}
+    <Layout>
+      <div className='mainContent'>
+        <div className='d-flex justify-content-center align-items-center h-100'>
+          <div className='loginForm'>
+            <Title textAlign='center' className='text-center'>
+              {t("恢复密码")}
+            </Title>
+            <p className='text-center mb-4'>{t("输入您的电子邮件地址以恢复您的密码")}</p>
+            <Form>
+              <Form.Input
+                icon='mail'
+                iconPosition='left'
+                placeholder={t('邮箱地址')}
+                name='email'
+                label='Email address'
+                value={email}
+                onChange={handleChange}
               />
-            ) : (
-              <></>
-            )}
-            <Button
-              color='green'
-              fluid
-              size='large'
-              onClick={handleSubmit}
-              loading={loading}
-              disabled={disableButton}
-            >
-              {disableButton ? `重试 (${countdown})` : '提交'}
-            </Button>
-          </Segment>
-        </Form>
-      </Grid.Column>
-    </Grid>
+              {turnstileEnabled ? (
+                <Turnstile
+                  sitekey={turnstileSiteKey}
+                  onVerify={(token) => {
+                    setTurnstileToken(token);
+                  }}
+                />
+              ) : (
+                <></>
+              )}
+
+              <div className='loginSubmit'>
+                <Button fluid size="large" onClick={handleSubmit} loading={loading} disabled={disableButton}>
+                  {disableButton ? `${t('重试')} (${countdown})` : t('提交')}
+                </Button>
+
+              </div>
+            </Form>
+          </div>
+        </div>
+      </div>
+    </Layout>
   );
 };
 
