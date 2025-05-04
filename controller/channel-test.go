@@ -81,6 +81,7 @@ func testChannel(channel *model.Channel, testModel string) (err error, openAIErr
 
 	c.Request.Header.Set("Authorization", "Bearer "+channel.Key)
 	c.Request.Header.Set("Content-Type", "application/json")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization")
 	c.Set("channel", channel.Type)
 	c.Set("base_url", channel.GetBaseURL())
 	group, _ := model.GetUserGroup(1, false)
@@ -106,8 +107,9 @@ func testChannel(channel *model.Channel, testModel string) (err error, openAIErr
 	common.SysLog(fmt.Sprintf("testing channel %d with model %s , info %v ", channel.Id, testModel, info))
 
 	adaptor.Init(info)
-
+	fmt.Printf("Converted request: %+v\n", request)
 	convertedRequest, err := adaptor.ConvertOpenAIRequest(c, info, request)
+	fmt.Printf("Converted Request: %+v\n", convertedRequest)
 	if err != nil {
 		return err, nil
 	}
@@ -115,6 +117,8 @@ func testChannel(channel *model.Channel, testModel string) (err error, openAIErr
 	if err != nil {
 		return err, nil
 	}
+	fmt.Printf("Converted Request: %+v\n", convertedRequest)
+
 	requestBody := bytes.NewBuffer(jsonData)
 	c.Request.Body = io.NopCloser(requestBody)
 	resp, err := adaptor.DoRequest(c, info, requestBody)
