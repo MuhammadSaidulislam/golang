@@ -1,6 +1,6 @@
 package setting
 
-var ServerAddress = "http://localhost:3000"
+var ServerAddress = "https://golang-production-e245.up.railway.app"
 var WorkerUrl = ""
 var WorkerValidKey = ""
 
