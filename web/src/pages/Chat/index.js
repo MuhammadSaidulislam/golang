@@ -14,7 +14,7 @@ const ChatPage = () => {
     let link = localStorage.getItem('chat_link');
     console.log('serverAddress', serverAddress);
     if (link) {
-      link = `${link}/#/?settings={"key":"sk-${key}","url":"${serverAddress}"}`;
+      link = `${link}/#/?settings={"key":"sk-${key}","url":"${encodeURIComponent(serverAddress)}"}`;
     } else if (id) {
       let chats = localStorage.getItem('chats');
 
@@ -23,19 +23,16 @@ const ChatPage = () => {
         if (Array.isArray(chats) && chats.length > 0) {
           for (let k in chats[id]) {
             link = chats[id][k];
-            link = link.replaceAll('{address}', serverAddress);
+            link = link.replaceAll('{address}', encodeURIComponent(serverAddress));
             link = link.replaceAll('{key}', 'sk-' + key);
           }
         }
       }
     }
-    console.log('link', link);
-
     return link;
   };
 
   const iframeSrc = keys.length > 0 ? comLink(keys[0]) : '';
-  console.log('iframeSrc', iframeSrc);
   return !isLoading && iframeSrc ? (
     <DashboardLayout>
       <iframe
