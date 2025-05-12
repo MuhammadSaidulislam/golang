@@ -10,17 +10,6 @@ func CORS() gin.HandlerFunc {
 	config.AllowOrigins = []string{"http://localhost:5173"} // Allow only Vite
 	config.AllowCredentials = true
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
-	config.AllowHeaders = []string{
-		"Origin",
-		"Content-Type",
-		"Accept",
-		"Authorization",
-		"X-Requested-With",
-	}
-	config.ExposeHeaders = []string{
-		"Content-Length",
-		"Authorization",
-		"Content-Type",
-	}
+	config.AllowHeaders = []string{"*"} // Allow all headers
 	return cors.New(config)
 }
