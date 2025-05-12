@@ -7,6 +7,38 @@ import (
 	"one-api/relay"
 )
 
+func ProxyHandler(c *gin.Context) {
+    // Target URL for external API
+    url := "https://golang-production-e245.up.railway.app/v1/chat/completions"
+
+    // Create a new HTTP request with the incoming body
+    req, err := http.NewRequest("POST", url, c.Request.Body)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    // Forward headers from the original request
+    req.Header = c.Request.Header
+    req.Header.Set("Content-Type", "application/json")
+
+    // Perform the request
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+    defer resp.Body.Close()
+
+    // Read the response
+    body, _ := io.ReadAll(resp.Body)
+
+    // Send back the response from the external API
+    c.Data(resp.StatusCode, resp.Header.Get("Content-Type"), body)
+}
+
+
 func SetRelayRouter(router *gin.Engine) {
 	router.Use(middleware.CORS())
 	router.Use(middleware.DecompressRequestMiddleware())
@@ -60,6 +92,10 @@ func SetRelayRouter(router *gin.Engine) {
 		httpRouter.DELETE("/models/:model", controller.RelayNotImplemented)
 		httpRouter.POST("/moderations", controller.Relay)
 		httpRouter.POST("/rerank", controller.Relay)
+		proxyRouter := router.Group("/proxy")
+		{
+			proxyRouter.POST("/chat/completions", ProxyHandler)
+		}
 	}
 
 	relayMjRouter := router.Group("/mj")
