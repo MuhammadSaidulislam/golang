@@ -1,6 +1,8 @@
 package router
 
 import (
+	"net/http"
+	"io"
 	"github.com/gin-gonic/gin"
 	"one-api/controller"
 	"one-api/middleware"
@@ -9,7 +11,7 @@ import (
 
 func ProxyHandler(c *gin.Context) {
     // Target URL for external API
-    url := "https://golang-production-e245.up.railway.app/v1/chat/completions"
+    url := "https://golang-production-9393.up.railway.app/v1/chat/completions"
 
     // Create a new HTTP request with the incoming body
     req, err := http.NewRequest("POST", url, c.Request.Body)
