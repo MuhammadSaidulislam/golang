@@ -43,17 +43,21 @@ type OpenAIModelsResponse struct {
 func GetAllChannels(c *gin.Context) {
 	p, _ := strconv.Atoi(c.Query("p"))
 	pageSize, _ := strconv.Atoi(c.Query("page_size"))
-	if p < 0 {
-		p = 0
+	if p < 1 { // Start from 1 instead of 0
+		p = 1
 	}
 	if pageSize < 0 {
 		pageSize = common.ItemsPerPage
 	}
+
 	channelData := make([]*model.Channel, 0)
 	idSort, _ := strconv.ParseBool(c.Query("id_sort"))
 	enableTagMode, _ := strconv.ParseBool(c.Query("tag_mode"))
+	var total int64
+	var err error
+
 	if enableTagMode {
-		tags, err := model.GetPaginatedTags(p*pageSize, pageSize)
+		tags, err := model.GetPaginatedTags((p-1)*pageSize, pageSize) // Adjusted offset
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"success": false,
@@ -69,8 +73,9 @@ func GetAllChannels(c *gin.Context) {
 				}
 			}
 		}
+		total = int64(len(channelData))
 	} else {
-		channels, err := model.GetAllChannels(p*pageSize, pageSize, false, idSort)
+		channelData, err = model.GetAllChannels((p-1)*pageSize, pageSize, false, idSort) // Adjusted offset
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"success": false,
@@ -78,15 +83,22 @@ func GetAllChannels(c *gin.Context) {
 			})
 			return
 		}
-		channelData = channels
+		model.DB.Model(&model.Channel{}).Count(&total)
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
-		"message": "",
-		"data":    channelData,
+		"message": "channel",
+		"data": map[string]any{
+			"items":     channelData,
+			"total":     total,
+			"page":      p,
+			"page_size": pageSize,
+		},
 	})
-	return
 }
+
+
 
 func FetchUpstreamModels(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))

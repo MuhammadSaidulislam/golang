@@ -20,7 +20,6 @@ export default function SettingsDrawing(props) {
     MjModeClearEnabled: false,
     MjActionCheckSuccessEnabled: false,
   });
-  console.log('inputs inputs', inputs);
 
   const refForm = useRef();
   const [inputsRow, setInputsRow] = useState(inputs);

@@ -3,11 +3,9 @@ import TaskLogsTable from "../../components/TaskLogsTable.js";
 import DashboardLayout from '../../components/DashboardLayout.js';
 
 const Task = () => (
-  <>
-    <DashboardLayout>
-      <TaskLogsTable />
-    </DashboardLayout>
-  </>
+  <DashboardLayout>
+    <TaskLogsTable />
+  </DashboardLayout>
 );
 
 export default Task;

@@ -30,10 +30,12 @@ import { StyleContext } from '../context/Style/index.js';
 
 const CommonHeader = () => {
     const { t, i18n } = useTranslation();
+    const [isDark, setIsDark] = useState(false);
     const [userState, userDispatch] = useContext(UserContext);
     const [styleState, styleDispatch] = useContext(StyleContext);
     let navigate = useNavigate();
     const [currentLang, setCurrentLang] = useState(i18n.language);
+
     const systemName = getSystemName();
     const logo = getLogo();
     const currentDate = new Date();
@@ -66,8 +68,10 @@ const CommonHeader = () => {
 
     useEffect(() => {
         if (theme === 'dark') {
+            setIsDark(true);
             document.body.setAttribute('theme-mode', 'dark');
         } else {
+            setIsDark(false);
             document.body.removeAttribute('theme-mode');
         }
         // 发送当前主题模式给子页面
@@ -105,8 +109,6 @@ const CommonHeader = () => {
     const darkHoverClass = darkMode ? "bg-secondary" : "bg-light";
 
 
-    const [isDark, setIsDark] = useState(false);
-
     const toggleTheme = () => {
         setIsDark(!isDark);
         setTheme(!isDark);
@@ -135,7 +137,7 @@ const CommonHeader = () => {
                         <div className="navbarLink">
                             <div className="dropdown relative inline-block">
                                 <button className="dropdown-btn">
-                                    {currentLang === "en" ? <><img src={ukLogo} className='langLogo' alt="uk" /> English</> : <><img src={chinaLogo} className='langLogo' alt="chinaLogo" /> 简体中文</>}
+                                    {(currentLang === "en" || currentLang === "en-US") ? <><img src={ukLogo} className='langLogo' alt="uk" /> English</> : <><img src={chinaLogo} className='langLogo' alt="chinaLogo" /> 简体中文</>}
                                 </button>
 
                                 <div className="dropdown-menu absolute hidden shadow-md rounded-md ">
@@ -216,7 +218,7 @@ const CommonHeader = () => {
                                         className="dropdown-btn flex items-center justify-between w-full px-4 py-2 bg-gray-100 rounded-md"
                                         onClick={() => setIsLangOpen(!isLangOpen)}
                                     >
-                                        {currentLang === "en" ? (
+                                        {currentLang === "en" || "en-US" ? (
                                             <>
                                                 <img src={ukLogo} className="langLogo mr-2" alt="uk" /> English
                                             </>

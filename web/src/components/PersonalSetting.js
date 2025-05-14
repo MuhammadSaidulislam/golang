@@ -563,7 +563,7 @@ const PersonalSetting = () => {
                                             value={getUsername() && typeof getUsername() === 'string' ? getUsername() : ''}
                                         />
                                     </div>
-                                    {userState.user && userState?.user?.email ? <div className="personalInput">
+                                    <div className="personalInput">
                                         <label>Email</label>
                                         <input
                                             type="email"
@@ -571,8 +571,7 @@ const PersonalSetting = () => {
                                             placeholder="Email"
                                             value={userState.user && userState?.user?.email}
                                         />
-                                    </div> : ""}
-
+                                    </div>
                                     <div className="personalInput">
                                         <label>{t('邀请链接')}</label>
                                         <input value={affLink} onClick={handleAffLinkClick} readOnly />

@@ -43,8 +43,10 @@ const DashboardLayout = ({ children, ...props }) => {
     const toggle = () => {
         setIsOpen((prev) => !prev);
     };
+    const [isDark, setIsDark] = useState(false);
 
     const [currentLang, setCurrentLang] = useState(i18n.language);
+
     const theme = useTheme();
     const setTheme = useSetTheme();
     const [styleState, styleDispatch] = useContext(StyleContext);
@@ -58,6 +60,24 @@ const DashboardLayout = ({ children, ...props }) => {
             showError(message);
         }
     };
+
+
+    useEffect(() => {
+        if (theme === 'dark') {
+            setIsDark(true);
+            document.body.setAttribute('theme-mode', 'dark');
+        } else {
+            setIsDark(false);
+            document.body.removeAttribute('theme-mode');
+        }
+        // 发送当前主题模式给子页面
+        const iframe = document.querySelector('iframe');
+        if (iframe) {
+            iframe.contentWindow.postMessage({ themeMode: theme }, '*');
+        }
+
+    }, [theme]);
+
     useEffect(() => {
         const handleLanguageChanged = (lng) => {
             setCurrentLang(lng);
@@ -123,7 +143,7 @@ const DashboardLayout = ({ children, ...props }) => {
     }, []);
 
 
-    const [isDark, setIsDark] = useState(false);
+
 
     const toggleTheme = () => {
         setIsDark(!isDark);
@@ -150,7 +170,7 @@ const DashboardLayout = ({ children, ...props }) => {
                     <span className='walletAmount'>{userQuota && userQuota}  <WalletIconSvg color="--semi-text-white-black-0" /> </span>
                     <div className="dropdown-lang relative">
                         <button className="dropdown-btn">
-                            {currentLang === "en" ? <><img src={ukLogo} className='langLogo' alt="uk" /> English</> : <><img src={chinaLogo} className='langLogo' alt="chinaLogo" /> 简体中文</>}
+                            {(currentLang === "en" || currentLang === "en-US") ? <><img src={ukLogo} className='langLogo' alt="uk" /> English</> : <><img src={chinaLogo} className='langLogo' alt="chinaLogo" /> 简体中文</>}
                         </button>
 
                         <div className="dropdown-menu absolute hidden shadow-md rounded-md ">

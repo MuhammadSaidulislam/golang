@@ -36,7 +36,6 @@ const Login = () => {
     let onSubmit = (user: any) => {
         const { email, password } = user;
         loginAdmin({ email, password }).then((data) => {
-            console.log('data::', data)
             if (data.statusCode !== 200) {
                 showNotifications(TOAST_TYPE.error, 'Login Unsuccessful', 'Incorrect email or password');
             }

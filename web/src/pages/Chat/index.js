@@ -8,16 +8,13 @@ const ChatPage = () => {
   const { id } = useParams();
   const { keys, serverAddress, isLoading } = useTokenKeys(id);
 
-
   const comLink = (key) => {
     if (!serverAddress || !key) return '';
     let link = localStorage.getItem('chat_link');
-    console.log('serverAddress', serverAddress);
     if (link) {
       link = `${link}/#/?settings={"key":"sk-${key}","url":"${encodeURIComponent(serverAddress)}"}`;
     } else if (id) {
       let chats = localStorage.getItem('chats');
-
       if (chats) {
         chats = JSON.parse(chats);
         if (Array.isArray(chats) && chats.length > 0) {
@@ -33,6 +30,7 @@ const ChatPage = () => {
   };
 
   const iframeSrc = keys.length > 0 ? comLink(keys[0]) : '';
+
   return !isLoading && iframeSrc ? (
     <DashboardLayout>
       <iframe

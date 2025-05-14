@@ -235,6 +235,7 @@ const TopUp = () => {
   const preTopUp = async (payment) => {
 
     if (!enableOnlineTopUp) {
+      setPaymentShow(false);
       showError(t('管理员未开启在线充值！'));
       return;
     }
@@ -249,11 +250,21 @@ const TopUp = () => {
   };
 
   const topUpCrypto = async () => {
+    if (!enabledCryptomus) {
+      setPaymentShow(false);
+      showError(t('管理员尚未开通 Cryptomus 充值！'));
+      return;
+    }
     setOpenCrypto(true);
     setPaymentShow(false);
   };
 
   const topUpAirwallex = async () => {
+    if (!enabledAirwallex) {
+      setPaymentShow(false);
+      showError(t('管理员尚未开通 Airwallex 充值！'));
+      return;
+    }
     setOpenAirwallex(true);
     setPaymentShow(false);
   };
@@ -514,7 +525,7 @@ const TopUp = () => {
   };
 
   useEffect(() => {
-    //  getOptions();
+    getOptions();
     let status = localStorage.getItem('status');
     if (status) {
       status = JSON.parse(status);
@@ -1012,7 +1023,7 @@ const TopUp = () => {
                 <div className="payment-option" onClick={async () => { preTopUp('zfb'); }}>
                   <div className="payment-left">
                     <span>Pay</span>
-                    <strong>¥100.00</strong>
+                    <strong>¥{topUpCount}</strong>
                     <span>with</span>
                     <img src={aliPayLogo} alt="aliPayLogo" />
                   </div>
@@ -1022,7 +1033,7 @@ const TopUp = () => {
                 <div className="payment-option" onClick={async () => { preTopUp('wx'); }}>
                   <div className="payment-left">
                     <span>Pay</span>
-                    <strong>¥100.00</strong>
+                    <strong>¥{topUpCount}</strong>
                     <span>with</span>
                     <img src={weChatLogo} alt="weChatLogo" />
                   </div>
@@ -1032,7 +1043,7 @@ const TopUp = () => {
                 <div className="payment-option" onClick={topUpCrypto}>
                   <div className="payment-left">
                     <span>Pay</span>
-                    <strong>¥100.00</strong>
+                    <strong>¥{topUpCount}</strong>
                     <span>with</span>
                     <b>Debit/Credit Card</b>
                   </div>
@@ -1042,7 +1053,7 @@ const TopUp = () => {
                 <div className="payment-option" onClick={topUpAirwallex}>
                   <div className="payment-left">
                     <span>Pay</span>
-                    <strong>¥100.00</strong>
+                    <strong>¥{topUpCount}</strong>
                     <span>with</span>
                     <b>Wallet</b>
                     <div className="wallet-container">

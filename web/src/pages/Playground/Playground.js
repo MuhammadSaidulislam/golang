@@ -221,7 +221,6 @@ const Playground = () => {
 
   const onMessageSend = useCallback(
     (content, attachment) => {
-      console.log('attachment: ', attachment);
       setMessage((prevMessage) => {
         const newMessage = [
           ...prevMessage,

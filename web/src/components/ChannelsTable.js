@@ -19,7 +19,6 @@ import {
 } from '../helpers/render';
 import {
   Button, Divider,
-  Dropdown,
   Form, Input,
   InputNumber, Modal,
   Popconfirm,
@@ -37,7 +36,7 @@ import EditTagModal from '../pages/Channel/EditTagModal.js';
 import TextNumberInput from './custom/TextNumberInput.js';
 import { useTranslation } from 'react-i18next';
 import NoData from './NoData.js';
-import { Table } from 'react-bootstrap';
+import { Table, Dropdown } from 'react-bootstrap';
 import deleteIcon from "../assets/Delete.svg";
 import disableIcon from "../assets/fi_disable.svg";
 import editIcon from "../assets/fi_edit-2.svg";
@@ -45,9 +44,6 @@ import chatIcon from "../assets/fi_chat_2.svg";
 import copyIcon from "../assets/u_copy-alt.svg";
 import enableIcon from "../assets/fi_check.svg";
 
-function renderTimestamp(timestamp) {
-  return timestamp2string(timestamp);
-}
 
 const ChannelsTable = () => {
   const { t } = useTranslation();
@@ -496,6 +492,8 @@ const ChannelsTable = () => {
   ];
 
   const [channels, setChannels] = useState([]);
+  const [channelList, setChannelList] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [activePage, setActivePage] = useState(1);
   const [idSort, setIdSort] = useState(false);
@@ -524,6 +522,10 @@ const ChannelsTable = () => {
   const [batchSetTagValue, setBatchSetTagValue] = useState('');
   const [chartModel, setChartModel] = useState(false);
   const [channelModal, setChannelModal] = useState(false);
+  const [sizeArray, setSizeArray] = useState([]);
+
+  const [sizeList, setSizeList] = useState([]);
+  const [itemRange, setItemRange] = useState('');
   const channelModalClose = () => {
     setChannelModal(false);
   }
@@ -649,14 +651,28 @@ const ChannelsTable = () => {
       return;
     }
     const { success, message, data } = res.data;
+
     if (success) {
-      if (startIdx === 0) {
-        setChannelFormat(data, enableTagMode);
-      } else {
-        let newChannels = [...channels];
-        newChannels.splice(startIdx * pageSize, data.length, ...data);
-        setChannelFormat(newChannels, enableTagMode);
+      setChannelList(data.items);
+      setActivePage(data.page);
+      setPageSize(data.page_size);
+      //  setLogCount(data.total);
+      // data range 
+      const startItem = (startIdx - 1) * pageSize + 1;
+      const endItem = Math.min(startIdx * pageSize, data.total);
+      const itemRange = `<b>${startItem}</b> - <b>${endItem}</b> of <b>${data.total}</b> items`;
+      setItemRange(itemRange);
+      // data dropdown
+      const sizeArray = [];
+      for (let i = 10; i < data.total; i += 10) {
+        sizeArray.push(i);
       }
+      sizeArray.push(data.total);
+      setSizeArray(sizeArray);
+      // pagination list
+      const totalPages = Math.ceil(data.total / pageSize);
+      const paginationArray = Array.from({ length: totalPages }, (_, i) => i + 1);
+      setSizeList(paginationArray);
     } else {
       showError(message);
     }
@@ -688,16 +704,17 @@ const ChannelsTable = () => {
   };
 
   const refresh = async () => {
-    await loadChannels(activePage - 1, pageSize, idSort, enableTagMode);
+    await loadChannels(activePage, pageSize, idSort, enableTagMode);
   };
+
+
 
   useEffect(() => {
     const localIdSort = localStorage.getItem('id-sort') === 'true';
-    const localPageSize =
-      parseInt(localStorage.getItem('page-size')) || ITEMS_PER_PAGE;
+    const localPageSize = parseInt(localStorage.getItem('page-size')) || ITEMS_PER_PAGE;
     setIdSort(localIdSort);
     setPageSize(localPageSize);
-    loadChannels(0, localPageSize, localIdSort, enableTagMode)
+    loadChannels(activePage, pageSize, localIdSort, enableTagMode)
       .then()
       .catch((reason) => {
         showError(reason);
@@ -1094,7 +1111,7 @@ const ChannelsTable = () => {
           </div>
         </div>
       </div>
-      {pageData && pageData.length === 0 ? <NoData description={description} /> : <>
+      {channelList && channelList.length === 0 ? <NoData description={description} /> : <>
         <div className="tableData">
           <div className="tableBox">
             <Table borderless hover>
@@ -1113,7 +1130,7 @@ const ChannelsTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {pageData && pageData.map((channel, index) => (
+                {channelList && channelList.map((channel, index) => (
                   <tr key={index}>
                     <td>{channel.id}</td>
                     <td>{channel.name}</td>
@@ -1279,8 +1296,8 @@ const ChannelsTable = () => {
                       {(() => {
                         if (channel.children === undefined) {
                           return (
-                            <div>
-                              <SplitButtonGroup
+                            <div className='d-flex'>
+                              <SplitButtonGroup className='d-flex'
                                 style={{ marginRight: 1 }}
                                 aria-label={t('测试单个渠道操作项目组')}
                               >
@@ -1385,7 +1402,41 @@ const ChannelsTable = () => {
             </Table>
           </div>
         </div>
-
+        <div className="tablePagination">
+          <div className="leftItems">
+            <Dropdown className="bulkDropdown">
+              <Dropdown.Toggle id="dropdown-basic">{pageSize}</Dropdown.Toggle>
+              <Dropdown.Menu>
+                {sizeArray && sizeArray.map((size) => (
+                  <Dropdown.Item onClick={() => { setPageSize(size); setActivePage(1); }}>
+                    {size}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+            <p className="itemNumber" dangerouslySetInnerHTML={{ __html: itemRange }}></p>
+          </div>
+          <div className="leftItems">
+            <button className="pagArrow" onClick={() => setActivePage((prev) => prev - 1)} disabled={activePage === 1}>
+              <IconChevronLeft />
+            </button>
+            <div>
+              {sizeList && sizeList.map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setActivePage(page)}
+                  disabled={activePage === page}
+                  className={activePage === page ? 'activePagination' : ""}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+            <button className="pagArrow" onClick={() => setActivePage((prev) => prev + 1)} disabled={sizeList[sizeList.length - 1] === activePage}>
+              <IconChevronRight />
+            </button>
+          </div>
+        </div>
 
       </>}
 

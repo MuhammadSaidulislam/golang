@@ -1,8 +1,8 @@
-import React,{useEffect,useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../../Component/Layout/Layout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import filter from '../../Assets/Images/icon/filter-lines.svg';
 import { Table } from 'react-bootstrap';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
@@ -14,12 +14,11 @@ const SuperAdmin = () => {
     const [adminLists, setAdminLists] = useState([]);
     useEffect(() => {
         adminList().then((data) => {
-            console.log('admin',data); 
-            setAdminLists(data)          
+            setAdminLists(data)
         })
     }, []);
-  return (
-    <Layout>
+    return (
+        <Layout>
             <div className='mainContent'>
                 <div className="memberBox">
                     <div className="topLine">
@@ -54,34 +53,34 @@ const SuperAdmin = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {adminLists.map((admin:any)=><tr key="staticRow">
-                                <td>
-                                    <label className="tableCheckBox">
-                                        <div className="contactCheck">
-                                            <input type="checkbox" name="agreement" />
-                                            <span className="checkmark"></span>
-                                        </div>
-                                    </label>
-                                </td>
-                                <td className="tableLink">
-                                    <a href="/accounts/view-account">{admin.name}</a>
-                                </td>
-                                <td>
-                                    <span className="account-row-text">{admin.company_url}</span>
-                                </td>
-                                <td className="rate">{admin.email}</td>
-                                <td className="status">
-                                    <span className="account-active">{admin.status}</span>
-                                </td>
-                                <td>
-                                    <span className="account-plan-text">{admin.plan}</span>
-                                </td>
-                                <td className="tableAction">
-                                    <button className="btn view" onClick={() => navigate(`/admin/${admin.id}`)}>
-                                        <FontAwesomeIcon icon={faEye} />
-                                    </button>
-                                </td>
-                            </tr>)}
+                                {adminLists.map((admin: any) => <tr key="staticRow">
+                                    <td>
+                                        <label className="tableCheckBox">
+                                            <div className="contactCheck">
+                                                <input type="checkbox" name="agreement" />
+                                                <span className="checkmark"></span>
+                                            </div>
+                                        </label>
+                                    </td>
+                                    <td className="tableLink">
+                                        <a href="/accounts/view-account">{admin.name}</a>
+                                    </td>
+                                    <td>
+                                        <span className="account-row-text">{admin.company_url}</span>
+                                    </td>
+                                    <td className="rate">{admin.email}</td>
+                                    <td className="status">
+                                        <span className="account-active">{admin.status}</span>
+                                    </td>
+                                    <td>
+                                        <span className="account-plan-text">{admin.plan}</span>
+                                    </td>
+                                    <td className="tableAction">
+                                        <button className="btn view" onClick={() => navigate(`/admin/${admin.id}`)}>
+                                            <FontAwesomeIcon icon={faEye} />
+                                        </button>
+                                    </td>
+                                </tr>)}
                             </tbody>
                         </Table>
                         {/* <Pagination page={page} paginationTitle="items" setPage={setPage} limit={limit} setLimit={setLimit} prevButton={prevButton} nextButton={nextButton} pageValue={pageValue} totalValue={totalValue} prevPage={prevPage} nextPage={nextPage} allRequestList={spaces} /> */}
@@ -89,7 +88,7 @@ const SuperAdmin = () => {
                 </div>
             </div>
         </Layout>
-  )
+    )
 }
 
 export default SuperAdmin
