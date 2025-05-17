@@ -32,15 +32,17 @@ const ChatPage = () => {
   const iframeSrc = keys.length > 0 ? comLink(keys[0]) : '';
 
   return !isLoading && iframeSrc ? (
-    <DashboardLayout>
-      <iframe
-        src={iframeSrc}
-        style={{ width: '100%', height: '100%', border: 'none' }}
-        title="Token Frame"
-        className="iframe-default"
-        allow="camera;microphone"
-      />
-    </DashboardLayout>
+    <div className='chatBoard'>
+      <DashboardLayout>
+        <iframe
+          src={iframeSrc}
+          style={{ width: '100%', height: '100%', border: 'none' }}
+          title="Token Frame"
+          className="iframe-default"
+          allow="camera;microphone"
+        />
+      </DashboardLayout>
+    </div>
   ) : (
     <div>
       <DashboardLayout>

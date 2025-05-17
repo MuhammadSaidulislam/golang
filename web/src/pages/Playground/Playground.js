@@ -19,7 +19,7 @@ import {
   Highlight,
 } from '@douyinfe/semi-ui';
 import { SSE } from 'sse';
-import { IconSetting } from '@douyinfe/semi-icons';
+import { IconClose, IconSetting, IconFilter } from '@douyinfe/semi-icons';
 import { StyleContext } from '../../context/Style/index.js';
 import { useTranslation } from 'react-i18next';
 import { renderGroupOption, truncateText } from '../../helpers/render.js';
@@ -362,7 +362,7 @@ const Playground = () => {
         <div className='chatMessage'>
           <div className='mobileChat'>
             <p>{t('筛选')}</p>
-            {showFilters ? <button className='filterClose' onClick={() => setShowFilters(!showFilters)}> <IconClose /> </button> : <button className='filterBtn' onClick={() => setShowFilters(!showFilters)}><img src={filterIcon} alt="filterIcon" /></button>}
+            {showFilters ? <button className='filterClose' onClick={() => setShowFilters(!showFilters)}> <IconClose /> </button> : <button className='filterBtn' onClick={() => setShowFilters(!showFilters)}><IconFilter /></button>}
 
           </div>
           {/* Buttons appear here when showFilters is true */}

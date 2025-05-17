@@ -564,125 +564,6 @@ const TokensTable = () => {
         </div>
       </Modal>
 
-      {/* <ModalToken refresh={refresh} visiable={showEdit} editingToken={editingToken} updateShow={updateShow} handleUpdateClose={handleUpdateClose} /> */}
-
-      {/* <div className="container">
-        <div className='row'>
-          <div className='col-md-4'>
-            <div className='firstBox'>
-              <div className='cardHeader'>
-                <div className='cardIcon'>
-                  <img src={codeIcon} alt="codeIcon" />
-                </div>
-                <div className='cardTime'>
-                  <div
-                    className="icon-container"
-                    ref={userRef}
-                    onClick={toggleUserDropdown}
-                  >
-                    <div className="user-icon">
-                      This Week <IconChevronDown />
-                    </div>
-                    {userDropdown && (
-                      <div className="dropdown active">
-                        <div className="dropdown-item">This Week</div>
-                        <div className="dropdown-item">This Month</div>
-                        <div className="dropdown-item">This Year</div>
-                      </div>)}
-                  </div>
-                </div>
-              </div>
-              <div className='cardContent'>
-                <div>
-                  <h6>All Tokens</h6>
-                  <p>0</p>
-                </div>
-                <div>
-                  <h6>Active</h6>
-                  <p>0 <span>+0.00%</span> </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className='col-md-4'>
-            <div className='firstBox'>
-              <div className='cardHeader'>
-                <div className='cardIcon'>
-                  <img src={trendingIcon} alt="trendingIcon" />
-                </div>
-                <div className='cardTime'>
-                  <div
-                    className="icon-container"
-                    ref={userRef}
-                    onClick={toggleUserDropdown}
-                  >
-                    <div className="user-icon">
-                      This Week <IconChevronDown />
-                    </div>
-                    {userDropdown && (
-                      <div className="dropdown active">
-                        <div className="dropdown-item">This Week</div>
-                        <div className="dropdown-item">This Month</div>
-                        <div className="dropdown-item">This Year</div>
-                      </div>)}
-                  </div>
-                </div>
-              </div>
-              <div className='cardContent'>
-                <div>
-                  <h6>All Tokens</h6>
-                  <p>0</p>
-                </div>
-                <div>
-                  <h6>Success</h6>
-                  <p>10.2k</p>
-                </div>
-                <div>
-                  <h6>Active</h6>
-                  <p>0 <span>+0.00%</span> </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className='col-md-4'>
-            <div className='firstBox'>
-              <div className='cardHeader'>
-                <div className='cardIcon'>
-                  <img src={summaryIcon} alt="summaryIcon" />
-                </div>
-                <div className='cardTime'>
-                  <div
-                    className="icon-container"
-                    ref={userRef}
-                    onClick={toggleUserDropdown}
-                  >
-                    <div className="user-icon">
-                      This Week <IconChevronDown />
-                    </div>
-                    {userDropdown && (
-                      <div className="dropdown active">
-                        <div className="dropdown-item">This Week</div>
-                        <div className="dropdown-item">This Month</div>
-                        <div className="dropdown-item">This Year</div>
-                      </div>)}
-                  </div>
-                </div>
-              </div>
-              <div className='cardContent'>
-                <div>
-                  <h6>All Tokens</h6>
-                  <p>0</p>
-                </div>
-                <div>
-                  <h6>Active</h6>
-                  <p>0 <span>+0.00%</span> </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
       <div className='searchAdd'>
         <div className='searchBox'>
           <div className="search-container">
@@ -716,7 +597,7 @@ const TokensTable = () => {
             <thead>
               <tr>
                 <th>{t('代币名称')}</th>
-                <th>{t('任务状态')}</th>
+                <th>{t('分组名称')}</th>
                 <th>{t('已用额度')}</th>
                 <th>{t('配额余额')}</th>
                 <th>{t('已创建')}</th>
@@ -727,8 +608,7 @@ const TokensTable = () => {
             <tbody>
               {tokenList && tokenList.map((data) => <tr>
                 <td>{data.name}</td>
-                <td>{renderStatus(data.status, data.model_limits_enabled)}
-                  {renderGroup(data.group)}</td>
+                <td>{data.group}</td>
                 <td>{renderQuota(parseInt(data.used_quota))}</td>
                 <td>{renderQuota(parseInt(data.remain_quota))}</td>
                 <td>{formatDate(data.created_time)}</td>

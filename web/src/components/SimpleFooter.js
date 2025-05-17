@@ -11,7 +11,7 @@ const SimpleFooter = () => {
         <section className='footer-bottom'>
             <div className='container'>
                 <div className='d-flex justify-content-between align-items-center flex-wrap'>
-                    <div className='logoName'> <img src={logo} alt="logo" /> DUCK<span>AGI</span></div>
+                    <Link to="/" className='logoName'> <img src={logo} alt="logo" /> <span className="logoText">DuckLLM</span></Link>
                     <div className='footerNav'>
                         <ul className="footer-nav">
                             <li className="nav-item">

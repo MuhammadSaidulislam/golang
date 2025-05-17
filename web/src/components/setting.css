@@ -204,7 +204,7 @@
   font-size: 14px;
   line-height: 100%;
   letter-spacing: 0%;
-  color: #5d6166;
+  color: var(--semi-input-black-white-0);
   margin-bottom: 8px;
   width: 100%;
 }
@@ -219,7 +219,7 @@
   line-height: 24px;
   letter-spacing: 0%;
   width: 100%;
-  color: #2e3033;
+  color: var(--semi-input-black-white-0);
   margin-bottom: 16px;
   border-radius: 16px;
   -webkit-border-radius: 16px;
@@ -236,7 +236,7 @@
 .personalInput .semi-input-wrapper-default input,
 .personalInput .semi-input-wrapper-default {
   margin-bottom: 0px;
-  background-color: #fff;
+  background-color: var(--shadow-black-white-0);
   width: 100%;
   height: 100%;
   border-radius: 6px;

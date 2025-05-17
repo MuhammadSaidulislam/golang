@@ -16,6 +16,8 @@ body[theme-mode='dark'] .semi-always-light,
   --semi-table-thead-0: #2c2d33;
   --semi-dashboard-nav-0: #d9dfff;
   --semi-box-black-0: #f5f6f8b2;
+  --semi-shadow-black-white-0: #8b8d97;
+  --semi-input-black-white-0: #5d6166;
 }
 body[theme-mode='dark'],
 body .semi-always-dark,
@@ -30,6 +32,8 @@ body .semi-always-dark,
   --semi-table-thead-0: rgb(255, 255, 255);
   --semi-dashboard-nav-0: #35363c;
   --semi-box-black-0: rgb(19, 19, 19);
+  --semi-shadow-black-white-0: #ffffff;
+  --semi-input-black-white-0: #ffffff;
 }
 body {
   margin: 0;
@@ -258,6 +262,9 @@ code {
 }
 .mr-2 {
   margin-right: 24px;
+}
+.mr-1 {
+  margin-right: 5px;
 }
 @media only screen and (max-width: 600px) {
   .hide-on-mobile {

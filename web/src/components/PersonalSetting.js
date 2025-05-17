@@ -53,6 +53,7 @@ import gearIcon from "../assets/fi_gear.svg";
 import OperationSetting from './OperationSetting';
 import SystemSetting from './SystemSetting';
 import OtherSetting from './OtherSetting';
+import ModelList from '../pages/Setting/Operation/ModelList';
 
 
 const PersonalSetting = () => {
@@ -86,6 +87,10 @@ const PersonalSetting = () => {
     const [openTransfer, setOpenTransfer] = useState(false);
     const [transferAmount, setTransferAmount] = useState(0);
     const [isModelsExpanded, setIsModelsExpanded] = useState(false);
+    const [modelShow, setModelShow] = useState(false);
+    const handleModalClose = () => {
+        setModelShow(false);
+    };
     const MODELS_DISPLAY_COUNT = 10;  // 默认显示的模型数量
 
     useEffect(() => {
@@ -355,6 +360,7 @@ const PersonalSetting = () => {
                         {t('个人设置')}
                     </button>
                 </li>
+                <ModelList models={models} modalShow={modelShow} handleModalClose={handleModalClose} />
                 {isAdmin() && <>
                     <li className="nav-item">
                         <button
@@ -461,74 +467,13 @@ const PersonalSetting = () => {
                     </div> : ""}
 
                     <div className='modalList'>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <Typography.Title heading={6}></Typography.Title>
-                        </div>
-                        <div style={{ marginTop: 10 }}>
-                            {models.length <= MODELS_DISPLAY_COUNT ? (
-                                <Space wrap>
-                                    {models.map((model) => (
-                                        <Tag
-                                            key={model}
-                                            color='cyan'
-                                            onClick={() => {
-                                                copyText(model);
-                                            }}
-                                        >
-                                            {model}
-                                        </Tag>
-                                    ))}
-                                </Space>
-                            ) : (
-                                <>
-                                    <Collapsible isOpen={isModelsExpanded}>
-                                        <Space wrap>
-                                            {models.map((model) => (
-                                                <Tag
-                                                    key={model}
-                                                    color='cyan'
-                                                    onClick={() => {
-                                                        copyText(model);
-                                                    }}
-                                                >
-                                                    {model}
-                                                </Tag>
-                                            ))}
-                                            <Tag
-                                                color='blue'
-                                                type="light"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => setIsModelsExpanded(false)}
-                                            >
-                                                {t('收起')}
-                                            </Tag>
-                                        </Space>
-                                    </Collapsible>
-                                    {!isModelsExpanded && (
-                                        <Space wrap>
-                                            {models.slice(0, MODELS_DISPLAY_COUNT).map((model) => (
-                                                <Tag
-                                                    key={model}
-                                                    color='cyan'
-                                                    onClick={() => {
-                                                        copyText(model);
-                                                    }}
-                                                >
-                                                    {model}
-                                                </Tag>
-                                            ))}
-                                            <Tag
-                                                color='blue'
-                                                type="light"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => setIsModelsExpanded(true)}
-                                            >
-                                                {t('更多')} {models.length - MODELS_DISPLAY_COUNT} {t('个模型')}
-                                            </Tag>
-                                        </Space>
-                                    )}
-                                </>
-                            )}
+                        <div className="imageBody d-flex justify-content-between w-100 gap-2 mb-3">
+                            <button className="passwordBtn" onClick={generateAccessToken}> {t('生成系统访问令牌')} </button>
+                            <button className="passwordBtn" onClick={() => { setShowChangePasswordModal(true); }}>{t('修改密码')}</button>
+                            <button className="passwordBtn" onClick={() => { setShowAccountDeleteModal(true); }} >
+                                {t('删除个人账户')}
+                            </button>
+                            <button className="passwordBtn" onClick={() => { setModelShow(true); }}>{t('可用模型')}</button>
                         </div>
                     </div>
 
@@ -537,22 +482,6 @@ const PersonalSetting = () => {
 
                             {/* User Form Section */}
                             <div className="settingFirst">
-
-                                <div className="imageBody d-flex justify-content-between w-100 gap-2 mb-3">
-                                    {/* <div className="personalImage">
-                                            <img src="https://ps.w.org/wp-user-profile-avatar/assets/icon-256x256.jpg?rev=2311697" alt="Profile" />
-                                            <div className='imageBtn'>
-                                                <button><img src={downloadIcon} alt="downloadIcon" /></button>
-                                                <button><img src={deleteIcon} alt="downloadIcon" /></button>
-                                            </div>
-                                        </div> */}
-                                    <button className="passwordBtn" onClick={generateAccessToken}> {t('生成系统访问令牌')} </button>
-                                    <button className="passwordBtn" onClick={() => { setShowChangePasswordModal(true); }}>{t('修改密码')}</button>
-                                    <button className="passwordBtn" onClick={() => { setShowAccountDeleteModal(true); }} >
-                                        {t('删除个人账户')}
-                                    </button>
-                                </div>
-
                                 <div className="personalDetails">
                                     <div className="personalInput">
                                         <label>{t('用户名称')}</label>
@@ -563,7 +492,7 @@ const PersonalSetting = () => {
                                             value={getUsername() && typeof getUsername() === 'string' ? getUsername() : ''}
                                         />
                                     </div>
-                                    <div className="personalInput">
+                                    {userState.user && userState?.user?.email ? <div className="personalInput">
                                         <label>Email</label>
                                         <input
                                             type="email"
@@ -571,7 +500,7 @@ const PersonalSetting = () => {
                                             placeholder="Email"
                                             value={userState.user && userState?.user?.email}
                                         />
-                                    </div>
+                                    </div> : ""}
                                     <div className="personalInput">
                                         <label>{t('邀请链接')}</label>
                                         <input value={affLink} onClick={handleAffLinkClick} readOnly />
@@ -877,15 +806,16 @@ const PersonalSetting = () => {
                                     <IconChevronRight />
                                 </div>
                             </div>
-                            {isAdmin() && <> <div className='tabSetting' onClick={() => setMobileTab('operation')}>
-                                <div className='tabProfile'>
-                                    <img src={phoneIcon} alt="setting" />
-                                    <p>Operation Settings</p>
+                            {isAdmin() && <>
+                                <div className='tabSetting' onClick={() => setMobileTab('operation')}>
+                                    <div className='tabProfile'>
+                                        <img src={phoneIcon} alt="setting" />
+                                        <p>Operation Settings</p>
+                                    </div>
+                                    <div className='tabArrow'>
+                                        <IconChevronRight />
+                                    </div>
                                 </div>
-                                <div className='tabArrow'>
-                                    <IconChevronRight />
-                                </div>
-                            </div>
                                 <div className='tabSetting' onClick={() => setMobileTab('system')}>
                                     <div className='tabProfile'>
                                         <img src={profileIcon} alt="setting" />
@@ -903,7 +833,8 @@ const PersonalSetting = () => {
                                     <div className='tabArrow'>
                                         <IconChevronRight />
                                     </div>
-                                </div></>
+                                </div>
+                            </>
                             }
                         </div>
                     </>}

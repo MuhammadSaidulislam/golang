@@ -58,11 +58,7 @@ const ChannelsTable = () => {
       }
       type2label[0] = { value: 0, text: t('未知类型'), color: 'grey' };
     }
-    return (
-      <Tag size="large" color={type2label[type]?.color}>
-        {type2label[type]?.text}
-      </Tag>
-    );
+    return <span> {type2label[type]?.text} </span>
   };
 
   const renderTagType = () => {
@@ -113,31 +109,31 @@ const ChannelsTable = () => {
     time = time.toFixed(2) + t(' 秒');
     if (responseTime === 0) {
       return (
-        <Tag size="large" color="grey">
+        <Tag size="large" color="">
           {t('未测试')}
         </Tag>
       );
     } else if (responseTime <= 1000) {
       return (
-        <Tag size="large" color="green">
+        <Tag size="large" color="">
           {time}
         </Tag>
       );
     } else if (responseTime <= 3000) {
       return (
-        <Tag size="large" color="lime">
+        <Tag size="large" color="">
           {time}
         </Tag>
       );
     } else if (responseTime <= 5000) {
       return (
-        <Tag size="large" color="yellow">
+        <Tag size="large" color="">
           {time}
         </Tag>
       );
     } else {
       return (
-        <Tag size="large" color="red">
+        <Tag size="large" color="">
           {time}
         </Tag>
       );
@@ -1121,7 +1117,6 @@ const ChannelsTable = () => {
                   <th>{t('名称')}</th>
                   <th>{t('分组')}</th>
                   <th>{t('类型')}</th>
-                  <th>{t('状态')}</th>
                   <th>{t('响应时间')}</th>
                   <th>{t('已用/剩余')}</th>
                   <th>{t('优先级')}</th>
@@ -1147,27 +1142,7 @@ const ChannelsTable = () => {
                         return renderTagType();
                       }
                     })()}</td>
-                    <td>
-                      {(() => {
-                        if (channel.status === 3) {
-                          if (channel.other_info === '') {
-                            channel.other_info = '{}';
-                          }
 
-                          let otherInfo = JSON.parse(channel.other_info);
-                          let reason = otherInfo['status_reason'];
-                          let time = otherInfo['status_time'];
-
-                          return (
-                            <Tooltip content={t('原因：') + reason + t('，时间：') + timestamp2string(time)}>
-                              {renderStatus(channel.status)}
-                            </Tooltip>
-                          );
-                        } else {
-                          return renderStatus(channel.status);
-                        }
-                      })()}
-                    </td>
                     <td>{renderResponseTime(channel.response_time)}</td>
                     <td>
                       {(() => {
@@ -1298,23 +1273,12 @@ const ChannelsTable = () => {
                           return (
                             <div className='d-flex'>
                               <SplitButtonGroup className='d-flex'
-                                style={{ marginRight: 1 }}
+                                style={{ marginRight: 2 }}
                                 aria-label={t('测试单个渠道操作项目组')}
                               >
                                 <button onClick={() => { testChannel(channel, ''); }}  >
                                   {t('测试')}
                                 </button>
-                                <Dropdown
-                                  trigger="click"
-                                  position="bottomRight"
-                                  menu={channel.test_models}
-                                >
-                                  <Button
-                                    style={{ padding: '8px 4px' }}
-                                    type="primary"
-                                    icon={<IconTreeTriangleDown />}
-                                  />
-                                </Dropdown>
                               </SplitButtonGroup>
 
                               <Popconfirm

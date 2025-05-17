@@ -121,7 +121,14 @@ const CommonHeader = () => {
                     <div className="container">
                         <div className='mobileNavCollapse'>
                             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded={isOpen ? "true" : "false"} aria-label="Toggle navigation" onClick={() => setIsOpen(!isOpen)}>
-                                <span className="navbar-toggler-icon"></span>
+                                <svg className="navbar-toggler-icon" viewBox="0 0 30 30">
+                                    <path
+                                        d="M4 7h22M4 15h22M4 23h22"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                    />
+                                </svg>
                             </button>
 
                             {/* Logo */}
@@ -218,13 +225,13 @@ const CommonHeader = () => {
                                         className="dropdown-btn flex items-center justify-between w-full px-4 py-2 bg-gray-100 rounded-md"
                                         onClick={() => setIsLangOpen(!isLangOpen)}
                                     >
-                                        {currentLang === "en" || "en-US" ? (
+                                        {(currentLang === "en" || currentLang === "en-US") ? (
                                             <>
-                                                <img src={ukLogo} className="langLogo mr-2" alt="uk" /> English
+                                                <img src={ukLogo} className="langLogo mr-1" alt="uk" /> English
                                             </>
                                         ) : (
                                             <>
-                                                <img src={chinaLogo} className="langLogo mr-2" alt="china" /> 简体中文
+                                                <img src={chinaLogo} className="langLogo mr-1" alt="china" /> 简体中文
                                             </>
                                         )}
                                     </button>
@@ -234,7 +241,7 @@ const CommonHeader = () => {
                                         className={`transition-all duration-200 ease-in-out overflow-hidden ${isLangOpen ? 'd-flex' : 'd-none'
                                             }`}
                                     >
-                                        <div className="flex flex-col bg-white mt-2 rounded-md shadow-md">
+                                        <div className="flex flex-col mt-2 rounded-md shadow-md">
                                             <button
                                                 onClick={() => {
                                                     handleLanguageChange("en");
@@ -242,7 +249,7 @@ const CommonHeader = () => {
                                                 }}
                                                 className="flex items-center px-4 py-2 hover:bg-blue-100"
                                             >
-                                                <img src={ukLogo} alt="uk" className="langLogo mr-2" /> English
+                                                <img src={ukLogo} alt="uk" className="langLogo mr-1" /> English
                                             </button>
                                             <button
                                                 onClick={() => {
@@ -251,7 +258,7 @@ const CommonHeader = () => {
                                                 }}
                                                 className="flex items-center px-4 py-2 hover:bg-blue-100"
                                             >
-                                                <img src={chinaLogo} alt="china" className="langLogo mr-2" /> 简体中文
+                                                <img src={chinaLogo} alt="china" className="langLogo mr-1" /> 简体中文
                                             </button>
                                         </div>
                                     </div>
@@ -294,7 +301,7 @@ const CommonHeader = () => {
                                 </div>
                             </div>
                             <div className='mobileRegister'>
-                                <Link to="/register" className="registerBtn w-auto">{t('注册')}</Link>
+                                <Link to="/login" className="registerBtn w-auto">{t('登入')}</Link>
                             </div>
                         </div>
                     </div>

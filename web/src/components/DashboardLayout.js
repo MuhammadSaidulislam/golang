@@ -39,7 +39,22 @@ const DashboardLayout = ({ children, ...props }) => {
     let navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(true);
 
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 768) {
+                setIsOpen(false);
+            } else {
+                setIsOpen(true);
+            }
+        };
 
+        handleResize(); // Check on load
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
     const toggle = () => {
         setIsOpen((prev) => !prev);
     };
