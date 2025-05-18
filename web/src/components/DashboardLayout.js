@@ -322,12 +322,23 @@ const DashboardLayout = ({ children, ...props }) => {
                         </ul>
                     </nav>
                     <nav className="flex-column bottomNav">
-                        <ul>
+                        <ul className="footerServices">
                             <p>Other Service</p>
                             <li><Link target="_blank" to="http://doc.askais.com" className={urlParams === "chatgpt" ? "nav-link activeMenu" : "nav-link"}><img src={chatgptIcon} alt="dashboardIcon" /> {t('文档')}</Link></li>
                             <li><Link target="_blank" to="https://www.askais.com" className={urlParams === "ai" ? "nav-link activeMenu" : "nav-link"}><img src={aiIcon} alt="dashboardIcon" /> {t('人工智能平台')}</Link></li>
                             <li><Link target="_blank" to="https://t.me/askais" className={urlParams === "contact" ? "nav-link activeMenu" : "nav-link"}><img src={contactIcon} alt="dashboardIcon" /> {t('联系我们')}</Link></li>
                             <li><Link target="_blank" to="http://blog.askais.com" className={urlParams === "blog" ? "nav-link activeMenu" : "nav-link"}><img src={blogIcon} alt="dashboardIcon" /> {t('博客')}</Link></li>
+
+                            <li className='settings'><Link to="/setting" className={urlParams === "setting" ? "nav-link activeMenu" : "nav-link"}><SettingIconSvg color="--semi-table-thead-0" /> {t('设置')}</Link></li>
+                        </ul>
+                        <ul className="footerOthers">
+                            <p>Other Service</p>
+                            <li className="d-flex">
+                                <Link target="_blank" to="http://doc.askais.com" className={urlParams === "chatgpt" ? "nav-link activeMenu" : "nav-link"}><img src={chatgptIcon} alt="dashboardIcon" /></Link>
+                                <Link target="_blank" to="https://www.askais.com" className={urlParams === "ai" ? "nav-link activeMenu" : "nav-link"}><img src={aiIcon} alt="dashboardIcon" /></Link>
+                                <Link target="_blank" to="https://t.me/askais" className={urlParams === "contact" ? "nav-link activeMenu" : "nav-link"}><img src={contactIcon} alt="dashboardIcon" /></Link>
+                                <Link target="_blank" to="http://blog.askais.com" className={urlParams === "blog" ? "nav-link activeMenu" : "nav-link"}><img src={blogIcon} alt="dashboardIcon" /></Link>
+                            </li>
                             <li className='settings'><Link to="/setting" className={urlParams === "setting" ? "nav-link activeMenu" : "nav-link"}><SettingIconSvg color="--semi-table-thead-0" /> {t('设置')}</Link></li>
                         </ul>
                     </nav>

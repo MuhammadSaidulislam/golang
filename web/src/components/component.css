@@ -2282,6 +2282,12 @@
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
 }
+.footerServices {
+  display: block;
+}
+.footerOthers {
+  display: none;
+}
 @media only screen and (max-width: 575.98px) {
   .content.is-open {
     /*margin-left: 100%;*/
@@ -2292,6 +2298,7 @@
   .sidebar.is-open {
     position: fixed;
     z-index: 999;
+    margin-top: 56px;
     min-width: 58%;
     max-width: 58%;
     margin-left: 0;
@@ -2332,6 +2339,7 @@
     max-height: calc(100vh - 58px);
     position: absolute;
     z-index: 99;
+    margin-top: 57px;
   }
   .sidebar ul {
     padding-left: 14px;
@@ -2441,11 +2449,15 @@
     border: none;
   }
   .mobileDashNav {
+    position: fixed;
+    z-index: 999;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 12px 24px;
     border-bottom: 1px solid #e1e9ef;
+    background-color: var(--semi-dashboard-bg-0);
   }
   .footerNav .footer-nav {
     flex-wrap: wrap;
@@ -2480,6 +2492,7 @@
   }
   .mainBoard {
     height: 100%;
+    margin-top: 57px;
   }
   /* .mainBoard.is-open {
     padding: 0px;
@@ -2568,5 +2581,14 @@
   .chatBox .chatMessage .semi-chat {
     margin: 0px !important;
     padding: 10px !important;
+  }
+  .footerServices {
+    display: none;
+  }
+  .footerOthers {
+    display: block;
+  }
+  .sidebar .middleNav ul li {
+    padding: 8px 20px;
   }
 }
