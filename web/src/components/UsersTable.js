@@ -16,13 +16,13 @@ import { useTranslation } from 'react-i18next';
 import { Table, Dropdown } from "react-bootstrap";
 import { SortIconSvg } from './svgIcon';
 
-import { IconArrowUpLeft, IconAscend, IconChevronDown, IconDoubleChevronLeft, IconFilledArrowDown, IconFilledArrowUp, IconPlus, IconSearch,IconChevronRight, IconChevronLeft } from '@douyinfe/semi-icons';
+import { IconArrowUpLeft, IconAscend, IconChevronDown, IconDoubleChevronLeft, IconFilledArrowDown, IconFilledArrowUp, IconPlus, IconSearch, IconChevronRight, IconChevronLeft } from '@douyinfe/semi-icons';
 import deleteIcon from "../assets/Delete.svg";
 import disableIcon from "../assets/fi_disable.svg";
 import editIcon from "../assets/fi_edit-2.svg";
 import chatIcon from "../assets/fi_chat_2.svg";
 import copyIcon from "../assets/u_copy-alt.svg";
-
+import enableIcon from "../assets/fi_check.svg";
 
 const UsersTable = () => {
   const { t } = useTranslation();
@@ -508,8 +508,12 @@ const UsersTable = () => {
                 <th>{t('ID')}</th>
                 <th>{t('用户名')}</th>
                 <th>{t('分组')}</th>
-                <th>{t('统计信息')}</th>
+                <th>{t('剩余额度')}</th>
+                <th>{t('已用额度')}</th>
+                <th>{t('调用次数')}</th>
                 <th>{t('邀请信息')}</th>
+                <th>{t('邀请总收益')}</th>
+                <th>{t('邀请人ID')}</th>
                 <th>{t('角色')}</th>
                 <th>{t('状态')}</th>
                 <th>Actions</th>
@@ -520,16 +524,21 @@ const UsersTable = () => {
                 <td>{user.id}</td>
                 <td>{user.username}</td>
                 <td>{renderGroup(user.group)}</td>
-                <td> <Tooltip content={t('剩余额度')}>
-                  <Tag color='white' size='large'>
-                    {renderQuota(user.quota)}
-                  </Tag>
-                </Tooltip>
+                <td>
+                  <Tooltip content={t('剩余额度')}>
+                    <Tag color='white' size='large'>
+                      {renderQuota(user.quota)}
+                    </Tag>
+                  </Tooltip>
+                </td>
+                <td>
                   <Tooltip content={t('已用额度')}>
                     <Tag color='white' size='large'>
                       {renderQuota(user.used_quota)}
                     </Tag>
                   </Tooltip>
+                </td>
+                <td>
                   <Tooltip content={t('调用次数')}>
                     <Tag color='white' size='large'>
                       {renderNumber(user.request_count)}
@@ -542,11 +551,15 @@ const UsersTable = () => {
                       {renderNumber(user.aff_count)}
                     </Tag>
                   </Tooltip>
+                </td>
+                <td>
                   <Tooltip content={t('邀请总收益')}>
                     <Tag color='white' size='large'>
                       {renderQuota(user.aff_history_quota)}
                     </Tag>
                   </Tooltip>
+                </td>
+                <td>
                   <Tooltip content={t('邀请人ID')}>
                     {user.inviter_id === 0 ? (
                       <Tag color='white' size='large'>

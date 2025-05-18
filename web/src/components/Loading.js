@@ -3,9 +3,18 @@ import { Spin } from '@douyinfe/semi-ui';
 
 const Loading = ({ prompt: name = 'page' }) => {
   return (
-    <Spin style={{ height: 100 }} spinning={true}>
-      加载{name}中...
-    </Spin>
+    <div
+      style={{
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      <div style={{ transform: 'scale(2)', color: '#6175de' }}>
+        <Spin spinning={true} />
+      </div>
+    </div>
   );
 };
 

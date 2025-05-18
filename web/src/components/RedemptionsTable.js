@@ -26,7 +26,7 @@ import disableIcon from "../assets/fi_disable.svg";
 import editIcon from "../assets/fi_edit-2.svg";
 import chatIcon from "../assets/fi_chat_2.svg";
 import copyIcon from "../assets/u_copy-alt.svg";
-
+import enableIcon from "../assets/fi_check.svg";
 
 function renderTimestamp(timestamp) {
   return timestamp2string(timestamp);
@@ -426,7 +426,7 @@ const RedemptionsTable = () => {
               <tr>
                 <th>{t('ID')}</th>
                 <th>{t('名称')}</th>
-                <th>{t('状态')}</th>
+
                 <th>{t('额度')}</th>
                 <th>{t('创建时间')}</th>
                 <th>{t('兑换人ID')}</th>
@@ -437,7 +437,6 @@ const RedemptionsTable = () => {
               {pageData && pageData.map((redemption, index) => <tr key={index}>
                 <td>{redemption.id}</td>
                 <td>{redemption.name}</td>
-                <td>{renderStatus(redemption.status)}</td>
                 <td>{renderQuota(parseInt(redemption.quota))}</td>
                 <td>{renderTimestamp(redemption.created_time)}</td>
                 <td>{redemption.used_user_id === 0 ? t('无') : redemption.used_user_id}</td>

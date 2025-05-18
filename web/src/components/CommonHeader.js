@@ -20,7 +20,9 @@ import {
     IconNoteMoneyStroked,
     IconPriceTag,
     IconUser,
-    IconLanguage
+    IconLanguage,
+    IconChevronDown,
+    IconGlobe
 } from '@douyinfe/semi-icons';
 import { Avatar, Button, Layout, Nav, Switch } from '@douyinfe/semi-ui';
 import { stringToColor } from '../helpers/render';
@@ -219,29 +221,37 @@ const CommonHeader = () => {
                         </ul>
                         <div className='mobileView'>
                             <div className="mobileDropdown w-full justify-content-start">
-                                <div className="dropdown relative w-full">
-                                    {/* Toggle Button */}
-                                    <button
-                                        className="dropdown-btn flex items-center justify-between w-full px-4 py-2 bg-gray-100 rounded-md"
-                                        onClick={() => setIsLangOpen(!isLangOpen)}
-                                    >
-                                        {(currentLang === "en" || currentLang === "en-US") ? (
-                                            <>
-                                                <img src={ukLogo} className="langLogo mr-1" alt="uk" /> English
-                                            </>
-                                        ) : (
-                                            <>
-                                                <img src={chinaLogo} className="langLogo mr-1" alt="china" /> 简体中文
-                                            </>
-                                        )}
-                                    </button>
-
-
+                                <div className="dropdown relative w-100">
                                     <div
-                                        className={`transition-all duration-200 ease-in-out overflow-hidden ${isLangOpen ? 'd-flex' : 'd-none'
-                                            }`}
+                                        className="d-flex justify-content-between align-items-center w-100"
+                                        onClick={() => setIsLangOpen(!isLangOpen)}
+                                        style={{ cursor: "pointer" }}
                                     >
-                                        <div className="flex flex-col mt-2 rounded-md shadow-md">
+                                        <button className="dropdown-btn flex items-center justify-between w-full bg-gray-100 rounded-md">
+                                            {currentLang === "en" || currentLang === "en-US" ? (
+                                                <>
+                                                    <IconGlobe style={{ marginRight: "5px" }} /> {t("选择语言")} (English)
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <IconGlobe style={{ marginRight: "5px" }} /> {t("选择语言")} (简体中文)
+                                                </>
+                                            )}
+                                        </button>
+                                        <IconChevronDown
+                                            className={`transition-transform duration-500 ${isLangOpen ? "rotate-180" : ""}`}
+                                        />
+                                    </div>
+
+                                    {/* Animated Dropdown */}
+                                    <div
+                                        className={`transition-all duration-500 ease-in-out overflow-hidden`}
+                                        style={{
+                                            maxHeight: isLangOpen ? "150px" : "0px",
+                                            opacity: isLangOpen ? 1 : 0,
+                                        }}
+                                    >
+                                        <div className="flex flex-col mt-2 rounded-md shadow-md bg-white">
                                             <button
                                                 onClick={() => {
                                                     handleLanguageChange("en");
@@ -265,7 +275,29 @@ const CommonHeader = () => {
                                 </div>
                             </div>
                             <div className='mobileRegister'>
-                                <div className="d-flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-800">
+                                <div className="d-flex align-items-center justify-content-between h-screen bg-gray-100 dark:bg-gray-800">
+                                    <div className='lightDark'>
+                                        {isDark ? <div className='toggle-thumb-dark'><svg
+                                            viewBox="0 0 24 24"
+                                            className={`icon moon-icon ${isDark ? 'active' : 'inactive'}`}
+                                            fill="none"
+                                            stroke="currentColor"
+                                        >
+                                            <path strokeWidth="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                                        </svg></div> : <div className='toggle-thumb-light'>
+                                            <svg
+                                                viewBox="0 0 24 24"
+                                                className={`icon sun-icon ${isDark ? 'inactive' : 'active'}`}
+                                                fill="none"
+                                                stroke="currentColor"
+                                            >
+                                                <circle cx="12" cy="12" r="5" strokeWidth="2" />
+                                                <path strokeWidth="2" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                                            </svg>
+                                        </div>}
+                                        <p>  {isDark ? `${t('深色模式')}` : `${t('灯光模式')}`}</p>
+                                    </div>
+
                                     <button
                                         onClick={toggleTheme}
                                         className="theme-toggle"

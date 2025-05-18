@@ -1118,7 +1118,8 @@ const ChannelsTable = () => {
                   <th>{t('分组')}</th>
                   <th>{t('类型')}</th>
                   <th>{t('响应时间')}</th>
-                  <th>{t('已用/剩余')}</th>
+                  <th>{t('已用额度')}</th>
+                  <th>{t('剩余额度')}</th>
                   <th>{t('优先级')}</th>
                   <th>{t('权重')}</th>
                   <th></th>
@@ -1129,12 +1130,20 @@ const ChannelsTable = () => {
                   <tr key={index}>
                     <td>{channel.id}</td>
                     <td>{channel.name}</td>
-                    <td>{channel.group?.split(',').sort((a, b) => {
-                      if (a === 'default') return -1;
-                      if (b === 'default') return 1;
-                      return a.localeCompare(b);
-                    }).map((item, index) => { return renderGroup(item); })}
+                    <td>
+                      <span>
+                        {channel.group
+                          ?.split(',')
+                          .sort((a, b) => {
+                            if (a === 'default') return -1;
+                            if (b === 'default') return 1;
+                            return a.localeCompare(b);
+                          })
+                          .map((item) => renderGroup(item.trim()))}
+                      </span>
                     </td>
+
+
                     <td>  {(() => {
                       if (channel.children === undefined) {
                         return renderType(channel.type);
@@ -1142,40 +1151,24 @@ const ChannelsTable = () => {
                         return renderTagType();
                       }
                     })()}</td>
-
                     <td>{renderResponseTime(channel.response_time)}</td>
+                    <td>{renderQuota(channel.used_quota)}</td>
                     <td>
                       {(() => {
                         if (channel.children === undefined) {
                           return (
                             <div>
                               <Space spacing={1}>
-                                <Tooltip content={t('已用额度')}>
-                                  <Tag color="white" type="ghost" size="large">
-                                    {renderQuota(channel.used_quota)}
-                                  </Tag>
-                                </Tooltip>
-                                <Tooltip content={t('剩余额度') + channel.balance + t('，点击更新')}>
-                                  <Tag
-                                    color="white"
-                                    type="ghost"
-                                    size="large"
-                                    onClick={() => updateChannelBalance(channel)}
-                                  >
+                                <Tooltip content={t('剩余额度 ') + channel.balance + t('，点击更新')}>
+                                  <span onClick={() => updateChannelBalance(channel)}>
                                     ${renderNumberWithPoint(channel.balance)}
-                                  </Tag>
+                                  </span>
                                 </Tooltip>
                               </Space>
                             </div>
                           );
                         } else {
-                          return (
-                            <Tooltip content={t('已用额度')}>
-                              <Tag color="white" type="ghost" size="large">
-                                {renderQuota(channel.used_quota)}
-                              </Tag>
-                            </Tooltip>
-                          );
+                          return "";
                         }
                       })()}
                     </td>
@@ -1273,7 +1266,7 @@ const ChannelsTable = () => {
                           return (
                             <div className='d-flex'>
                               <SplitButtonGroup className='d-flex'
-                                style={{ marginRight: 2 }}
+                                style={{ marginRight: '4px' }}
                                 aria-label={t('测试单个渠道操作项目组')}
                               >
                                 <button onClick={() => { testChannel(channel, ''); }}  >

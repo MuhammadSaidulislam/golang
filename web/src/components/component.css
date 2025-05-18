@@ -30,12 +30,12 @@
 .navbar .navbar-nav .nav-item a {
   font-family: 'K2D', sans-serif;
   text-decoration: none;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 18px;
   line-height: 100%;
   letter-spacing: 0%;
   text-align: center;
-  color: #7a7a7a;
+  color: var(--semi-table-thead-0);
 }
 .navbar .navbar-nav .nav-item a:hover {
   color: #000000;
@@ -2055,6 +2055,48 @@
   align-items: center;
 }
 
+.lightDark {
+  display: flex;
+  align-items: center;
+}
+.lightDark p {
+  margin-bottom: 0px;
+  margin-left: 5px;
+  font-family: 'K2D', sans-serif;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: var(--semi-table-thead-0);
+}
+.toggle-thumb-dark {
+  width: 26px;
+  height: 26px;
+  background-color: rgba(255, 255, 255, 0.432);
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+.toggle-thumb-light {
+  width: 26px;
+  height: 26px;
+  background-color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+.toggle-thumb-light svg {
+  width: 18px;
+  height: 18px;
+}
 /* Responsive styles */
 @media (max-width: 768px) {
   .dashboardNav .white-section {
@@ -2323,6 +2365,7 @@
   .navbar .navbar-collapse {
     margin-top: 1px;
     background-color: var(--semi-dashboard-bg-0);
+    padding: 0px 25px;
   }
   .navbar .navbar-collapse .nav-item {
     text-align: left;
@@ -2330,11 +2373,15 @@
   .mobileDropdown {
     display: flex;
     justify-content: center;
+    padding-top: 15px;
+    padding-bottom: 8px;
   }
   .mobileDropdown button {
     background-color: transparent;
-    color: var(--semi-color-text-2);
-    padding: 10px 15px;
+    color: var(--semi-table-thead-0);
+    align-items: center;
+    display: flex;
+    /* padding: 10px 15px; */
     margin-right: 10px;
     border: none;
     cursor: pointer;
@@ -2350,7 +2397,7 @@
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    padding: 12px 22px;
+    padding: 12px 0px;
   }
   .mobileRegister .semi-switch {
     margin: 0 auto;
@@ -2428,8 +2475,8 @@
   }
   .navbar .navbar-nav .nav-item a {
     text-align: left;
-    border-bottom: 1px solid #7a7a7a;
-    padding: 12px 22px;
+    border-bottom: 1px dashed #7a7a7aed;
+    padding: 12px 0px;
   }
   .mainBoard {
     height: 100%;

@@ -28,46 +28,79 @@ export function renderText(text, limit) {
  * @param {string} group - The input group string
  * @returns {JSX.Element} - The rendered group tags
  */
+
+
 export function renderGroup(group) {
   if (group === '') {
     return (
-      <Tag size='large' key='default' color='orange'>
+      <span
+        key="default"
+        style={{
+          display: 'inline-block',
+          backgroundColor: '#1A56DB',
+          color: '#FFFFFF',
+          padding: '4px 8px',
+          borderRadius: '8px',
+          marginRight: '4px',
+          fontSize: '12px'
+        }}
+      >
         {i18next.t('用户分组')}
-      </Tag>
+      </span>
     );
   }
 
+  // Define background and text colors for each group
   const tagColors = {
-    vip: 'yellow',
-    pro: 'yellow',
-    svip: 'red',
-    premium: 'red',
+    vip: { background: '#BE185D', text: '#FFFFFF' }, // amber
+    pro: { background: '#BE185D', text: '#FFFFFF' }, // amber
+    svip: { background: '#92400E', text: '#FFFFFF' }, // red
+    premium: { background: '#92400E', text: '#FFFFFF' }, // red
   };
 
-  const groups = group.split(',').sort();
+  // Default color if the group is not found
+  const defaultColor = { background: '#1A56DB', text: '#FFFFFF' };
+
+  // Split and sort groups
+  const groups = group.split(',').map((g) => g.trim()).sort();
 
   return (
     <span key={group}>
-      {groups.map((group) => (
-        <Tag
-          size='large'
-          color={tagColors[group] || stringToColor(group)}
-          key={group}
-          onClick={async (event) => {
-            event.stopPropagation();
-            if (await copy(group)) {
-              showSuccess(i18next.t('已复制：') + group);
-            } else {
-              Modal.error({ title: t('无法复制到剪贴板，请手动复制'), content: group });
-            }
-          }}
-        >
-          {group}
-        </Tag>
-      ))}
+      {groups.map((group) => {
+        const colors = tagColors[group] || defaultColor;
+        return (
+          <span
+            key={group}
+            style={{
+              display: 'inline-block',
+              backgroundColor: colors.background,
+              color: colors.text,
+              padding: '4px 8px',
+              borderRadius: '8px',
+              marginRight: '4px',
+              cursor: 'pointer',
+              fontSize: '12px'
+            }}
+            onClick={async (event) => {
+              event.stopPropagation();
+              if (await copy(group)) {
+                showSuccess(i18next.t('已复制：') + group);
+              } else {
+                Modal.error({
+                  title: i18next.t('无法复制到剪贴板，请手动复制'),
+                  content: group,
+                });
+              }
+            }}
+          >
+            {group}
+          </span>
+        );
+      })}
     </span>
   );
 }
+
 
 export function renderRatio(ratio) {
   let color = 'green';

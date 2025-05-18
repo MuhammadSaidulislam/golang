@@ -4,6 +4,7 @@ import { marked } from 'marked';
 import { Layout } from '@douyinfe/semi-ui';
 import CommonHeader from '../../components/CommonHeader';
 import { useTranslation } from 'react-i18next';
+import Loading from '../../components/Loading';
 
 const About = () => {
   const [about, setAbout] = useState('');
