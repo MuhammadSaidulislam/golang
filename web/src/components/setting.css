@@ -65,7 +65,7 @@
 }
 .personalInfo .personalSocial {
   margin-bottom: 8px;
-  background-color: rgb(255, 255, 255);
+  background-color: var(--semi-background-bg-1);
   display: flex;
   padding: 15px 14px;
   border-radius: 12px;
@@ -84,7 +84,7 @@
   font-size: 14px;
   line-height: 100%;
   letter-spacing: 0%;
-  color: #1c1d22;
+  color: var(--semi-text-white-black-1);
 }
 .personalInfo .personalSocial button {
   font-family: 'Inter', sans-serif;
@@ -112,7 +112,7 @@
   -o-border-radius: 8px;
 }
 .personalInfo .personalType {
-  background-color: #f0f0f0;
+  background-color: var(--semi-background-bg-1);
   margin-right: 25px;
   margin-bottom: 6px;
   padding: 8px 12px;
@@ -171,8 +171,8 @@
   font-size: 14px;
   line-height: 100%;
   letter-spacing: 0%;
-  color: #8b8d97;
-  background-color: #f0f0f0;
+  color: var(--semi-shadow-black-white-0);
+  background-color: var(--semi-background-bg-1);
   border: none;
   padding: 12px;
   border-radius: 8px;
@@ -413,6 +413,13 @@
 .settingInputBox {
   display: flex;
   align-items: center;
+}
+.ui.input input,
+.ui.form textarea,
+.ui.message,
+.ui.form .field > .selection.dropdown {
+  color: var(--semi-text-white-black-1) !important;
+  background-color: var(--semi-color-fill-0) !important;
 }
 @media (max-width: 800px) {
   .settingInputBox {

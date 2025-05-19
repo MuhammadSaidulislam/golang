@@ -48,7 +48,7 @@ const Home = () => {
         </div>
         <div className='largeModel'>
           <p className='big'>{t('大的')}</p>
-          <p className='model'>{t('查看定价')}</p>
+          <p className='model'>{t('模型')}</p>
         </div>
       </section>
 

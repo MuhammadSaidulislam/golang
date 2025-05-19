@@ -359,7 +359,7 @@ const ModelPricing = () => {
                 <h1>{t('价格')}</h1>
                 <p>{t('一个 API 解决您的所有问题。 - DuckLLM')}</p>
               </div>
-              <div className='col-md-12 priceTableList'>
+              <div className='col-md-12 priceTableList mb-5'>
                 <NoData />
               </div>
             </div>
@@ -374,7 +374,7 @@ const ModelPricing = () => {
                   <h1>{t('价格')}</h1>
                   <p>{t('一个 API 解决您的所有问题。 - DuckLLM')}</p>
                 </div>
-                <div className='col-md-12 priceTableList'>
+                <div className='col-md-12 priceTableList mb-5'>
                   <div className='tablePrice priceListTable'>
                     <Table responsive borderless hover>
                       <thead>

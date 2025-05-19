@@ -35,6 +35,13 @@ body .semi-always-dark,
   --semi-shadow-black-white-0: #ffffff;
   --semi-input-black-white-0: #ffffff;
 }
+body,
+body[theme-mode='dark'] .semi-always-light,
+:host,
+:host .semi-always-light {
+  font-family: Lato, 'Helvetica Neue', Arial, Helvetica, 'Microsoft YaHei',
+    sans-serif !important;
+}
 body {
   margin: 0;
   /* padding-top: 55px; */

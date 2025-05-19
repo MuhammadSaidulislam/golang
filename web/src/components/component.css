@@ -2301,8 +2301,8 @@
     position: fixed;
     z-index: 999;
     margin-top: 56px;
-    min-width: 58%;
-    max-width: 58%;
+    min-width: 61%;
+    max-width: 61%;
     margin-left: 0;
     transition:
       all 0.2s,
