@@ -30,212 +30,28 @@ const UsersTable = () => {
   function renderRole(role) {
     switch (role) {
       case 1:
-        return <Tag size='large'>{t('普通用户')}</Tag>;
+        return <span>{t('普通用户')}</span>;
       case 10:
         return (
-          <Tag color='yellow' size='large'>
+          <span>
             {t('管理员')}
-          </Tag>
+          </span>
         );
       case 100:
         return (
-          <Tag color='orange' size='large'>
+          <span>
             {t('超级管理员')}
-          </Tag>
+          </span>
         );
       default:
         return (
-          <Tag color='red' size='large'>
+          <span>
             {t('未知身份')}
-          </Tag>
+          </span>
         );
     }
   }
-  const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-    },
-    {
-      title: t('用户名'),
-      dataIndex: 'username',
-    },
-    {
-      title: t('分组'),
-      dataIndex: 'group',
-      render: (text, record, index) => {
-        return <div>{renderGroup(text)}</div>;
-      },
-    },
-    {
-      title: t('统计信息'),
-      dataIndex: 'info',
-      render: (text, record, index) => {
-        return (
-          <div>
-            <Space spacing={1}>
-              <Tooltip content={t('剩余额度')}>
-                <Tag color='white' size='large'>
-                  {renderQuota(record.quota)}
-                </Tag>
-              </Tooltip>
-              <Tooltip content={t('已用额度')}>
-                <Tag color='white' size='large'>
-                  {renderQuota(record.used_quota)}
-                </Tag>
-              </Tooltip>
-              <Tooltip content={t('调用次数')}>
-                <Tag color='white' size='large'>
-                  {renderNumber(record.request_count)}
-                </Tag>
-              </Tooltip>
-            </Space>
-          </div>
-        );
-      },
-    },
-    {
-      title: t('邀请信息'),
-      dataIndex: 'invite',
-      render: (text, record, index) => {
-        return (
-          <div>
-            <Space spacing={1}>
-              <Tooltip content={t('邀请人数')}>
-                <Tag color='white' size='large'>
-                  {renderNumber(record.aff_count)}
-                </Tag>
-              </Tooltip>
-              <Tooltip content={t('邀请总收益')}>
-                <Tag color='white' size='large'>
-                  {renderQuota(record.aff_history_quota)}
-                </Tag>
-              </Tooltip>
-              <Tooltip content={t('邀请人ID')}>
-                {record.inviter_id === 0 ? (
-                  <Tag color='white' size='large'>
-                    {t('无')}
-                  </Tag>
-                ) : (
-                  <Tag color='white' size='large'>
-                    {record.inviter_id}
-                  </Tag>
-                )}
-              </Tooltip>
-            </Space>
-          </div>
-        );
-      },
-    },
-    {
-      title: t('角色'),
-      dataIndex: 'role',
-      render: (text, record, index) => {
-        return <div>{renderRole(text)}</div>;
-      },
-    },
-    {
-      title: t('状态'),
-      dataIndex: 'status',
-      render: (text, record, index) => {
-        return (
-          <div>
-            {record.DeletedAt !== null ? (
-              <Tag color='red'>{t('已注销')}</Tag>
-            ) : (
-              renderStatus(text)
-            )}
-          </div>
-        );
-      },
-    },
-    {
-      title: '',
-      dataIndex: 'operate',
-      render: (text, record, index) => (
-        <div>
-          {record.DeletedAt !== null ? (
-            <></>
-          ) : (
-            <>
-              <Popconfirm
-                title={t('确定？')}
-                okType={'warning'}
-                onConfirm={() => {
-                  manageUser(record.id, 'promote', record);
-                }}
-              >
-                <Button theme='light' type='warning' style={{ marginRight: 1 }}>
-                  {t('提升')}
-                </Button>
-              </Popconfirm>
-              <Popconfirm
-                title={t('确定？')}
-                okType={'warning'}
-                onConfirm={() => {
-                  manageUser(record.id, 'demote', record);
-                }}
-              >
-                <Button theme='light' type='secondary' style={{ marginRight: 1 }}>
-                  {t('降级')}
-                </Button>
-              </Popconfirm>
-              {record.status === 1 ? (
-                <Button
-                  theme='light'
-                  type='warning'
-                  style={{ marginRight: 1 }}
-                  onClick={async () => {
-                    manageUser(record.id, 'disable', record);
-                  }}
-                >
-                  {t('禁用')}
-                </Button>
-              ) : (
-                <Button
-                  theme='light'
-                  type='secondary'
-                  style={{ marginRight: 1 }}
-                  onClick={async () => {
-                    manageUser(record.id, 'enable', record);
-                  }}
-                  disabled={record.status === 3}
-                >
-                  {t('启用')}
-                </Button>
-              )}
-              <Button
-                theme='light'
-                type='tertiary'
-                style={{ marginRight: 1 }}
-                onClick={() => {
-                  setEditingUser(record);
-                  setShowEditUser(true);
-                }}
-              >
-                {t('编辑')}
-              </Button>
-              <Popconfirm
-                title={t('确定是否要注销此用户？')}
-                content={t('相当于删除用户，此修改将不可逆')}
-                okType={'danger'}
-                position={'left'}
-                onConfirm={() => {
-                  manageUser(record.id, 'delete', record).then(() => {
-                    removeRecord(record.id);
-                  });
-                }}
-              >
-                <Button theme='light' type='danger' style={{ marginRight: 1 }}>
-                  {t('注销')}
-                </Button>
-              </Popconfirm>
-            </>
-          )}
-        </div>
-      ),
-    },
-  ];
+
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -515,7 +331,6 @@ const UsersTable = () => {
                 <th>{t('邀请总收益')}</th>
                 <th>{t('邀请人ID')}</th>
                 <th>{t('角色')}</th>
-                <th>{t('状态')}</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -524,60 +339,23 @@ const UsersTable = () => {
                 <td>{user.id}</td>
                 <td>{user.username}</td>
                 <td>{renderGroup(user.group)}</td>
+                <td>{renderQuota(user.quota)}</td>
+                <td>{renderQuota(user.used_quota)}</td>
+                <td>{renderNumber(user.request_count)}</td>
+                <td>{renderNumber(user.aff_count)}</td>
+                <td>{renderQuota(user.aff_history_quota)}</td>
                 <td>
-                  <Tooltip content={t('剩余额度')}>
-                    <Tag color='white' size='large'>
-                      {renderQuota(user.quota)}
-                    </Tag>
-                  </Tooltip>
-                </td>
-                <td>
-                  <Tooltip content={t('已用额度')}>
-                    <Tag color='white' size='large'>
-                      {renderQuota(user.used_quota)}
-                    </Tag>
-                  </Tooltip>
-                </td>
-                <td>
-                  <Tooltip content={t('调用次数')}>
-                    <Tag color='white' size='large'>
-                      {renderNumber(user.request_count)}
-                    </Tag>
-                  </Tooltip>
-                </td>
-                <td>
-                  <Tooltip content={t('邀请人数')}>
-                    <Tag color='white' size='large'>
-                      {renderNumber(user.aff_count)}
-                    </Tag>
-                  </Tooltip>
-                </td>
-                <td>
-                  <Tooltip content={t('邀请总收益')}>
-                    <Tag color='white' size='large'>
-                      {renderQuota(user.aff_history_quota)}
-                    </Tag>
-                  </Tooltip>
-                </td>
-                <td>
-                  <Tooltip content={t('邀请人ID')}>
-                    {user.inviter_id === 0 ? (
-                      <Tag color='white' size='large'>
-                        {t('无')}
-                      </Tag>
-                    ) : (
-                      <Tag color='white' size='large'>
-                        {user.inviter_id}
-                      </Tag>
-                    )}
-                  </Tooltip>
+                  {user.inviter_id === 0 ? (
+                    <span>
+                      {t('无')}
+                    </span>
+                  ) : (
+                    <span>
+                      {user.inviter_id}
+                    </span>
+                  )}
                 </td>
                 <td>{renderRole(user.role)}</td>
-                <td> {user.DeletedAt !== null ? (
-                  <Tag color='red'>{t('已注销')}</Tag>
-                ) : (
-                  renderStatus(user.status)
-                )}</td>
                 <td className='tableActions'>
                   {user.DeletedAt !== null ? (
                     ""

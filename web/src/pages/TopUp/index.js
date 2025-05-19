@@ -691,7 +691,7 @@ const TopUp = () => {
             </div>
           </div>
         </div>
-        <div className='searchAdd'>
+        <div className='searchAdd walletSearch'>
           <div className='searchBox'>
             <div className="search-container">
               <i className="search-icon"><IconSearch /></i>

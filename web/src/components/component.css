@@ -979,6 +979,7 @@
 }
 .searchBtn {
   padding: 14px 16px;
+  text-wrap: nowrap;
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   font-size: 14px;
@@ -1834,6 +1835,7 @@
 }
 .rechargeBtn {
   background-color: #1c1d22;
+  text-wrap: nowrap;
   display: flex;
   align-items: center;
   padding: 9px 16px;
@@ -2588,7 +2590,23 @@
   .footerOthers {
     display: block;
   }
+  .footerOthers p {
+    margin-bottom: 2px;
+  }
   .sidebar .middleNav ul li {
     padding: 8px 20px;
+  }
+  .walletSearch {
+    flex-wrap: nowrap;
+    margin-bottom: 15px;
+  }
+  .walletSearch .searchBox {
+    margin-bottom: 0px;
+  }
+  .walletSearch .rechargeBtn {
+    margin-left: 5px;
+  }
+  .sidebar .bottomNav .settings {
+    margin-top: 5px;
   }
 }

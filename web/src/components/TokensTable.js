@@ -610,7 +610,16 @@ const TokensTable = () => {
                 <td>{data.name}</td>
                 <td>{data.group}</td>
                 <td>{renderQuota(parseInt(data.used_quota))}</td>
-                <td>{renderQuota(parseInt(data.remain_quota))}</td>
+
+                <td>{data.unlimited_quota ? (
+                  <span>
+                    {t('无限制')}
+                  </span>
+                ) : (
+                  <span>
+                    {renderQuota(parseInt(data.remain_quota))}
+                  </span>
+                )}</td>
                 <td>{formatDate(data.created_time)}</td>
                 <td>{data.expired_time === -1 ? t('永不过期') : formatDate(data.expired_time)}</td>
                 <td className='tableActions'>

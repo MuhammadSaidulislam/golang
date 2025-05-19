@@ -78,15 +78,15 @@ const LogsTable = () => {
   function renderType(type) {
     switch (type) {
       case 1:
-        return <Tag color='cyan' size='large'>{t('充值')}</Tag>;
+        return <span>{t('充值')}</span>;
       case 2:
-        return <Tag color='lime' size='large'>{t('消费')}</Tag>;
+        return <span>{t('消费')}</span>;
       case 3:
-        return <Tag color='orange' size='large'>{t('管理')}</Tag>;
+        return <span>{t('管理')}</span>;
       case 4:
-        return <Tag color='purple' size='large'>{t('系统')}</Tag>;
+        return <span>{t('系统')}</span>;
       default:
-        return <Tag color='black' size='large'>{t('未知')}</Tag>;
+        return <span>{t('未知')}</span>;
     }
   }
 
@@ -885,16 +885,13 @@ const LogsTable = () => {
                 {logs && logs.map((logs, index) => (
                   <tr key={index}>
                     <td>{formatDate(logs.created_at)}</td>
-                    <td>{logs.type === 0 || logs.type === 2 ? <Tag
-                      color='grey'
-                      size='large'
+                    <td>{logs.type === 0 || logs.type === 2 ? <span
                       onClick={(event) => {
-                        //cancel the row click event
                         copyText(event, logs.token_name);
                       }}
                     >
                       {logs.token_name}
-                    </Tag> : "Null"}</td>
+                    </span> : "Null"}</td>
                     <td>
                       {([0, 2].includes(logs.type)) ? (
                         logs.group ? (
@@ -910,15 +907,13 @@ const LogsTable = () => {
                       ) : "Null"}
                     </td>
                     <td>{renderType(logs.type)}</td>
-                    <td>{logs.type === 0 || logs.type === 2 ? <Tag
-                      color={stringToColor(logs.model_name)}
-                      size='large'
+                    <td>{logs.type === 0 || logs.type === 2 ? <span
                       onClick={(event) => {
                         copyText(event, logs.model_name);
                       }}
                     >
                       {logs.model_name}
-                    </Tag> : "Null"}</td>
+                    </span> : "Null"}</td>
                     <td>{logs.type === 0 || logs.type === 2 ?
                       <>{renderQuota(logs.quota, 6)}</> : "Null"}</td>
                     <td>
