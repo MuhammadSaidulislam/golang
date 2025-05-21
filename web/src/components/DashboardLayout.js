@@ -27,7 +27,7 @@ import notificationIcon from "../assets/Notification.svg";
 import { IconUser, IconGift, IconLayers, IconMail } from '@douyinfe/semi-icons';
 import { renderQuota, stringToColor } from '../helpers/render';
 import { API } from './../helpers';
-import { LogoIconSvg, DashboardIconSvg, ChatIconSvg, TokenIconSvg, WalletIconSvg, LogsIconSvg, DrawingIconSvg, TasksIconSvg, PriceIconSvg, SettingIconSvg } from './svgIcon.js';
+import { LogoIconSvg, DashboardIconSvg, ChatIconSvg, TokenIconSvg, WalletIconSvg, LogsIconSvg, DrawingIconSvg, TasksIconSvg, PriceIconSvg, SettingIconSvg, LogoutIconSvg } from './svgIcon.js';
 
 const DashboardLayout = ({ children, ...props }) => {
     const { t } = useTranslation();
@@ -38,6 +38,15 @@ const DashboardLayout = ({ children, ...props }) => {
     const [userQuota, setUserQuota] = useState(0);
     let navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(true);
+    const [isLangOpen, setIsLangOpen] = useState(false);
+
+    const toggleDropdown = () => {
+        setIsLangOpen(prev => !prev);
+    };
+
+    const closeDropdown = () => {
+        setIsLangOpen(false);
+    };
 
     useEffect(() => {
         const handleResize = () => {
@@ -183,23 +192,37 @@ const DashboardLayout = ({ children, ...props }) => {
                 </div>
                 <div className='dashboardOption navbarLink d-flex'>
                     <span className='walletAmount'>{userQuota && userQuota}  <WalletIconSvg color="--semi-text-white-black-0" /> </span>
-                    <div className="dropdown-lang relative">
-                        <button className="dropdown-btn">
-                            {(currentLang === "en" || currentLang === "en-US") ? <><img src={ukLogo} className='langLogo' alt="uk" /> English</> : <><img src={chinaLogo} className='langLogo' alt="chinaLogo" /> 简体中文</>}
+                    <div className="dropdown-lang relative" onBlur={closeDropdown} tabIndex={0}>
+                        <button className="dropdown-btn" onClick={toggleDropdown}>
+                            {(currentLang === "en" || currentLang === "en-US") ? (
+                                <>
+                                    <img src={ukLogo} className='langLogo' alt="uk" /> English
+                                </>
+                            ) : (
+                                <>
+                                    <img src={chinaLogo} className='langLogo' alt="chinaLogo" /> 简体中文
+                                </>
+                            )}
                         </button>
 
-                        <div className="dropdown-menu absolute hidden shadow-md rounded-md ">
+                        <div className={`dropdown-menu absolute shadow-md rounded-md ${isOpen ? '' : 'hidden'}`}>
                             <button
-                                onClick={() => handleLanguageChange("en")}
-                                className=""
-                            >
-                                <img src={ukLogo} alt="uk" className='langLogo' />   English
-                            </button>
-                            <button
-                                onClick={() => handleLanguageChange("zh")}
+                                onClick={() => {
+                                    handleLanguageChange("en");
+                                    closeDropdown();
+                                }}
                                 className="block w-full text-left px-4 py-2 hover:bg-blue-100"
                             >
-                                <img src={chinaLogo} alt="chinaLogo" className='langLogo' />   简体中文
+                                <img src={ukLogo} alt="uk" className='langLogo' /> English
+                            </button>
+                            <button
+                                onClick={() => {
+                                    handleLanguageChange("zh");
+                                    closeDropdown();
+                                }}
+                                className="block w-full text-left px-4 py-2 hover:bg-blue-100"
+                            >
+                                <img src={chinaLogo} alt="chinaLogo" className='langLogo' /> 简体中文
                             </button>
                         </div>
                     </div>
@@ -265,8 +288,8 @@ const DashboardLayout = ({ children, ...props }) => {
                         {userDropdown && (
                             <div className="dropdown active">
                                 <div className="dropdown-item">{t('你好')} <b>{userState?.user?.username}</b></div>
-                                <Link to="/setting" className="dropdown-item"><img src={settingIcon} alt="dashboardIcon" /> {t('账户设置')}</Link>
-                                <div className="dropdown-item" onClick={logout}><img src={logoutIcon} alt="dashboardIcon" /> {t('注销')}</div>
+                                <Link to="/setting" className="dropdown-item"><SettingIconSvg color="--semi-table-thead-0" /> {t('账户设置')}</Link>
+                                <div className="dropdown-item" onClick={logout}><LogoutIconSvg color="--semi-table-thead-0" /> {t('注销')}</div>
                             </div>
                         )}
                     </div> : "close"}
@@ -279,23 +302,37 @@ const DashboardLayout = ({ children, ...props }) => {
                 </div>
                 <div className='mobileLogo d-flex align-items-center'>
                     <div className='dashboardOption navbarLink d-flex'>
-                        <div className="dropdown-lang relative">
-                            <button className="dropdown-btn">
-                                {(currentLang === "en" || currentLang === "en-US") ? <><img src={ukLogo} className='langLogo' alt="uk" /> English</> : <><img src={chinaLogo} className='langLogo' alt="chinaLogo" /> 简体中文</>}
+                        <div className="dropdown-lang relative" onBlur={closeDropdown} tabIndex={0}>
+                            <button className="dropdown-btn" onClick={toggleDropdown}>
+                                {(currentLang === "en" || currentLang === "en-US") ? (
+                                    <>
+                                        <img src={ukLogo} className='langLogo' alt="uk" /> English
+                                    </>
+                                ) : (
+                                    <>
+                                        <img src={chinaLogo} className='langLogo' alt="chinaLogo" /> 简体中文
+                                    </>
+                                )}
                             </button>
 
-                            <div className="dropdown-menu absolute hidden shadow-md rounded-md ">
+                            <div className={`dropdown-menu absolute shadow-md rounded-md ${isOpen ? '' : 'hidden'}`}>
                                 <button
-                                    onClick={() => handleLanguageChange("en")}
-                                    className=""
-                                >
-                                    <img src={ukLogo} alt="uk" className='langLogo' />   English
-                                </button>
-                                <button
-                                    onClick={() => handleLanguageChange("zh")}
+                                    onClick={() => {
+                                        handleLanguageChange("en");
+                                        closeDropdown();
+                                    }}
                                     className="block w-full text-left px-4 py-2 hover:bg-blue-100"
                                 >
-                                    <img src={chinaLogo} alt="chinaLogo" className='langLogo' />   简体中文
+                                    <img src={ukLogo} alt="uk" className='langLogo' /> English
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        handleLanguageChange("zh");
+                                        closeDropdown();
+                                    }}
+                                    className="block w-full text-left px-4 py-2 hover:bg-blue-100"
+                                >
+                                    <img src={chinaLogo} alt="chinaLogo" className='langLogo' /> 简体中文
                                 </button>
                             </div>
                         </div>
@@ -350,8 +387,8 @@ const DashboardLayout = ({ children, ...props }) => {
                             <div className="dropdown active">
                                 <div className="dropdown-item"><b>{userQuota && userQuota}</b></div>
                                 <div className="dropdown-item">{t('你好')} <b>{userState?.user?.username}</b></div>
-                                <Link to="/setting" className="dropdown-item"><img src={settingIcon} alt="dashboardIcon" /> {t('账户设置')}</Link>
-                                <div className="dropdown-item" onClick={logout}><img src={logoutIcon} alt="dashboardIcon" /> {t('注销')}</div>
+                                <Link to="/setting" className="dropdown-item"><SettingIconSvg color="--semi-table-thead-0" /> {t('账户设置')}</Link>
+                                <div className="dropdown-item" onClick={logout}><LogoutIconSvg color="--semi-table-thead-0" /> {t('注销')}</div>
                             </div>
                         )}
                     </div>
