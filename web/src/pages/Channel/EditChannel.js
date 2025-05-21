@@ -361,7 +361,7 @@ const EditChannel = (props) => {
       }
       props.refresh();
       props.handleClose();
-      props.handleModalClose();
+      props.channelModalClose();
     } else {
       showError(message);
     }

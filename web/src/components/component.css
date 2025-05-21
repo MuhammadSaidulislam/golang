@@ -1662,7 +1662,6 @@
   line-height: 24px;
   letter-spacing: 0%;
   text-align: center;
-
   padding: 17px 28px;
   border-radius: 16px;
   -webkit-border-radius: 16px;
@@ -1712,7 +1711,7 @@
   -ms-border-radius: 12px;
   -o-border-radius: 12px;
   box-shadow: 0 1px 2px 0 #1018280d;
-  color: #171a20;
+  color: var(--semi-text-white-black-1);
   line-height: 26px;
   padding: 10px 12px;
   padding-right: 12px;
@@ -2290,6 +2289,9 @@
 .footerOthers {
   display: none;
 }
+.adminModal p {
+  color: var(--semi-text-white-black-0);
+}
 @media only screen and (max-width: 575.98px) {
   .content.is-open {
     /*margin-left: 100%;*/
@@ -2608,5 +2610,11 @@
   }
   .sidebar .bottomNav .settings {
     margin-top: 5px;
+  }
+  .mobileLogo .modeChange {
+    margin-right: 12px;
+  }
+  .mobileLogo .navbarLink .dropdown-btn {
+    margin-right: 0px;
   }
 }

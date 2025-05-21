@@ -6,7 +6,7 @@ import {
   showSuccess,
   timestamp2string,
 } from '../helpers';
-import { SortIconSvg } from './svgIcon';
+import { EditIconSvg, SortIconSvg } from './svgIcon';
 import { ITEMS_PER_PAGE } from '../constants';
 import { renderQuota } from '../helpers/render';
 import {
@@ -492,7 +492,7 @@ const RedemptionsTable = () => {
                   )}
 
                   <Button onClick={() => { setEditingRedemption(redemption); setModalShow(true); }} disabled={redemption.status !== 1}  >
-                    <img src={editIcon} alt="tableAction" />
+                    <EditIconSvg color="--semi-table-thead-0" />
                   </Button>
                 </td>
 

@@ -15,7 +15,7 @@ import EditUser from '../pages/User/EditUser';
 import { useTranslation } from 'react-i18next';
 import { Table, Dropdown } from "react-bootstrap";
 import { SortIconSvg } from './svgIcon';
-
+import { EditIconSvg } from './svgIcon.js';
 import { IconArrowUpLeft, IconAscend, IconChevronDown, IconDoubleChevronLeft, IconFilledArrowDown, IconFilledArrowUp, IconPlus, IconSearch, IconChevronRight, IconChevronLeft } from '@douyinfe/semi-icons';
 import deleteIcon from "../assets/Delete.svg";
 import disableIcon from "../assets/fi_disable.svg";
@@ -388,7 +388,7 @@ const UsersTable = () => {
                         </button>
                       )}
                       <button style={{ marginRight: '2px' }} onClick={() => { setEditingUser(user); setUpdateShow(true); }}   >
-                        <img src={editIcon} alt="tableAction" />
+                        <EditIconSvg color="--semi-table-thead-0" />
                       </button>
                       <Popconfirm
                         title={t('确定是否要注销此用户？')}

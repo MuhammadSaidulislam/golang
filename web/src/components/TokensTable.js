@@ -32,7 +32,7 @@ import editIcon from "../assets/fi_edit-2.svg";
 import chatIcon from "../assets/fi_chat_2.svg";
 import copyIcon from "../assets/u_copy-alt.svg";
 import TablePagination from './TablePagination';
-import { SortIconSvg } from './svgIcon';
+import { CommentIconSvg, EditIconSvg, SortIconSvg } from './svgIcon';
 import enableIcon from "../assets/fi_check.svg";
 import { useLocation } from 'react-router-dom';
 
@@ -47,40 +47,40 @@ const TokensTable = () => {
       case 1:
         if (model_limits_enabled) {
           return (
-            <Tag color='green' size='large'>
+            <span style={{ color: 'green' }}>
               {t('已启用：限制模型')}
-            </Tag>
+            </span>
           );
         } else {
           return (
-            <Tag color='green' size='large'>
+            <span style={{ color: 'green' }}>
               {t('已启用')}
-            </Tag>
+            </span>
           );
         }
       case 2:
         return (
-          <Tag color='red' size='large'>
+          <span style={{ color: 'red' }}>
             {t('已禁用')}
-          </Tag>
+          </span>
         );
       case 3:
         return (
-          <Tag color='yellow' size='large'>
+          <span style={{ color: 'yellow' }}>
             {t('已过期')}
-          </Tag>
+          </span>
         );
       case 4:
         return (
-          <Tag color='grey' size='large'>
+          <span style={{ color: 'grey' }}>
             {t('已耗尽')}
-          </Tag>
+          </span>
         );
       default:
         return (
-          <Tag color='black' size='large'>
+          <span style={{ color: 'black' }}>
             {t('未知状态')}
-          </Tag>
+          </span>
         );
     }
   };
@@ -202,6 +202,7 @@ const TokensTable = () => {
   const [searching, setSearching] = useState(false);
   const [modalShow, setModalShow] = useState(false);
   const [chats, setChats] = useState([]);
+  const [count, setCount] = useState(0);
   const [editingToken, setEditingToken] = useState({
     id: undefined,
   });
@@ -310,10 +311,12 @@ const TokensTable = () => {
         showSuccess('操作成功完成！');
       }
     }
+
   };
 
   const manageToken = async (id, action, record) => {
     setLoading(true);
+
     let data = { id };
     let res;
     switch (action) {
@@ -343,6 +346,7 @@ const TokensTable = () => {
       showError(message);
     }
     setLoading(false);
+    setCount(count + 1);
   };
 
   const searchTokens = async () => {
@@ -447,7 +451,7 @@ const TokensTable = () => {
 
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage, pageToSize]);
+  }, [currentPage, pageToSize, count]);
 
   const fetchData = async (page) => {
     setLoading(true);
@@ -555,7 +559,7 @@ const TokensTable = () => {
           <h1>{t('您正在使用默认密码！')}</h1>
           <button onClick={openModalClose}><IconClose /></button>
         </div>
-        <div className='modalContent walletModal'>
+        <div className='modalContent walletModal adminModal'>
           <p>{t('请立刻修改默认密码！')}</p>
           <div className="button-group mt-3">
             <div className="btn btn-cancel" onClick={openModalClose}>{t('取消')}</div>
@@ -597,6 +601,7 @@ const TokensTable = () => {
             <thead>
               <tr>
                 <th>{t('代币名称')}</th>
+                <th>{t('任务状态')}</th>
                 <th>{t('分组名称')}</th>
                 <th>{t('已用额度')}</th>
                 <th>{t('配额余额')}</th>
@@ -608,9 +613,9 @@ const TokensTable = () => {
             <tbody>
               {tokenList && tokenList.map((data) => <tr>
                 <td>{data.name}</td>
+                <td> {renderStatus(data.status, data.model_limits_enabled)}</td>
                 <td>{data.group}</td>
                 <td>{renderQuota(parseInt(data.used_quota))}</td>
-
                 <td>{data.unlimited_quota ? (
                   <span>
                     {t('无限制')}
@@ -624,8 +629,8 @@ const TokensTable = () => {
                 <td>{data.expired_time === -1 ? t('永不过期') : formatDate(data.expired_time)}</td>
                 <td className='tableActions'>
                   <button onClick={async (text) => { await copyText('sk-' + data.key); }}><img src={copyIcon} alt="tableAction" /></button>
-                  <button onClick={() => onOpenLink('default', chatMessage[0].link, data)}><img src={chatIcon} alt="tableAction" /> </button>
-                  <button onClick={() => { setEditingToken(data); setModalShow(true); }}><img src={editIcon} alt="tableAction" /></button>
+                  <button onClick={() => onOpenLink('default', chatMessage[0].link, data)}><CommentIconSvg color="--semi-table-thead-0" /></button>
+                  <button onClick={() => { setEditingToken(data); setModalShow(true); }}><EditIconSvg color="--semi-table-thead-0" /></button>
                   {data.status === 1 ? <button onClick={async () => { manageToken(data.id, 'disable', data); }}><img src={disableIcon} alt="tableAction" /></button> : <button onClick={async () => { manageToken(data.id, 'enable', data); }}><img src={enableIcon} alt="tableAction" /></button>}
                   <Popconfirm
                     title={t('确定是否要删除此令牌？')}
@@ -640,7 +645,6 @@ const TokensTable = () => {
                   >
                     <button><img src={deleteIcon} alt="tableAction" /></button>
                   </Popconfirm>
-
                 </td>
               </tr>)}
             </tbody>

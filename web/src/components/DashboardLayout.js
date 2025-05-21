@@ -277,7 +277,63 @@ const DashboardLayout = ({ children, ...props }) => {
                 <div className='mobileLogo'>
                     <span onClick={toggle} style={{ cursor: 'pointer' }}> <LogoIconSvg color="--semi-text-white-black-0" /></span>
                 </div>
-                <div className='mobileLogo'>
+                <div className='mobileLogo d-flex align-items-center'>
+                    <div className='dashboardOption navbarLink d-flex'>
+                        <div className="dropdown-lang relative">
+                            <button className="dropdown-btn">
+                                {(currentLang === "en" || currentLang === "en-US") ? <><img src={ukLogo} className='langLogo' alt="uk" /> English</> : <><img src={chinaLogo} className='langLogo' alt="chinaLogo" /> 简体中文</>}
+                            </button>
+
+                            <div className="dropdown-menu absolute hidden shadow-md rounded-md ">
+                                <button
+                                    onClick={() => handleLanguageChange("en")}
+                                    className=""
+                                >
+                                    <img src={ukLogo} alt="uk" className='langLogo' />   English
+                                </button>
+                                <button
+                                    onClick={() => handleLanguageChange("zh")}
+                                    className="block w-full text-left px-4 py-2 hover:bg-blue-100"
+                                >
+                                    <img src={chinaLogo} alt="chinaLogo" className='langLogo' />   简体中文
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modeChange d-flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-800">
+                        <button
+                            onClick={toggleTheme}
+                            className="theme-toggle"
+                            aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+                        >
+                            {/* Track and icons */}
+                            <div className={`toggle-track ${isDark ? 'dark' : 'light'}`}>
+                                {/* Sun icon */}
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    className={`icon sun-icon ${isDark ? 'inactive' : 'active'}`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                >
+                                    <circle cx="12" cy="12" r="5" strokeWidth="2" />
+                                    <path strokeWidth="2" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                                </svg>
+
+                                {/* Moon icon */}
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    className={`icon moon-icon ${isDark ? 'active' : 'inactive'}`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                >
+                                    <path strokeWidth="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                                </svg>
+                            </div>
+
+                            {/* Thumb/slider */}
+                            <div className={`toggle-thumb ${isDark ? 'dark' : 'light'}`} />
+                        </button>
+                    </div>
                     <div
                         className="icon-container"
                         ref={userRef}

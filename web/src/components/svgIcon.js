@@ -120,4 +120,30 @@ export const LogoIconSvg = ({ color }) => {
     );
 };
 
+export const EditIconSvg = ({ color }) => {
+    return (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_1210_168)">
+                <path d="M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z" style={{ stroke: `var(${color})` }} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </g>
+            <defs>
+                <clipPath id="clip0_1210_168">
+                    <rect width="18" height="18" style={{ stroke: `var(${color})` }} />
+                </clipPath>
+            </defs>
+        </svg>
+    );
+};
 
+
+export const CommentIconSvg = ({ color }) => {
+    return (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fillRule="evenodd" clipRule="evenodd" d="M14.3035 14.3024C12.0114 16.5948 8.61733 17.09 5.83981 15.8055C5.42978 15.6404 5.09361 15.507 4.77403 15.507C3.88387 15.5123 2.77587 16.3754 2.20002 15.8002C1.62417 15.2243 2.48795 14.1155 2.48795 13.2199C2.48795 12.9003 2.35981 12.5701 2.19474 12.1593C0.909623 9.38222 1.40558 5.98702 3.69769 3.6954C6.6237 0.768324 11.3775 0.768324 14.3035 3.69465C17.2348 6.62625 17.2295 11.3761 14.3035 14.3024Z" style={{ stroke: `var(${color})` }} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M11.9537 9.30859H11.9604" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M8.9478 9.30859H8.95455" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M5.94194 9.30859H5.94869" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+
+    );
+};

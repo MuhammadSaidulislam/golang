@@ -1,52 +1,36 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { UserContext } from '../../context/User/index.js';
-import {
-  API,
-  getUserIdFromLocalStorage,
-  showError,
-} from '../../helpers/index.js';
-import {
-  Card,
-  Chat,
-  Input,
-  Layout,
-  Select,
-  Slider,
-  TextArea,
-  Typography,
-  Button,
-  Highlight,
-} from '@douyinfe/semi-ui';
+import { API, getUserIdFromLocalStorage, showError } from '../../helpers/index.js';
+import { Card, Chat, Input, Layout, Select, Slider, TextArea, Typography, Button, Highlight } from '@douyinfe/semi-ui';
 import { SSE } from 'sse';
-import { IconClose, IconSetting, IconFilter } from '@douyinfe/semi-icons';
+import { IconClose, IconSetting } from '@douyinfe/semi-icons';
 import { StyleContext } from '../../context/Style/index.js';
 import { useTranslation } from 'react-i18next';
-import { renderGroupOption, truncateText } from '../../helpers/render.js';
-import DashboardLayout from '../../components/DashboardLayout.js';
+import { renderGroupOption } from '../../helpers/render.js';
+import DashboardLayout from './../../components/DashboardLayout';
 import chatIcon from "../../assets/message.svg";
 import filterIcon from "../../assets/fi_filter.svg";
 
 const roleInfo = {
   user: {
     name: 'User',
-    avatar:
-      'https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/docs-icon.png',
+    avatar: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/docs-icon.png'
   },
   assistant: {
     name: 'Assistant',
-    avatar: 'logo.png',
+    avatar: 'https://wmimg.com/i/1607/2025/03/67d196c33c52e.png',
+
   },
   system: {
     name: 'System',
-    avatar:
-      'https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/other/logo.png',
-  },
-};
+    avatar: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/other/logo.png'
+  }
+}
 
 let id = 4;
 function getId() {
-  return `${id++}`;
+  return `${id++}`
 }
 
 const Playground = () => {
@@ -64,7 +48,7 @@ const Playground = () => {
       id: '3',
       createAt: 1715676751919,
       content: t('你好，请问有什么可以帮助您的吗？'),
-    },
+    }
   ];
 
   const [inputs, setInputs] = useState({
@@ -76,9 +60,7 @@ const Playground = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [userState, userDispatch] = useContext(UserContext);
   const [status, setStatus] = useState({});
-  const [systemPrompt, setSystemPrompt] = useState(
-    'You are a helpful assistant. You can help me by answering my questions. You can also ask me questions.',
-  );
+  const [systemPrompt, setSystemPrompt] = useState('You are a helpful assistant. You can help me by answering my questions. You can also ask me questions.');
   const [message, setMessage] = useState(defaultMessage);
   const [models, setModels] = useState([]);
   const [groups, setGroups] = useState([]);
@@ -121,35 +103,25 @@ const Playground = () => {
     const { success, message, data } = res.data;
     if (success) {
       let localGroupOptions = Object.entries(data).map(([group, info]) => ({
-        label: truncateText(info.desc, '50%'),
+        label: info.desc,
         value: group,
-        ratio: info.ratio,
-        fullLabel: info.desc, // 保存完整文本用于tooltip
+        ratio: info.ratio
       }));
 
       if (localGroupOptions.length === 0) {
-        localGroupOptions = [
-          {
-            label: t('用户分组'),
-            value: '',
-            ratio: 1,
-          },
-        ];
+        localGroupOptions = [{
+          label: t('用户分组'),
+          value: '',
+          ratio: 1
+        }];
       } else {
         const localUser = JSON.parse(localStorage.getItem('user'));
-        const userGroup =
-          (userState.user && userState.user.group) ||
-          (localUser && localUser.group);
+        const userGroup = (userState.user && userState.user.group) || (localUser && localUser.group);
 
         if (userGroup) {
-          const userGroupIndex = localGroupOptions.findIndex(
-            (g) => g.value === userGroup,
-          );
+          const userGroupIndex = localGroupOptions.findIndex(g => g.value === userGroup);
           if (userGroupIndex > -1) {
-            const userGroupOption = localGroupOptions.splice(
-              userGroupIndex,
-              1,
-            )[0];
+            const userGroupOption = localGroupOptions.splice(userGroupIndex, 1)[0];
             localGroupOptions.unshift(userGroupOption);
           }
         }
@@ -166,7 +138,7 @@ const Playground = () => {
     border: '1px solid var(--semi-color-border)',
     borderRadius: '16px',
     margin: '0px 8px',
-  };
+  }
 
   const getSystemMessage = () => {
     if (systemPrompt !== '') {
@@ -175,40 +147,43 @@ const Playground = () => {
         id: '1',
         createAt: 1715676751919,
         content: systemPrompt,
-      };
+      }
     }
-  };
+  }
 
   let handleSSE = (payload) => {
     let source = new SSE('/pg/chat/completions', {
       headers: {
-        'Content-Type': 'application/json',
-        'New-Api-User': getUserIdFromLocalStorage(),
+        "Content-Type": "application/json",
+        "New-Api-User": getUserIdFromLocalStorage(),
       },
-      method: 'POST',
+      method: "POST",
       payload: JSON.stringify(payload),
     });
-    source.addEventListener('message', (e) => {
-      // 只有收到 [DONE] 时才结束
-      if (e.data === '[DONE]') {
-        source.close();
+    source.addEventListener("message", (e) => {
+      if (e.data !== "[DONE]") {
+        let payload = JSON.parse(e.data);
+        // console.log("Payload: ", payload);
+        if (payload.choices.length === 0) {
+          source.close();
+          completeMessage();
+        } else {
+          let text = payload.choices[0].delta.content;
+          if (text) {
+            generateMockResponse(text);
+          }
+        }
+      } else {
         completeMessage();
-        return;
-      }
-
-      let payload = JSON.parse(e.data);
-      // 检查是否有 delta content
-      if (payload.choices?.[0]?.delta?.content) {
-        generateMockResponse(payload.choices[0].delta.content);
       }
     });
 
-    source.addEventListener('error', (e) => {
-      generateMockResponse(e.data);
-      completeMessage('error');
+    source.addEventListener("error", (e) => {
+      generateMockResponse(e.data)
+      completeMessage('error')
     });
 
-    source.addEventListener('readystatechange', (e) => {
+    source.addEventListener("readystatechange", (e) => {
       if (e.readyState >= 2) {
         if (source.status === undefined) {
           source.close();
@@ -217,57 +192,55 @@ const Playground = () => {
       }
     });
     source.stream();
-  };
+  }
 
-  const onMessageSend = useCallback(
-    (content, attachment) => {
-      setMessage((prevMessage) => {
-        const newMessage = [
-          ...prevMessage,
-          {
-            role: 'user',
-            content: content,
-            createAt: Date.now(),
-            id: getId(),
-          },
-        ];
-
-        // 将 getPayload 移到这里
-        const getPayload = () => {
-          let systemMessage = getSystemMessage();
-          let messages = newMessage.map((item) => {
-            return {
-              role: item.role,
-              content: item.content,
-            };
-          });
-          if (systemMessage) {
-            messages.unshift(systemMessage);
-          }
-          return {
-            messages: messages,
-            stream: true,
-            model: inputs.model,
-            group: inputs.group,
-            max_tokens: parseInt(inputs.max_tokens),
-            temperature: inputs.temperature,
-          };
-        };
-
-        // 使用更新后的消息状态调用 handleSSE
-        handleSSE(getPayload());
-        newMessage.push({
-          role: 'assistant',
-          content: '',
+  const onMessageSend = useCallback((content, attachment) => {
+    console.log("attachment: ", attachment);
+    setMessage((prevMessage) => {
+      const newMessage = [
+        ...prevMessage,
+        {
+          role: 'user',
+          content: content,
           createAt: Date.now(),
-          id: getId(),
-          status: 'loading',
+          id: getId()
+        }
+      ];
+
+      // 将 getPayload 移到这里
+      const getPayload = () => {
+        let systemMessage = getSystemMessage();
+        let messages = newMessage.map((item) => {
+          return {
+            role: item.role,
+            content: item.content,
+          }
         });
-        return newMessage;
+        if (systemMessage) {
+          messages.unshift(systemMessage);
+        }
+        return {
+          messages: messages,
+          stream: true,
+          model: inputs.model,
+          group: inputs.group,
+          max_tokens: parseInt(inputs.max_tokens),
+          temperature: inputs.temperature,
+        };
+      };
+
+      // 使用更新后的消息状态调用 handleSSE
+      handleSSE(getPayload());
+      newMessage.push({
+        role: 'assistant',
+        content: '',
+        createAt: Date.now(),
+        id: getId(),
+        status: 'loading'
       });
-    },
-    [getSystemMessage],
-  );
+      return newMessage;
+    });
+  }, [getSystemMessage]);
 
   const completeMessage = useCallback((status = 'complete') => {
     // console.log("Complete Message: ", status)
@@ -277,80 +250,48 @@ const Playground = () => {
       if (lastMessage.status === 'complete' || lastMessage.status === 'error') {
         return prevMessage;
       }
-      return [...prevMessage.slice(0, -1), { ...lastMessage, status: status }];
+      return [
+        ...prevMessage.slice(0, -1),
+        { ...lastMessage, status: status }
+      ];
     });
-  }, []);
+  }, [])
 
   const generateMockResponse = useCallback((content) => {
     // console.log("Generate Mock Response: ", content);
     setMessage((message) => {
       const lastMessage = message[message.length - 1];
       let newMessage = { ...lastMessage };
-      if (
-        lastMessage.status === 'loading' ||
-        lastMessage.status === 'incomplete'
-      ) {
+      if (lastMessage.status === 'loading' || lastMessage.status === 'incomplete') {
         newMessage = {
           ...newMessage,
           content: (lastMessage.content || '') + content,
-          status: 'incomplete',
-        };
+          status: 'incomplete'
+        }
       }
-      return [...message.slice(0, -1), newMessage];
-    });
+      return [...message.slice(0, -1), newMessage]
+    })
   }, []);
 
-  const SettingsToggle = () => {
-    if (!styleState.isMobile) return null;
-    return (
-      <Button
-        icon={<IconSetting />}
-        style={{
-          position: 'absolute',
-          left: showSettings ? -10 : -20,
-          top: '50%',
-          transform: 'translateY(-50%)',
-          zIndex: 1000,
-          width: 40,
-          height: 40,
-          borderRadius: '0 20px 20px 0',
-          padding: 0,
-          boxShadow: '2px 0 8px rgba(0, 0, 0, 0.15)',
-        }}
-        onClick={() => setShowSettings(!showSettings)}
-        theme='solid'
-        type='primary'
-      />
-    );
-  };
 
   function CustomInputRender(props) {
     const { detailProps } = props;
-    const { clearContextNode, uploadNode, inputNode, sendNode, onClick } =
-      detailProps;
+    const { clearContextNode, uploadNode, inputNode, sendNode, onClick } = detailProps;
 
-    return (
-      <div
-        style={{
-          margin: '8px 16px',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          borderRadius: 16,
-          padding: 10,
-          border: '1px solid var(--semi-color-border)',
-        }}
-        onClick={onClick}
-      >
-        {/*{uploadNode}*/}
-        {inputNode}
-        {sendNode}
-      </div>
-    );
+    return <div style={{
+      margin: '8px 16px', display: 'flex', flexDirection: 'row',
+      alignItems: 'flex-end', borderRadius: 16, padding: 10, border: '1px solid var(--semi-color-border)'
+    }}
+      onClick={onClick}
+    >
+      {/*{uploadNode}*/}
+      {inputNode}
+      {sendNode}
+    </div>
   }
 
   const renderInputArea = useCallback((props) => {
-    return <CustomInputRender {...props} />;
+    return (<CustomInputRender {...props} />)
   }, []);
 
   const [showFilters, setShowFilters] = useState(false);
@@ -362,7 +303,7 @@ const Playground = () => {
         <div className='chatMessage'>
           <div className='mobileChat'>
             <p>{t('筛选')}</p>
-            {showFilters ? <button className='filterClose' onClick={() => setShowFilters(!showFilters)}> <IconClose /> </button> : <button className='filterBtn' onClick={() => setShowFilters(!showFilters)}><IconFilter /></button>}
+            {showFilters ? <button className='filterClose' onClick={() => setShowFilters(!showFilters)}> <IconClose /> </button> : <button className='filterBtn' onClick={() => setShowFilters(!showFilters)}><img src={filterIcon} alt="filterIcon" /></button>}
 
           </div>
           {/* Buttons appear here when showFilters is true */}
@@ -384,6 +325,7 @@ const Playground = () => {
                 optionList={groups}
                 renderOptionItem={renderGroupOption}
                 style={{ width: '100%' }}
+                getPopupContainer={() => document.querySelector('.chatDropdown')}
               />
               <div style={{ marginTop: 10 }}>
                 <Typography.Text strong>{t('模型')}：</Typography.Text>
@@ -401,6 +343,8 @@ const Playground = () => {
                 value={inputs.model}
                 autoComplete='new-password'
                 optionList={models}
+                style={{ width: '100%' }}
+                getPopupContainer={() => document.querySelector('.chatDropdown')}
               />
 
               <div style={{ marginTop: 10 }}>
@@ -489,6 +433,7 @@ const Playground = () => {
                 value={inputs.model}
                 autoComplete='new-password'
                 optionList={models}
+                style={{ width: '100%' }}
               />
 
               <div style={{ marginTop: 10 }}>
