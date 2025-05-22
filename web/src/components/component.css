@@ -208,6 +208,7 @@
   overflow-y: auto;
 }
 /* login page */
+
 .loginForm {
   background-color: var(--semi-color-nav-bg);
   border: 1px solid rgb(209, 209, 209);
@@ -2632,5 +2633,9 @@
   }
   .mobileLogo .navbarLink .dropdown-btn {
     margin-right: 0px;
+  }
+  .loginSection {
+    height: 100vh;
+    min-height: 100%;
   }
 }
