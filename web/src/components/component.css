@@ -2638,4 +2638,9 @@
     height: 100vh;
     min-height: 100%;
   }
+  .loginSection .mainContent {
+    height: calc(100vh - 80px);
+    min-height: calc(100vh - 80px);
+    overflow-y: visible;
+  }
 }

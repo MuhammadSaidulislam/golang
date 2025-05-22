@@ -250,7 +250,7 @@ const CommonHeader = () => {
                                         opacity: isLangOpen ? 1 : 0,
                                     }}
                                 >
-                                    <div className="flex flex-col mt-2 rounded-md shadow-md bg-white">
+                                    <div className="flex flex-col mt-2 rounded-md shadow-md">
                                         <button
                                             onClick={() => {
                                                 handleLanguageChange("en");
