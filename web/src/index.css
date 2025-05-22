@@ -43,7 +43,9 @@ body[theme-mode='dark'] .semi-always-light,
     sans-serif !important;
 }
 body {
-  margin: 0;
+  margin: 0px;
+  padding: 0px;
+  overflow-x: hidden;
   /* padding-top: 55px; */
   /* overflow-y: scroll; */
   font-family: Lato, 'Helvetica Neue', Arial, Helvetica, 'Microsoft YaHei',
