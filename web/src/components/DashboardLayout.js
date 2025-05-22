@@ -183,7 +183,7 @@ const DashboardLayout = ({ children, ...props }) => {
     }
 
     return (
-        <div>
+        <div className='bodyMain'>
             <div className='dashboardNav'>
                 <div className='logoNav'>
                     <img src={logo} alt='logo' className="logoNavbar" />

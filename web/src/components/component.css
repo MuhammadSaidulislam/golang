@@ -2470,7 +2470,8 @@
     border: none;
   }
   .mobileDashNav {
-    position: fixed;
+    position: sticky;
+    top: 0px;
     z-index: 999;
     width: 100%;
     display: flex;
@@ -2513,7 +2514,6 @@
   }
   .mainBoard {
     height: 100%;
-    margin-top: 57px;
   }
   /* .mainBoard.is-open {
     padding: 0px;
@@ -2521,9 +2521,9 @@
   .App:has(.is-open) {
     max-height: calc(100vh - 58px);
   }
-  .chatBox {
+  /* .chatBox {
     height: calc(100vh - 66px);
-  }
+  } */
   .chatBox aside {
     display: none !important;
   }
@@ -2642,5 +2642,18 @@
     height: calc(100vh - 80px);
     min-height: calc(100vh - 80px);
     overflow-y: visible;
+  }
+  .bodyMain {
+    height: 100vh;
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .bodyMain .App {
+    height: 100%;
+    min-height: auto;
+  }
+  .bodyMain .sidebar {
+    margin-top: 0px;
   }
 }
