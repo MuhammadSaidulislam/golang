@@ -1,4 +1,9 @@
 /* navbar */
+.commonHeader {
+  position: sticky;
+  top: 0px;
+  z-index: 999;
+}
 .commonHeader .navbar {
   height: 80px;
   background-color: var(--semi-dashboard-bg-0);
@@ -2291,6 +2296,17 @@
 }
 .adminModal p {
   color: var(--semi-text-white-black-0);
+}
+.testDropdown span,
+.testBtn {
+  color: var(--semi-table-thead-0) !important;
+}
+.testDropdown .dropdown-menu.show {
+  color: var(--semi-table-thead-0) !important;
+  background-color: var(--semi-dashboard-bg-0) !important;
+}
+.testDropdown .dropdown-toggle::after {
+  display: none !important;
 }
 @media only screen and (max-width: 575.98px) {
   .content.is-open {

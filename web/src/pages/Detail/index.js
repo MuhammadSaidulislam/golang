@@ -172,7 +172,8 @@ const Detail = (props) => {
   const [lineData, setLineData] = useState([]);
 
 
-  const containerRef = useRef(null);
+  const staticContainerRef = useRef(null);
+  const averageContainerRef = useRef(null);
   const [spec_pie, setSpecPie] = useState({
     type: 'pie',
     data: [{
@@ -605,18 +606,31 @@ const Detail = (props) => {
   };
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
+    const handleStaticOutside = (e) => {
+      if (staticContainerRef.current && !staticContainerRef.current.contains(e.target)) {
         setStaticDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleStaticOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleStaticOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleAverageOutside = (e) => {
+      if (averageContainerRef.current && !averageContainerRef.current.contains(e.target)) {
         setAverageDropdown(false);
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleAverageOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("mousedown", handleAverageOutside);
     };
   }, []);
+
 
 
   const onPieEnter = useCallback(
@@ -627,6 +641,15 @@ const Detail = (props) => {
   );
 
   const description = "Add Tokens to start tracking Calls <br /> Distribution Metrics.";
+
+
+  const lineTableData = lineData?.map(item => ({
+    name: item.Time, // This will be on the X-Axis
+    value: item.Usage // This will be on the Y-Axis
+  }));
+  const usages = lineTableData.map(item => item.value);
+  const minUsage = Math.min(...usages);
+  const maxUsage = Math.max(...usages);
 
   return (
     <>
@@ -665,10 +688,9 @@ const Detail = (props) => {
               <div className='cardText'>
                 {t('统计摘要')}
               </div>
-              <div className='cardTime'>
+              <div className='cardTime' ref={staticContainerRef}>
                 <div
                   className="icon-container"
-                  ref={userRef}
                   onClick={toggleStaticDropdown}
                 >
                   <div className="user-icon">
@@ -676,9 +698,9 @@ const Detail = (props) => {
                   </div>
                   {staticDropdown && (
                     <div className="dropdown active">
-                      <div className="dropdown-item" onClick={() => handleDateChange("week")}>{t('本星期')}</div>
-                      <div className="dropdown-item" onClick={() => handleDateChange("month")}>{t('本月')}</div>
-                      <div className="dropdown-item" onClick={() => handleDateChange("year")}>{t('今年')}</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("week")}>{t('本星期')} a</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("month")}>{t('本月')} b</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("year")}>{t('今年')} c</div>
                     </div>)}
                 </div>
               </div>
@@ -709,7 +731,7 @@ const Detail = (props) => {
                       60000)).toFixed(3)}</p>
                 </div>
               </div>
-              <div className='cardTime' ref={containerRef}>
+              <div className='cardTime' ref={averageContainerRef}>
                 <div
                   className="icon-container"
                   onClick={toggleAverageDropdown}
@@ -820,7 +842,7 @@ const Detail = (props) => {
           <div className="h-48" style={{ height: '280px' }}>
             {/* <NoData description={description} /> */}
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={lineData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <AreaChart data={lineTableData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#4889F4" stopOpacity={0.8} />
@@ -828,7 +850,14 @@ const Detail = (props) => {
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="name" tick={{ fontSize: 8 }} />
-                <YAxis domain={[0, 1]} tickCount={5} tick={{ fontSize: 10 }} />
+                <YAxis
+                  domain={[minUsage, maxUsage]}
+                  tickCount={5}
+                  tick={{ fontSize: 8 }}
+                  stroke="#4889F4"
+                  fillOpacity={1}
+                  style={{ strokeWidth: 1 }}
+                />
                 <Tooltip />
                 <Area
                   type="monotone"

@@ -924,9 +924,22 @@ const ChannelsTable = () => {
                                 style={{ marginRight: '4px' }}
                                 aria-label={t('测试单个渠道操作项目组')}
                               >
-                                <button onClick={() => { testChannel(channel, ''); }}  >
+                                <button className='testBtn' onClick={() => { testChannel(channel, ''); }}  >
                                   {t('测试')}
                                 </button>
+
+                                <Dropdown className='testDropdown'>
+                                  <Dropdown.Toggle variant="primary" className="d-flex align-items-center" >
+                                    <IconChevronDown />
+                                  </Dropdown.Toggle>
+                                  <Dropdown.Menu align="center">
+                                    {channel.models.split(',').map((model, index) => (
+                                      <li key={index} className="p-2">
+                                        {model}
+                                      </li>
+                                    ))}
+                                  </Dropdown.Menu>
+                                </Dropdown>
                               </SplitButtonGroup>
 
                               <Popconfirm
@@ -1072,6 +1085,7 @@ const ChannelsTable = () => {
           onChange={(v) => setBatchSetTagValue(v)}
         />
       </Modal>
+
     </>
   );
 };
