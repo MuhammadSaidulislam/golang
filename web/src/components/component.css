@@ -2644,8 +2644,8 @@
     overflow-y: visible;
   }
   .bodyMain {
+    height: 100dvh;
     height: 100vh;
-    min-height: auto;
     display: flex;
     flex-direction: column;
   }
