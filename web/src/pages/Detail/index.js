@@ -698,9 +698,9 @@ const Detail = (props) => {
                   </div>
                   {staticDropdown && (
                     <div className="dropdown active">
-                      <div className="dropdown-item" onClick={() => handleDateChange("week")}>{t('本星期')} a</div>
-                      <div className="dropdown-item" onClick={() => handleDateChange("month")}>{t('本月')} b</div>
-                      <div className="dropdown-item" onClick={() => handleDateChange("year")}>{t('今年')} c</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("week")}>{t('本星期')}</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("month")}>{t('本月')}</div>
+                      <div className="dropdown-item" onClick={() => handleDateChange("year")}>{t('今年')}</div>
                     </div>)}
                 </div>
               </div>
