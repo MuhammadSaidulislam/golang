@@ -332,7 +332,6 @@
   z-index: 1 !important;
 }
 .sidebar {
-  display: none;
   min-width: 296px;
   max-width: 296px;
   background-color: var(--semi-color-nav-bg);
@@ -2360,7 +2359,6 @@
     position: absolute;
     z-index: 99;
     margin-top: 0px;
-    display: none;
   }
   .sidebar ul {
     padding-left: 14px;
@@ -2635,8 +2633,11 @@
     margin-right: 0px;
   }
   .bodyMain {
-     height: 100dvh; 
+    height: 100vh;
     display: flex;
     flex-direction: column;
+  }
+  .App {
+    height: 100%;
   }
 }
