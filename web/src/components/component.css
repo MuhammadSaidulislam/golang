@@ -2360,6 +2360,7 @@
     position: absolute;
     z-index: 99;
     margin-top: 0px;
+    display: none;
   }
   .sidebar ul {
     padding-left: 14px;
