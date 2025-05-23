@@ -332,6 +332,7 @@
   z-index: 1 !important;
 }
 .sidebar {
+  display: none;
   min-width: 296px;
   max-width: 296px;
   background-color: var(--semi-color-nav-bg);
