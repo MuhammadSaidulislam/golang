@@ -2355,7 +2355,7 @@
     padding: 0px;
   }
   .sidebar {
-    height: 100%;
+    height: auto;
     position: absolute;
     z-index: 99;
     margin-top: 0px;
