@@ -135,7 +135,7 @@ const CryptoModel = () => {
 
     return (
         <div className='flex'>
-            <div className="md:mt-0 md:w-1/2 text-sm  text-black">
+            <div className="md:mt-0 md:w-1/2 text-sm bg-white text-black">
                 <div className="border-0">
                     <div className="px-4 py-4">
                         <div className="w-full text-sm">
@@ -189,7 +189,7 @@ const CryptoModel = () => {
 
                 </div>
             </div>
-            <div className="md:mt-0 md:w-1/2 text-sm text-black">
+            <div className="md:mt-0 md:w-1/2 text-sm bg-white text-black">
                 {info !== null && (
                     <div className="px-2">
                         <div className="px-4 py-4">

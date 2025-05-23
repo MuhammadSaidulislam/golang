@@ -174,7 +174,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className='loginSection'>
+    <div>
       <CommonHeader />
       <div className='mainContent'>
         <div className='d-flex justify-content-center align-items-center h-100'>

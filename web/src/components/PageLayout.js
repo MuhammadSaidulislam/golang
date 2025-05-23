@@ -66,7 +66,7 @@ const PageLayout = () => {
   }, [i18n]);
 
   return (
-    <div>
+    <div className='bodyMain'>
       {/*   {["/login", "/pricing", "/about", "/register", "/reset"].includes(window.location.pathname) ? (
         <Header>
           <CommonHeader />

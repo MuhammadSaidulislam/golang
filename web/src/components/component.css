@@ -208,7 +208,6 @@
   overflow-y: auto;
 }
 /* login page */
-
 .loginForm {
   background-color: var(--semi-color-nav-bg);
   border: 1px solid rgb(209, 209, 209);
@@ -2152,8 +2151,7 @@
 }
 .dashboardContent {
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  min-height: auto;
 }
 
 /* modal dashboard */
@@ -2319,7 +2317,7 @@
   .sidebar.is-open {
     position: fixed;
     z-index: 999;
-    margin-top: 56px;
+    margin-top: 0px;
     min-width: 61%;
     max-width: 61%;
     margin-left: 0;
@@ -2357,10 +2355,10 @@
     padding: 0px;
   }
   .sidebar {
-    max-height: calc(100vh - 58px);
+    height: calc(100vh - 58px);
     position: absolute;
     z-index: 99;
-    margin-top: 57px;
+    margin-top: 0px;
   }
   .sidebar ul {
     padding-left: 14px;
@@ -2513,14 +2511,14 @@
     padding: 12px 0px;
   }
   .mainBoard {
-    height: 100%;
+    height: calc(100vh - 70px);
   }
   /* .mainBoard.is-open {
     padding: 0px;
   } */
-  .App:has(.is-open) {
+  /* .App:has(.is-open) {
     max-height: calc(100vh - 58px);
-  }
+  } */
   /* .chatBox {
     height: calc(100vh - 66px);
   } */
@@ -2593,7 +2591,7 @@
     flex-direction: column;
   }
   .sidebar .bottomNav {
-    margin-bottom: 58px;
+    margin-bottom: 15px;
   }
   .tableBox tbody tr td,
   .tableBox thead tr th {
@@ -2634,26 +2632,9 @@
   .mobileLogo .navbarLink .dropdown-btn {
     margin-right: 0px;
   }
-  .loginSection {
-    height: 100vh;
-    min-height: 100%;
-  }
-  .loginSection .mainContent {
-    height: calc(100vh - 80px);
-    min-height: calc(100vh - 80px);
-    overflow-y: visible;
-  }
   .bodyMain {
     height: 100dvh;
     display: flex;
     flex-direction: column;
-  }
-  .bodyMain .App {
-    height: 100%;
-    min-height: auto;
-  }
-  .bodyMain .sidebar {
-    margin-top: 0px;
-    min-height: 100%;
   }
 }

@@ -39,7 +39,7 @@ const DashboardLayout = ({ children, ...props }) => {
     let navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(true);
     const [isLangOpen, setIsLangOpen] = useState(false);
-    const dropdownRef = useRef(null);
+
     const toggleDropdown = () => {
         setIsLangOpen(prev => !prev);
     };
@@ -64,7 +64,6 @@ const DashboardLayout = ({ children, ...props }) => {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
-
     const toggle = () => {
         setIsOpen((prev) => !prev);
     };
@@ -118,28 +117,6 @@ const DashboardLayout = ({ children, ...props }) => {
             i18n.off('languageChanged', handleLanguageChanged);
         };
     }, [i18n]);
-
-    useEffect(() => {
-        const handleTouchOutside = (event) => {
-            if (
-                dropdownRef.current &&
-                !dropdownRef.current.contains(event.target)
-            ) {
-                setIsOpen(false);
-            }
-        };
-
-        // Only bind on mobile (example: screen width <= 768px)
-        if (window.innerWidth <= 768) {
-            document.addEventListener("touchstart", handleTouchOutside);
-        }
-
-        return () => {
-            if (window.innerWidth <= 768) {
-                document.removeEventListener("touchstart", handleTouchOutside);
-            }
-        };
-    }, []);
 
     const handleLanguageChange = (lang) => {
         i18n.changeLanguage(lang);
@@ -206,7 +183,7 @@ const DashboardLayout = ({ children, ...props }) => {
     }
 
     return (
-        <div className='bodyMain'>
+        <div>
             <div className='dashboardNav'>
                 <div className='logoNav'>
                     <img src={logo} alt='logo' className="logoNavbar" />
@@ -418,7 +395,7 @@ const DashboardLayout = ({ children, ...props }) => {
                 </div>
             </div>
             <div className="App wrapper">
-                <div className={`sidebar ${isOpen ? "is-open" : ""}`} ref={dropdownRef}>
+                <div className={`sidebar ${isOpen ? "is-open" : ""}`}>
                     <nav className="flex-column middleNav">
                         <ul>
                             <li><Link to="/detail" className={urlParams === "detail" ? "nav-link activeMenu" : "nav-link"}><DashboardIconSvg color="--semi-table-thead-0" /> {t('数据看板')}</Link></li>
@@ -460,10 +437,10 @@ const DashboardLayout = ({ children, ...props }) => {
                     </nav>
                 </div>
                 <div className={`mainBoard ${isOpen ? 'is-open' : ''}`}>
-                    <div className="dashboardContent" {...props}>{children}</div>
+                    {children}
                 </div>
             </div>
-        </div >
+        </div>
     )
 }
 
