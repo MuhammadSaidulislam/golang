@@ -2150,11 +2150,11 @@
   overflow-y: auto;
   width: 100%;
 }
-/* .dashboardContent {
+.dashboardContent {
   height: 100%;
   display: flex;
   flex-direction: column;
-} */
+}
 
 /* modal dashboard */
 .dashboardHead {
@@ -2518,9 +2518,9 @@
   /* .mainBoard.is-open {
     padding: 0px;
   } */
-  /* .App:has(.is-open) {
+  .App:has(.is-open) {
     max-height: calc(100vh - 58px);
-  } */
+  }
   /* .chatBox {
     height: calc(100vh - 66px);
   } */
