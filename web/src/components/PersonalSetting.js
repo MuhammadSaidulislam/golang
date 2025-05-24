@@ -54,6 +54,7 @@ import OperationSetting from './OperationSetting';
 import SystemSetting from './SystemSetting';
 import OtherSetting from './OtherSetting';
 import ModelList from '../pages/Setting/Operation/ModelList';
+import { OperationIconSvg, OtherIconSvg, ProfileIconSvg, SystemIconSvg } from './svgIcon';
 
 
 const PersonalSetting = () => {
@@ -799,7 +800,7 @@ const PersonalSetting = () => {
                         <div className='mobileSettingTab'>
                             <div className='tabSetting' onClick={() => setMobileTab('setting')}>
                                 <div className='tabProfile'>
-                                    <img src={checkIcon} alt="setting" />
+                                    <ProfileIconSvg color="--semi-table-thead-0" />
                                     <p>Account Settings</p>
                                 </div>
                                 <div className='tabArrow'>
@@ -809,7 +810,7 @@ const PersonalSetting = () => {
                             {isAdmin() && <>
                                 <div className='tabSetting' onClick={() => setMobileTab('operation')}>
                                     <div className='tabProfile'>
-                                        <img src={phoneIcon} alt="setting" />
+                                        <OperationIconSvg color="--semi-table-thead-0" />
                                         <p>Operation Settings</p>
                                     </div>
                                     <div className='tabArrow'>
@@ -818,7 +819,7 @@ const PersonalSetting = () => {
                                 </div>
                                 <div className='tabSetting' onClick={() => setMobileTab('system')}>
                                     <div className='tabProfile'>
-                                        <img src={profileIcon} alt="setting" />
+                                        <SystemIconSvg color="--semi-table-thead-0" />
                                         <p>System Settings</p>
                                     </div>
                                     <div className='tabArrow'>
@@ -827,7 +828,7 @@ const PersonalSetting = () => {
                                 </div>
                                 <div className='tabSetting' onClick={() => setMobileTab('other')}>
                                     <div className='tabProfile'>
-                                        <img src={gearIcon} alt="setting" />
+                                        <OtherIconSvg color="--semi-table-thead-0" />
                                         <p>Other Settings</p>
                                     </div>
                                     <div className='tabArrow'>

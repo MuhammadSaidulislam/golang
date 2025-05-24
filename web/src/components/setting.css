@@ -341,7 +341,7 @@
 }
 .mobileSettingTab .tabSetting {
   cursor: pointer;
-  background-color: rgb(255, 255, 255);
+  background-color: var(--semi-dashboard-bg-0);
   border: 1px solid #b7b7b7;
   margin-bottom: 15px;
   display: flex;
@@ -370,7 +370,7 @@
   font-size: 16px;
   line-height: 100%;
   letter-spacing: 0%;
-  color: #202020;
+  color: var(--semi-shadow-black-white-0);
 }
 .tabArrow svg {
   color: #c5c5c5;

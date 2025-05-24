@@ -39,7 +39,8 @@ const DashboardLayout = ({ children, ...props }) => {
     let navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(true);
     const [isLangOpen, setIsLangOpen] = useState(false);
-
+    const sidebarRef = useRef(null);
+    const justToggledRef = useRef(false);
     const toggleDropdown = () => {
         setIsLangOpen(prev => !prev);
     };
@@ -64,7 +65,10 @@ const DashboardLayout = ({ children, ...props }) => {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
+
+
     const toggle = () => {
+        justToggledRef.current = true;
         setIsOpen((prev) => !prev);
     };
     const [isDark, setIsDark] = useState(false);
@@ -181,6 +185,31 @@ const DashboardLayout = ({ children, ...props }) => {
         localStorage.removeItem('user');
         navigate('/login');
     }
+
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            // Skip this event if just toggled
+            if (justToggledRef.current) {
+                justToggledRef.current = false;
+                return;
+            }
+
+            if (
+                window.innerWidth <= 768 &&
+                isOpen &&
+                sidebarRef.current &&
+                !sidebarRef.current.contains(event.target)
+            ) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isOpen]);
 
     return (
         <div className='bodyMain'>
@@ -395,7 +424,7 @@ const DashboardLayout = ({ children, ...props }) => {
                 </div>
             </div>
             <div className="App wrapper">
-                <div className={`sidebar ${isOpen ? "is-open" : ""}`}>
+                <div ref={sidebarRef} className={`sidebar ${isOpen ? "is-open" : ""}`}>
                     <nav className="flex-column middleNav">
                         <ul>
                             <li><Link to="/detail" className={urlParams === "detail" ? "nav-link activeMenu" : "nav-link"}><DashboardIconSvg color="--semi-table-thead-0" /> {t('数据看板')}</Link></li>

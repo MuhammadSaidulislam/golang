@@ -76,6 +76,7 @@ const TopUp = () => {
   const [topUpLink, setTopUpLink] = useState('');
   const [enableOnlineTopUp, setEnableOnlineTopUp] = useState(false);
   const [userQuota, setUserQuota] = useState(0);
+  const [userSpend, setUserSpend] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [open, setOpen] = useState(false);
   const [openCrypto, setOpenCrypto] = useState(false);
@@ -351,7 +352,9 @@ const TopUp = () => {
     let res = await API.get(`/api/user/self`);
     const { success, message, data } = res.data;
     if (success) {
-      setUserQuota(data.quota);
+      console.log('user pay', data);
+      setUserSpend(renderQuota(data.used_quota));
+      setUserQuota(renderQuota(data.quota));
     } else {
       showError(message);
     }
@@ -643,11 +646,11 @@ const TopUp = () => {
                   <div className='cardContent'>
                     <div style={{ width: '50%' }}>
                       <h6>{t('当前余额')}</h6>
-                      <p>$12,030.00</p>
+                      <p>{userQuota && userQuota}</p>
                     </div>
                     <div style={{ width: '50%' }}>
                       <h6>{t('花费')}</h6>
-                      <p>$20,390.00</p>
+                      <p>{userSpend && userSpend}</p>
                     </div>
                   </div>
                 </div>

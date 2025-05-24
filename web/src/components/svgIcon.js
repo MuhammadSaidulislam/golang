@@ -158,3 +158,44 @@ export const LogoutIconSvg = ({ color }) => {
         </svg>
     );
 };
+
+
+export const ProfileIconSvg = ({ color }) => {
+    return (
+        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="29" height="29" rx="4" />
+            <path fillRule="evenodd" clipRule="evenodd" d="M14.4807 18.543C9.80736 18.543 5.81641 19.2496 5.81641 22.0794C5.81641 24.9092 9.78204 25.6411 14.4807 25.6411C19.1541 25.6411 23.1439 24.9333 23.1439 22.1047C23.1439 19.276 19.1794 18.543 14.4807 18.543Z" style={{ stroke: `var(${color})` }} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path fillRule="evenodd" clipRule="evenodd" d="M14.4795 14.5087C17.5464 14.5087 20.0321 12.0218 20.0321 8.95492C20.0321 5.88806 17.5464 3.40234 14.4795 3.40234C11.4127 3.40234 8.92581 5.88806 8.92581 8.95492C8.91546 12.0114 11.3851 14.4983 14.4404 14.5087H14.4795Z" style={{ stroke: `var(${color})` }} strokeWidth="1.42857" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    );
+};
+
+
+export const OperationIconSvg = ({ color }) => {
+    return (
+        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="29" height="29" rx="4" />
+            <path d="M26.5846 13.3887V14.5004C26.5832 17.1061 25.7394 19.6415 24.1792 21.7284C22.6191 23.8154 20.4261 25.3422 17.9274 26.081C15.4286 26.8198 12.758 26.731 10.3138 25.828C7.86958 24.925 5.78276 23.2561 4.36455 21.0702C2.94633 18.8843 2.27272 16.2985 2.44416 13.6985C2.61561 11.0984 3.62293 8.62347 5.31589 6.6427C7.00885 4.66194 9.29675 3.28149 11.8384 2.70725C14.38 2.13301 17.0391 2.39573 19.4192 3.45624" style={{ stroke: `var(${color})` }} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M26.5833 4.83203L14.5 16.9274L10.875 13.3024" style={{ stroke: `var(${color})` }} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    );
+};
+
+export const SystemIconSvg = ({ color }) => {
+    return (
+        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="29" height="29" rx="4" />
+            <path d="M20.543 2.41797H8.45964C7.12495 2.41797 6.04297 3.49995 6.04297 4.83464V24.168C6.04297 25.5027 7.12495 26.5846 8.45964 26.5846H20.543C21.8777 26.5846 22.9596 25.5027 22.9596 24.168V4.83464C22.9596 3.49995 21.8777 2.41797 20.543 2.41797Z" style={{ stroke: `var(${color})` }} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M14.5 21.75H14.5121" style={{ stroke: `var(${color})` }} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    );
+};
+
+export const OtherIconSvg = ({ color }) => {
+    return (
+        <svg width="29" height="29" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 15.5C13.933 15.5 15.5 13.933 15.5 12C15.5 10.067 13.933 8.5 12 8.5C10.067 8.5 8.5 10.067 8.5 12C8.5 13.933 10.067 15.5 12 15.5Z" style={{ stroke: `var(${color})` }} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M19.14 12.94C19.19 12.64 19.22 12.32 19.22 12C19.22 11.68 19.19 11.36 19.14 11.06L20.84 9.73C21 9.6 21.05 9.36 20.96 9.16L19.26 5.84C19.16 5.63 18.93 5.53 18.72 5.6L16.56 6.33C16.06 5.96 15.5 5.66 14.89 5.45L14.5 3.14C14.47 2.92 14.29 2.75 14.07 2.75H9.93C9.71 2.75 9.53 2.92 9.5 3.14L9.11 5.45C8.5 5.66 7.94 5.96 7.44 6.33L5.28 5.6C5.07 5.53 4.84 5.63 4.74 5.84L3.04 9.16C2.95 9.36 3 9.6 3.16 9.73L4.86 11.06C4.81 11.36 4.78 11.68 4.78 12C4.78 12.32 4.81 12.64 4.86 12.94L3.16 14.27C3 14.4 2.95 14.64 3.04 14.84L4.74 18.16C4.84 18.37 5.07 18.47 5.28 18.4L7.44 17.67C7.94 18.04 8.5 18.34 9.11 18.55L9.5 20.86C9.53 21.08 9.71 21.25 9.93 21.25H14.07C14.29 21.25 14.47 21.08 14.5 20.86L14.89 18.55C15.5 18.34 16.06 18.04 16.56 17.67L18.72 18.4C18.93 18.47 19.16 18.37 19.26 18.16L20.96 14.84C21.05 14.64 21 14.4 20.84 14.27L19.14 12.94Z" style={{ stroke: `var(${color})` }} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    );
+};
