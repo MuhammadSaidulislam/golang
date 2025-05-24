@@ -38,15 +38,22 @@ const DashboardLayout = ({ children, ...props }) => {
     const [userQuota, setUserQuota] = useState(0);
     let navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(true);
+    console.log('isOpen', isOpen);
+
+
     const [isLangOpen, setIsLangOpen] = useState(false);
     const sidebarRef = useRef(null);
-    const justToggledRef = useRef(false);
+    const toggleRef = useRef(null);
+
     const toggleDropdown = () => {
         setIsLangOpen(prev => !prev);
     };
 
     const closeDropdown = () => {
         setIsLangOpen(false);
+    };
+    const toggle = () => {
+        setIsOpen((prev) => !prev);
     };
 
     useEffect(() => {
@@ -58,19 +65,17 @@ const DashboardLayout = ({ children, ...props }) => {
             }
         };
 
-        handleResize(); // Check on load
+        handleResize();
+        console.log('isOpen', isOpen);
         window.addEventListener("resize", handleResize);
-
         return () => {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
 
 
-    const toggle = () => {
-        justToggledRef.current = true;
-        setIsOpen((prev) => !prev);
-    };
+
+
     const [isDark, setIsDark] = useState(false);
 
     const [currentLang, setCurrentLang] = useState(i18n.language);
@@ -189,25 +194,21 @@ const DashboardLayout = ({ children, ...props }) => {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            // Skip this event if just toggled
-            if (justToggledRef.current) {
-                justToggledRef.current = false;
-                return;
-            }
-
             if (
                 window.innerWidth <= 768 &&
                 isOpen &&
                 sidebarRef.current &&
-                !sidebarRef.current.contains(event.target)
+                !sidebarRef.current.contains(event.target) &&
+                toggleRef.current &&
+                !toggleRef.current.contains(event.target) // ✅ exclude toggle button
             ) {
                 setIsOpen(false);
             }
         };
 
-        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener('mousedown', handleClickOutside);
         return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [isOpen]);
 
@@ -327,7 +328,7 @@ const DashboardLayout = ({ children, ...props }) => {
             </div>
             <div className='mobileDashNav'>
                 <div className='mobileLogo'>
-                    <span onClick={toggle} style={{ cursor: 'pointer' }}> <LogoIconSvg color="--semi-text-white-black-0" /></span>
+                    <span ref={toggleRef} onClick={toggle} style={{ cursor: 'pointer' }}> <LogoIconSvg color="--semi-text-white-black-0" /></span>
                 </div>
                 <div className='mobileLogo d-flex align-items-center'>
                     <div className='dashboardOption navbarLink d-flex'>
